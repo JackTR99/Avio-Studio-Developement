@@ -19,6 +19,15 @@ import path from 'node:path'
 
 const CIKTI = path.join(process.cwd(), 'public', 'izgara')
 
+/**
+ * NOKTA YOĞUNLUĞU
+ * Dünya haritası ~16.000 noktayla çiziliyor ve detay seviyesi beğenildi.
+ * Alt katmanlar da aynı görsel yoğunlukta olsun diye yükseltildi.
+ * (eski: ülke 2.500 / il 900 → ülke ve il haritaları seyrek ve iri görünüyordu)
+ */
+const HEDEF_ULKE = 9000 // bir ülkenin il haritası
+const HEDEF_ILCE = 3000 // bir ilin ilçe haritası
+
 /** Dosya adı için sadeleştirir: "Şanlıurfa" → "sanliurfa" */
 export function slug(s) {
   return s
@@ -219,21 +228,198 @@ async function ilUret(iso, ilAdi) {
     return
   }
 
-  // İlin sınırları içine düşen ilçeler (merkez noktası testi)
-  const ilceler = hepsi.filter((b) => {
-    const mx = (b.kutu[0] + b.kutu[2]) / 2
-    const my = (b.kutu[1] + b.kutu[3]) / 2
-    return hedefIl.poligonlar.some((p) => poligonIcinde(mx, my, p))
-  })
-  console.log(`  ${ilceler.length} ilçe bulundu, ızgara çiziliyor…`)
-  if (!ilceler.length) return
+  const eslesme = ilceleriIlleraAta(iller, hepsi)
+  const sonuc = ilceIzgarasiCiz(hedefIl, eslesme.get(hedefIl.kod) ?? [], HEDEF_ILCE)
+  if (!sonuc) {
+    console.log('  ⚠️ bu ile ait ilçe bulunamadı')
+    return
+  }
+  console.log(`  ${sonuc.bolgeler.length} ilçe bulundu, ızgara çizildi`)
 
-  const sonuc = izgaraCiz(ilceler, 400)
-  await yaz(`${iso}-${ilAdi.toLocaleLowerCase('tr').replace(/\s+/g, '-')}.json`, {
+  await yaz(`${iso}-${slug(ilAdi)}.json`, {
     ad: ilAdi,
     seviye: 'ilce',
     ...sonuc,
   })
+}
+
+/* ---------------------------------------------------------------- İLÇE → İL EŞLEME */
+
+/**
+ * Her ilçenin GERÇEK ilini bulur.
+ *
+ * Neden gerek var: geoBoundaries'te ADM2 dosyasında "bu ilçe hangi ilde"
+ * bilgisi yok. Sadece şekiller var. Üstelik ADM1 ve ADM2 şekilleri ayrı ayrı
+ * sadeleştirildiği için sınırlar milimetrik üst üste oturmuyor — bir ilçenin
+ * kenarı komşu ilin içine birkaç yüz metre taşabiliyor.
+ *
+ * Yöntem: İlçenin İÇİNDEN birçok nokta örneklenir, her nokta hangi ilde diye
+ * sorulur, en çok oyu alan il o ilçenin ilidir. Böylece:
+ *  - Kıyı/yarımada ilçeleri (merkezi denize düşenler) kaybolmaz,
+ *  - Sınırdan birkaç piksel taşan ilçe komşu ilin listesine sızmaz.
+ */
+function ilceleriIlleraAta(iller, tumIlceler) {
+  const harita = new Map() // il.kod → ilçe[]
+  for (const il of iller) harita.set(il.kod, [])
+
+  for (const ilce of tumIlceler) {
+    const [x1, y1, x2, y2] = ilce.kutu
+    const adim = Math.max((x2 - x1) / 7, (y2 - y1) / 7, 1e-6)
+
+    // Aday iller: kutusu ilçenin kutusuyla kesişenler
+    const adayIller = iller.filter(
+      (i) => !(i.kutu[2] < x1 || i.kutu[0] > x2 || i.kutu[3] < y1 || i.kutu[1] > y2),
+    )
+    if (!adayIller.length) continue
+    if (adayIller.length === 1) {
+      harita.get(adayIller[0].kod).push(ilce)
+      continue
+    }
+
+    const oy = new Map()
+    for (let y = y1 + adim / 2; y < y2; y += adim) {
+      for (let x = x1 + adim / 2; x < x2; x += adim) {
+        // Nokta gerçekten ilçenin içinde mi?
+        let ilceIcinde = false
+        for (const p of ilce.poligonlar)
+          if (poligonIcinde(x, y, p)) {
+            ilceIcinde = true
+            break
+          }
+        if (!ilceIcinde) continue
+
+        for (const il of adayIller) {
+          if (x < il.kutu[0] || x > il.kutu[2] || y < il.kutu[1] || y > il.kutu[3]) continue
+          let icinde = false
+          for (const p of il.poligonlar)
+            if (poligonIcinde(x, y, p)) {
+              icinde = true
+              break
+            }
+          if (icinde) {
+            oy.set(il.kod, (oy.get(il.kod) ?? 0) + 1)
+            break
+          }
+        }
+      }
+    }
+
+    if (!oy.size) {
+      // Hiç iç nokta yakalanamadı (çok küçük ilçe) — kutu ortasıyla son bir deneme
+      const mx = (x1 + x2) / 2
+      const my = (y1 + y2) / 2
+      const il = adayIller.find((i) => i.poligonlar.some((p) => poligonIcinde(mx, my, p)))
+      if (il) harita.get(il.kod).push(ilce)
+      else harita.get(adayIller[0].kod).push(ilce)
+      continue
+    }
+
+    let enIyi = null
+    let enCok = -1
+    for (const [kod, sayi] of oy)
+      if (sayi > enCok) {
+        enCok = sayi
+        enIyi = kod
+      }
+    harita.get(enIyi).push(ilce)
+  }
+
+  return harita
+}
+
+/** Noktanın bir dikdörtgene uzaklığı (içindeyse 0) */
+function kutuyaUzaklik(x, y, [x1, y1, x2, y2]) {
+  const dx = x < x1 ? x1 - x : x > x2 ? x - x2 : 0
+  const dy = y < y1 ? y1 - y : y > y2 ? y - y2 : 0
+  return dx * dx + dy * dy
+}
+
+/* ---------------------------------------------------------------- İLÇE IZGARASI */
+
+/**
+ * Bir ilin ilçe ızgarası.
+ *
+ * ⚠️ ESKİ YÖNTEM HATALIYDI: İlçenin sınır kutusunun ORTASI ile "bu ilçe bu ile
+ * ait mi" diye test ediliyordu. Kıyı ve yarımada ilçelerinde (Kuşadası, Fethiye,
+ * Datça, Bodrum yarımadası…) bu nokta DENİZE düşüyor ve ilçe tamamen atılıyordu.
+ *
+ * YENİ YÖNTEM: Izgara ilin sınırı üstüne kurulur. Her nokta için önce "il içinde
+ * mi", sonra "hangi ilçede" sorulur. Karar tamamen geometriye ait — hiçbir ilçe
+ * tahminle elenmez. Bir ilçe, ilin içinde alanı varsa görünür.
+ */
+function ilceIzgarasiCiz(il, ilceler, hedefNokta) {
+  const [x1, y1, x2, y2] = il.kutu
+  const en = x2 - x1
+  const boy = y2 - y1
+
+  // İl alanı sınır kutusunun ~%60'ı varsayımıyla adım
+  let adim = Math.sqrt((en * boy * 0.6) / hedefNokta)
+  adim = Number(adim.toFixed(5))
+
+  const sutun = Math.ceil(en / adim)
+  const satir = Math.ceil(boy / adim)
+
+  // Bu ile ait ilçeler önceden oylamayla belirlendi — burada tahmin yok
+  const adaylar = ilceler
+  if (!adaylar.length) return null
+
+  // Sıra sabit olsun ki dosya her üretimde aynı çıksın
+  const sirali = [...adaylar].sort((a, b) => (a.kod < b.kod ? -1 : 1))
+  const bolgeListesi = sirali.map((b) => ({ kod: b.kod, ad: b.ad }))
+
+  const noktalar = []
+  const bosHucreler = []
+
+  for (let sy = 0; sy < satir; sy++) {
+    const y = y2 - (sy + 0.5) * adim
+    for (let sx = 0; sx < sutun; sx++) {
+      const x = x1 + (sx + 0.5) * adim
+
+      // 1) İlin içinde mi?
+      let ilIcinde = false
+      for (const p of il.poligonlar)
+        if (poligonIcinde(x, y, p)) {
+          ilIcinde = true
+          break
+        }
+      if (!ilIcinde) continue
+
+      // 2) Hangi ilçede?
+      let bulundu = -1
+      for (let i = 0; i < sirali.length; i++) {
+        const b = sirali[i]
+        const [bx1, by1, bx2, by2] = b.kutu
+        if (x < bx1 || x > bx2 || y < by1 || y > by2) continue
+        for (const p of b.poligonlar)
+          if (poligonIcinde(x, y, p)) {
+            bulundu = i
+            break
+          }
+        if (bulundu >= 0) break
+      }
+
+      if (bulundu >= 0) noktalar.push([sx, sy, bulundu])
+      else bosHucreler.push([sx, sy, x, y]) // il içinde ama hiçbir ilçeye düşmedi
+    }
+  }
+
+  // Sınır boşluklarını doldur: il içindeki her hücre bir ilçeye ait olmalı.
+  // (ADM1 ve ADM2 ayrı sadeleştirildiği için kıyı ve sınır şeritlerinde
+  //  ince boşluklar kalıyor — en yakın ilçeye verilir.)
+  for (const [sx, sy, x, y] of bosHucreler) {
+    let enIyi = -1
+    let enYakin = Infinity
+    for (let i = 0; i < sirali.length; i++) {
+      const d = kutuyaUzaklik(x, y, sirali[i].kutu)
+      if (d < enYakin) {
+        enYakin = d
+        enIyi = i
+      }
+    }
+    if (enIyi >= 0) noktalar.push([sx, sy, enIyi])
+  }
+
+  return { adim, sutun, satir, x1, y1, x2, y2, noktalar, bolgeler: bolgeListesi }
 }
 
 /* ---------------------------------------------------------------- TOPLU ÜRETİM */
@@ -278,7 +464,7 @@ async function hepsiniUret() {
         const gj = await geoJsonAl(ULKE(iso, 'ADM1'))
         iller = bolgeleriHazirla(gj, ['shapeName'], ['shapeID', 'shapeName'])
         if (iller.length) {
-          const sonuc = izgaraCiz(iller, Math.min(2500, Math.max(400, iller.length * 30)))
+          const sonuc = izgaraCiz(iller, HEDEF_ULKE)
           await yaz(ulkeDosya, { ad: iso, seviye: 'il', ...sonuc })
           liste.ulkeler[iso] = sonuc.bolgeler.length
         } else {
@@ -301,6 +487,9 @@ async function hepsiniUret() {
       const tumIlceler = bolgeleriHazirla(gj2, ['shapeName'], ['shapeID', 'shapeName'])
       if (!tumIlceler.length) throw new Error('ADM2 boş')
 
+      // Hangi ilçe hangi ile ait — bir kez, oylamayla
+      const eslesme = ilceleriIlleraAta(iller, tumIlceler)
+
       let uretilen = 0
       for (const il of iller) {
         const dosya = `${iso}-${slug(il.ad)}.json`
@@ -308,15 +497,9 @@ async function hepsiniUret() {
           liste.iller[`${iso}-${slug(il.ad)}`] = true
           continue
         }
-        // Merkezi bu ilin içine düşen ilçeler
-        const ilceler = tumIlceler.filter((b) => {
-          const mx = (b.kutu[0] + b.kutu[2]) / 2
-          const my = (b.kutu[1] + b.kutu[3]) / 2
-          if (mx < il.kutu[0] || mx > il.kutu[2] || my < il.kutu[1] || my > il.kutu[3]) return false
-          return il.poligonlar.some((p) => poligonIcinde(mx, my, p))
-        })
-        if (ilceler.length < 2) continue // tek ilçeli il için harita anlamsız
-        const sonuc = izgaraCiz(ilceler, Math.min(900, Math.max(200, ilceler.length * 25)))
+        // Izgara ilin üstüne kurulur, her nokta hangi ilçedeyse ona yazılır
+        const sonuc = ilceIzgarasiCiz(il, eslesme.get(il.kod) ?? [], HEDEF_ILCE)
+        if (!sonuc || sonuc.bolgeler.length < 2) continue // tek ilçeli il için harita anlamsız
         await writeFile(
           path.join(CIKTI, dosya),
           JSON.stringify({ ad: il.ad, seviye: 'ilce', ...sonuc }),

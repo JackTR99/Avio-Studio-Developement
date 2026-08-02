@@ -203,7 +203,8 @@ export function CubukListe({
   onTikla,
   tiklanabilir = false,
 }: {
-  satirlar: { ad: string; sol?: string; sayi: number; yuzde: number; ek?: string }[]
+  // sol: ülke bayrağı (gerçek bayrak emojisi) veya bir ikon bileşeni
+  satirlar: { ad: string; sol?: ReactNode; sayi: number; yuzde: number; ek?: string }[]
   onTikla?: (ad: string) => void
   tiklanabilir?: boolean
 }) {

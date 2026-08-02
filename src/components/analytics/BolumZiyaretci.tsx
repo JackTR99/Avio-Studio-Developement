@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useVeri } from '@/lib/veri'
@@ -358,7 +359,19 @@ export function KonumBlogu() {
         <CubukListe
           tiklanabilir={konum.seviye !== 'il'}
           onTikla={listeyeTikla}
-          satirlar={liste.map((k) => ({ ad: k.ad, sol: k.bayrak, sayi: k.sayi, yuzde: k.yuzde }))}
+          satirlar={liste.map((k) => ({
+            ad: k.ad,
+            // Dünya seviyesinde gerçek ülke bayrağı; alt seviyelerde ince konum
+            // ikonu (emoji pin amatör duruyordu)
+            sol:
+              konum.seviye === 'dunya' ? (
+                k.bayrak
+              ) : (
+                <MapPin size={13} strokeWidth={1.75} className="text-muted-foreground" />
+              ),
+            sayi: k.sayi,
+            yuzde: k.yuzde,
+          }))}
         />
       </div>
     </Card>

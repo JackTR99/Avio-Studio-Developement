@@ -62,6 +62,16 @@ export function IzgaraHarita({
   const sarmalRef = useRef<HTMLDivElement>(null)
   const [uzerinde, setUzerinde] = useState<number | null>(null)
   const [imlec, setImlec] = useState({ x: 0, y: 0 })
+  // Dokunmatikte parmak tooltip'i kapatır — onun yerine haritanın altında
+  // bir kart açılır, alt kırılıma inmek ayrı bir butonla olur.
+  const [dokunulan, setDokunulan] = useState<number | null>(null)
+  const sonGirdi = useRef<'mouse' | 'dokunma'>('mouse')
+
+  // Harita değişince (alt kırılıma inildi) seçim sıfırlanır
+  useEffect(() => {
+    setDokunulan(null)
+    setUzerinde(null)
+  }, [izgara])
 
   /** Bölge indeksi → { ad, kod, deger, yogunluk 0..1 } */
   const bolgeBilgi = useMemo(() => {
@@ -148,8 +158,8 @@ export function IzgaraHarita({
     return () => gozlemci.disconnect()
   }, [izgara, bolgeBilgi, uzerinde])
 
-  /* --- Fare: hangi hücre? Basit bölme işlemi --- */
-  function hucreBul(e: React.MouseEvent) {
+  /* --- Fare/parmak: hangi hücre? Basit bölme işlemi --- */
+  function hucreBul(e: { clientX: number; clientY: number }) {
     const cv = canvasRef.current
     if (!cv || !izgara) return null
     const k = cv.getBoundingClientRect()
@@ -173,13 +183,23 @@ export function IzgaraHarita({
   }
 
   const aktif = uzerinde !== null ? bolgeBilgi[uzerinde] : null
+  const secili = dokunulan !== null ? bolgeBilgi[dokunulan] : null
 
   return (
     <div ref={sarmalRef} className={cn('relative w-full', className)}>
       <canvas
         ref={canvasRef}
-        className="block w-full"
+        className="block w-full touch-manipulation"
         style={{ cursor: aktif && onBolgeTikla ? 'pointer' : 'default' }}
+        onPointerDown={(e) => {
+          sonGirdi.current = e.pointerType === 'mouse' ? 'mouse' : 'dokunma'
+          // Dokunmatikte: seçimi karta taşı, alt kırılıma inme
+          if (e.pointerType !== 'mouse') {
+            const bi = hucreBul(e)
+            setUzerinde(bi)
+            setDokunulan(bi)
+          }
+        }}
         onMouseMove={(e) => {
           const bi = hucreBul(e)
           setUzerinde(bi)
@@ -190,6 +210,8 @@ export function IzgaraHarita({
         }}
         onMouseLeave={() => setUzerinde(null)}
         onClick={(e) => {
+          // Fare tıklaması doğrudan iner; dokunmatik yukarıdaki kartla ilerler
+          if (sonGirdi.current === 'dokunma') return
           const bi = hucreBul(e)
           if (bi === null) return
           const b = bolgeBilgi[bi]
@@ -197,15 +219,50 @@ export function IzgaraHarita({
         }}
       />
 
+      {/* Masaüstü: imlecin yanında ipucu */}
       {aktif && (
         <div
-          className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg bg-popover px-2.5 py-1.5 text-[11px] whitespace-nowrap text-popover-foreground shadow-md ring-1 ring-border"
+          className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-full rounded-lg bg-popover px-2.5 py-1.5 text-[11px] whitespace-nowrap text-popover-foreground shadow-md ring-1 ring-border sm:block"
           style={{ left: imlec.x, top: imlec.y - 10 }}
         >
           <div className="font-semibold">{aktif.ad}</div>
           <div className="text-muted-foreground">
             {aktif.deger > 0 ? aktif.deger.toLocaleString('tr-TR') : 'veri yok'}
           </div>
+        </div>
+      )}
+
+      {/* Dokunmatik: haritanın altında kart — parmak ipucunu kapatıyor */}
+      {secili && (
+        <div className="mt-2 flex items-center gap-2 rounded-lg border bg-card px-3 py-2 sm:hidden">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[13px] font-semibold">{secili.ad}</div>
+            <div className="text-[11px] text-muted-foreground">
+              {secili.deger > 0 ? secili.deger.toLocaleString('tr-TR') : 'veri yok'}
+            </div>
+          </div>
+          {onBolgeTikla && (
+            <button
+              onClick={() => {
+                onBolgeTikla({ kod: secili.kod, ad: secili.ad, deger: secili.deger })
+                setDokunulan(null)
+                setUzerinde(null)
+              }}
+              className="shrink-0 rounded-md bg-brand px-2.5 py-1.5 text-[11px] font-semibold text-white"
+            >
+              İçine gir
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setDokunulan(null)
+              setUzerinde(null)
+            }}
+            aria-label="Kapat"
+            className="shrink-0 rounded-md border px-2 py-1.5 text-[11px] text-muted-foreground"
+          >
+            ✕
+          </button>
         </div>
       )}
     </div>
