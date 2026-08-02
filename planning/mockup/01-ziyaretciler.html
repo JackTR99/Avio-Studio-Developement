@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AVIO Studio — Taslak 01: Ziyaretçi Bloğu + Harita</title>
+<style>
+  :root{
+    --brand:#C8102E;          /* AVIO kırmızısı — kesin kod gelince burayı değiştir */
+    --bg:#F7F8FA;
+    --card:#FFFFFF;
+    --line:#E4E7EC;
+    --text:#1A1D21;
+    --muted:#6B7280;
+    --soft:#9AA1AC;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:14px; line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:24px}
+
+  /* ---- taslak notu ---- */
+  .note{
+    background:#FFF7ED;border:1px solid #FED7AA;color:#9A3412;
+    border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:13px;
+  }
+
+  /* ---- üst çubuk ---- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  .site-pick{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+  .site-pick b{font-weight:600}
+  .caret{color:var(--soft);font-size:11px}
+  .ranges{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px}
+  .ranges span{padding:6px 12px;border-radius:7px;color:var(--muted);font-size:13px;cursor:default}
+  .ranges span.on{background:var(--brand);color:#fff;font-weight:600}
+
+  /* ---- kart ---- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);position:relative}
+  .card-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card-title{font-size:15px;font-weight:600}
+  .card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+  /* ---- ziyaretçi bloğu: 5 ölçüm yan yana ---- */
+  .metrics{display:grid;grid-template-columns:repeat(5,1fr)}
+  .metric{padding:20px;border-right:1px solid var(--line)}
+  .metric:last-child{border-right:none}
+  .metric .label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin-bottom:8px}
+  .metric .value{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+  .metric .value .tilde{color:var(--brand)}
+  .metric .delta{font-size:12px;margin-top:6px;color:#12805C}
+  .metric .delta.down{color:#B42318}
+  .metric.accent{background:linear-gradient(180deg,rgba(200,16,46,.045),transparent)}
+
+  .badge-est{
+    font-size:10px;font-weight:700;background:rgba(200,16,46,.1);color:var(--brand);
+    padding:2px 6px;border-radius:5px;letter-spacing:.3px;
+  }
+  .info{
+    width:14px;height:14px;border-radius:50%;border:1px solid var(--soft);color:var(--soft);
+    font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;position:relative;
+  }
+  .info:hover .tip{display:block}
+  .tip{
+    display:none;position:absolute;bottom:20px;left:-10px;width:250px;z-index:5;
+    background:#111827;color:#fff;font-size:11.5px;line-height:1.5;font-weight:400;
+    padding:10px 12px;border-radius:8px;letter-spacing:0;
+  }
+
+  /* ---- harita ---- */
+  .map-row{display:grid;grid-template-columns:1fr 320px;gap:0;margin-top:20px}
+  .map-area{padding:18px 20px;border-right:1px solid var(--line)}
+  .crumb{display:flex;align-items:center;gap:7px;font-size:13px;margin-bottom:14px}
+  .crumb a{color:var(--brand);text-decoration:none}
+  .crumb .sep{color:var(--soft);font-size:11px}
+  .crumb .now{color:var(--muted)}
+  .map-svg{width:100%;height:auto;display:block;background:#FBFCFD;border-radius:10px;border:1px solid var(--line)}
+  .land{fill:#E8ECF1}
+  .land.lit{fill:var(--brand);fill-opacity:.28}
+  .land.hot{fill:var(--brand);fill-opacity:.62}
+  .dot{fill:var(--brand)}
+
+  .geo-list{padding:18px 20px}
+  .geo-list h4{margin:0 0 4px;font-size:13px;font-weight:600}
+  .geo-list .hint{font-size:11.5px;color:var(--muted);margin-bottom:12px}
+  .geo-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F1F3F6;font-size:13px}
+  .geo-row:last-child{border-bottom:none}
+  .geo-row .flag{width:22px;text-align:center}
+  .geo-row .nm{flex:1}
+  .geo-row .ct{font-weight:600;font-variant-numeric:tabular-nums}
+  .geo-row .pc{width:44px;text-align:right;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  .bar{height:3px;background:#F1F3F6;border-radius:2px;margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--brand);opacity:.75}
+
+  /* ---- yerleşim numaraları (Kaan konuşurken referans versin) ---- */
+  .pin{
+    position:absolute;z-index:4;width:22px;height:22px;border-radius:50%;
+    background:#111827;color:#fff;font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .legend{margin-top:22px;font-size:12.5px;color:var(--muted)}
+  .legend b{color:var(--text)}
+  .legend ul{margin:8px 0 0;padding-left:18px}
+  .legend li{margin:3px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="note">
+    <b>TASLAK — Direktif 1.</b> Ziyaretçiyle ilgili her şey tek blokta, hemen altında harita.
+    Siyah yuvarlaklardaki numaralarla konuşabilirsin: “3 numarayı sola al”, “5 numarayı çıkar” gibi.
+    Rakamlar uydurma, sadece görünsün diye.
+  </div>
+
+  <!-- ÜST ÇUBUK -->
+  <div class="topbar">
+    <div class="site-pick"><b>manisaortodonti.com</b> <span class="caret">▼</span></div>
+    <div class="ranges">
+      <span>Bugün</span><span>7 gün</span><span class="on">30 gün</span><span>3 ay</span><span>Özel</span>
+    </div>
+  </div>
+
+  <!-- ZİYARETÇİ BLOĞU -->
+  <div class="card">
+    <div class="pin" style="top:-11px;left:-11px">1</div>
+    <div class="card-head">
+      <div>
+        <div class="card-title">Ziyaretçiler</div>
+        <div class="card-sub">Son 30 gün · tek noktada toplandı</div>
+      </div>
+      <div class="badge-est">~ TAHMİN AÇIK</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric accent">
+        <div class="pin" style="top:-11px;right:8px">2</div>
+        <div class="label">Ziyaretçi
+          <span class="info">i<span class="tip">Onay vermeyen ziyaretçilerin kodu her gün değişir. 30 günü toplarsak aynı kişi defalarca sayılır. Onay verenlerden çıkardığımız şişme katsayısıyla düzeltiyoruz. Bu yüzden başında ~ var.</span></span>
+        </div>
+        <div class="value"><span class="tilde">~</span>8.412</div>
+        <div class="delta">▲ %12,4 önceki döneme göre</div>
+      </div>
+
+      <div class="metric">
+        <div class="pin" style="top:-11px;right:8px">3</div>
+        <div class="label">Görüntülenen Sayfa</div>
+        <div class="value">23.905</div>
+        <div class="delta">▲ %8,1</div>
+      </div>
+
+      <div class="metric">
+        <div class="pin" style="top:-11px;right:8px">4</div>
+        <div class="label">Kişi Başına Sayfa</div>
+        <div class="value">2,84</div>
+        <div class="delta">▲ %3,2</div>
+      </div>
+
+      <div class="metric">
+        <div class="pin" style="top:-11px;right:8px">5</div>
+        <div class="label">Ziyaret Sayısı</div>
+        <div class="value">10.677</div>
+        <div class="delta down">▼ %1,6</div>
+      </div>
+
+      <div class="metric">
+        <div class="pin" style="top:-11px;right:8px">6</div>
+        <div class="label">Ort. Ziyaret Süresi</div>
+        <div class="value">2:14</div>
+        <div class="delta">▲ %6,0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HARİTA -->
+  <div class="card map-row">
+    <div class="pin" style="top:-11px;left:-11px">7</div>
+
+    <div class="map-area">
+      <div class="crumb">
+        <a href="#">Dünya</a><span class="sep">›</span>
+        <a href="#">Türkiye</a><span class="sep">›</span>
+        <span class="now">Manisa</span>
+      </div>
+
+      <svg class="map-svg" viewBox="0 0 900 400" role="img" aria-label="Dünya haritası taslağı">
+        <!-- kaba kıta blokları: sadece yerleşim görünsün diye -->
+        <path class="land" d="M120 90 L215 70 L265 105 L245 165 L190 215 L150 190 L128 140 Z"/>
+        <path class="land" d="M195 235 L245 225 L268 285 L240 355 L205 335 L192 285 Z"/>
+        <path class="land lit" d="M400 75 L470 62 L505 88 L487 120 L430 128 L398 105 Z"/>
+        <path class="land hot" d="M487 95 L545 88 L560 118 L520 132 L484 122 Z"/>
+        <path class="land" d="M415 140 L490 132 L512 200 L470 285 L430 265 L405 195 Z"/>
+        <path class="land" d="M545 105 L690 78 L760 130 L735 195 L640 210 L565 160 Z"/>
+        <path class="land" d="M700 255 L790 245 L812 300 L745 322 L698 295 Z"/>
+
+        <!-- yoğunluk noktaları -->
+        <circle class="dot" cx="522" cy="112" r="9" opacity=".85"/>
+        <circle class="dot" cx="505" cy="104" r="5" opacity=".6"/>
+        <circle class="dot" cx="452" cy="96" r="4.5" opacity=".5"/>
+        <circle class="dot" cx="430" cy="112" r="3.5" opacity=".4"/>
+        <circle class="dot" cx="612" cy="140" r="3" opacity=".35"/>
+      </svg>
+    </div>
+
+    <div class="geo-list">
+      <div class="pin" style="top:-11px;right:-11px">8</div>
+      <h4>Konum</h4>
+      <div class="hint">Satıra tıkla → şehir → ilçe</div>
+
+      <div class="geo-row"><span class="flag">🇹🇷</span><span class="nm">Türkiye</span><span class="ct">6.240</span><span class="pc">%74</span></div>
+      <div class="bar"><i style="width:74%"></i></div>
+
+      <div class="geo-row"><span class="flag">🇩🇪</span><span class="nm">Almanya</span><span class="ct">742</span><span class="pc">%9</span></div>
+      <div class="bar"><i style="width:9%"></i></div>
+
+      <div class="geo-row"><span class="flag">🇳🇱</span><span class="nm">Hollanda</span><span class="ct">418</span><span class="pc">%5</span></div>
+      <div class="bar"><i style="width:5%"></i></div>
+
+      <div class="geo-row"><span class="flag">🇬🇧</span><span class="nm">İngiltere</span><span class="ct">301</span><span class="pc">%4</span></div>
+      <div class="bar"><i style="width:4%"></i></div>
+
+      <div class="geo-row"><span class="flag">🇫🇷</span><span class="nm">Fransa</span><span class="ct">196</span><span class="pc">%2</span></div>
+      <div class="bar"><i style="width:2%"></i></div>
+
+      <div class="geo-row"><span class="flag">🌍</span><span class="nm">Diğer</span><span class="ct">515</span><span class="pc">%6</span></div>
+      <div class="bar"><i style="width:6%"></i></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <b>Numaralar:</b>
+    <ul>
+      <li><b>1</b> — Ziyaretçi bloğu (tek kart, hepsi bir arada)</li>
+      <li><b>2</b> — Ziyaretçi sayısı · tahmin işareti burada</li>
+      <li><b>3</b> — Görüntülenen sayfa (ziyaretçinin sağında, istediğin gibi)</li>
+      <li><b>4</b> — Kişi başına sayfa</li>
+      <li><b>5</b> — Ziyaret sayısı</li>
+      <li><b>6</b> — Ortalama ziyaret süresi</li>
+      <li><b>7</b> — Harita kartı (bloğun hemen altında)</li>
+      <li><b>8</b> — Konum listesi (ülke → şehir → ilçe)</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>
