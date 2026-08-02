@@ -69,14 +69,22 @@ export function GezintiYolu() {
     <Bolum no={14} baslik="Gezinti yolu" aciklama="Bir ziyarette hangi sayfalar sırayla gezildi">
       <div className="space-y-3">
         {veri.gezintiYollari.map((g, i) => (
-          <div key={i} className="flex flex-wrap items-center gap-1.5">
-            <span className="w-14 shrink-0 text-[13px] font-semibold tabular-nums">{g.sayi}</span>
-            {g.adimlar.map((a, j) => (
-              <span key={j} className="flex items-center gap-1.5">
-                <span className="rounded-md bg-slate-100 px-2 py-1 text-[12px] text-slate-700">{a}</span>
-                {j < g.adimlar.length - 1 && <ArrowRight className="h-3 w-3 text-slate-300" />}
-              </span>
-            ))}
+          <div key={i} className="flex items-center gap-2">
+            {/* Sayı sabit kalır */}
+            <span className="w-12 shrink-0 text-[13px] font-semibold tabular-nums">{g.sayi}</span>
+            {/* Yol sığmazsa alt satıra kırılmaz, yatay kayar */}
+            <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto">
+              {g.adimlar.map((a, j) => (
+                <span key={j} className="flex shrink-0 items-center gap-1.5">
+                  <span className="rounded-md bg-muted px-2 py-1 text-[12px] whitespace-nowrap text-foreground/80">
+                    {a}
+                  </span>
+                  {j < g.adimlar.length - 1 && (
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/50" />
+                  )}
+                </span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
