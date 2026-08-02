@@ -676,6 +676,12 @@ Kaan'ın isteği: harita kare/nokta ızgarasından oluşsun, hem güzel görüns
 
 ⚠️ **TUZAK:** GADM en kolay bulunan kaynak ama ticari kullanıma kapalı. Ürün satışa çıkacaksa GADM verisi projede olamaz. Yanlışlıkla kullanılmasın.
 
+**GADM tartışması (Kaan sordu, kapandı):** Kaan "GADM yapalım, ticari olunca çözeriz, şirket içi kullanım zaten" dedi. Ortaya çıkan yeni bilgi: GADM'ın **iki ayrı** kısıtı var — (1) ticari kullanım, (2) **dağıtım**. Depo PUBLIC olduğu için GADM'dan üretilen dosyaları oraya koymak **bugünden** dağıtım sayılır, "şirket içi" savunması geçmez. Üstelik GADM'ın fazlası ilçenin ALTINDA (belde/mahalle) — biz ilçede durduğumuz için hiçbir kazancı yok.
+**KARAR (Kaan): geoBoundaries ile devam.** Testte beğenilmezse alternatiflere bakılacak.
+- Türev çalışma notu: Lisanslı veriden ızgara üretmek onu "kendi verimiz" yapmaz; türev çalışma sayılır, kısıt birlikte gelir. Lisans bu yolla aşılmaz.
+- Beklenen eksik: bazı ülkelerde geoBoundaries'in ilçe (ADM2) verisi eksik/kaba olabilir. Üretimde tespit edilecek, eksik ülkelerde il seviyesinde kalınacak. Türkiye iyi kapsanıyor.
+- **Kaynak belirtme zorunlu:** Ayarlar sayfasına "Harita verisi: geoBoundaries (CC BY 4.0)" satırı eklenecek.
+
 #### Nasıl çalışacak
 1. **Bir kerelik hazırlık (betik):** Sınır verisi indirilir → üstüne ızgara geçirilir → her noktanın merkezi hangi bölgenin içine düşüyor hesaplanır → sonuç küçük dosyalara yazılır (`x, y, bölge kodu`). Denize düşen noktalar atılır.
 2. **Uygulama çalışırken hesap YOK** — hazır listeyi okuyup çizer. Harita kütüphanesi yok, dış servis yok, döşeme sunucusu yok.

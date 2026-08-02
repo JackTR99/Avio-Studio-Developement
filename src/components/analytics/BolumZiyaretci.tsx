@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useVeri } from '@/lib/veri'
+import { IzgaraHarita, useIzgara, type BolgeDegeri } from './IzgaraHarita'
 import { Bolum, CizgiGrafik, CubukListe, Degisim, Ipucu } from './parts'
 
 /** 1,2,68,3,4,5,6 — DİREKTİF 1: ziyaretçiyle ilgili her şey tek blokta. */
@@ -184,68 +185,115 @@ export function ZamanGrafigi() {
   )
 }
 
-/** 21,22,23,24 — harita + ülke → şehir → ilçe. */
+/** Bölge adını sadeleştirir (Manisa/manisa/MANİSA aynı sayılsın). */
+function anahtarla(s: string) {
+  return s
+    .toLocaleLowerCase('tr')
+    .replace(/[ıİ]/g, 'i')
+    .replace(/[^a-z0-9]/g, '')
+}
+
+/** Haritanın renkleneceği ölçüm. */
+const OLCUMLER = [
+  { anahtar: 'ziyaretci', ad: 'Ziyaretçi' },
+  { anahtar: 'sayfa', ad: 'Sayfa görüntüleme' },
+  { anahtar: 'donusum', ad: 'Dönüşüm' },
+] as const
+
+type OlcumAnahtari = (typeof OLCUMLER)[number]['anahtar']
+
+/** 21,22,23,24 — ızgara harita (dot map) + ülke → il → ilçe. */
 export function KonumBlogu() {
   const { veri } = useVeri()
   const [seviye, setSeviye] = useState<'dunya' | 'ulke' | 'sehir'>('dunya')
+  const [olcum, setOlcum] = useState<OlcumAnahtari>('ziyaretci')
 
   const liste =
     seviye === 'dunya' ? veri.ulkeler : seviye === 'ulke' ? veri.sehirler : veri.ilceler
-  const baslik = seviye === 'dunya' ? 'Ülkeler' : seviye === 'ulke' ? 'Şehirler' : 'İlçeler'
+  const baslik = seviye === 'dunya' ? 'Ülkeler' : seviye === 'ulke' ? 'İller' : 'İlçeler'
+
+  // Hangi ızgara dosyası yüklenecek — sadece bakılan bölge indirilir
+  const dosya =
+    seviye === 'dunya' ? 'dunya.json' : seviye === 'ulke' ? 'TUR.json' : 'TUR-manisa.json'
+  const { izgara, yukleniyor, hata } = useIzgara(dosya)
+
+  // Seçili ölçüme göre değerler. Ziyaretçi dışındakiler orantıyla türetilir (taslak).
+  const carpan = olcum === 'ziyaretci' ? 1 : olcum === 'sayfa' ? 2.84 : 0.078
+  const degerler: BolgeDegeri[] = liste.map((k) => ({
+    ad: k.ad,
+    kod: k.kod,
+    deger: Math.round(k.sayi * carpan),
+  }))
+
+  function haritayaTikla(b: { kod: string; ad: string; deger: number }) {
+    if (b.deger === 0) return
+    if (seviye === 'dunya' && b.kod.toUpperCase() === 'TUR') setSeviye('ulke')
+    else if (seviye === 'ulke' && anahtarla(b.ad) === 'manisa') setSeviye('sehir')
+  }
 
   return (
     <Card className="grid grid-cols-1 gap-0 py-0 lg:grid-cols-[1fr_330px]">
-      <div className="border-slate-200 p-5 lg:border-r">
-        <div className="mb-3 flex flex-wrap items-center gap-2 text-[13px]">
-          <button onClick={() => setSeviye('dunya')} className="text-brand hover:underline">
-            Dünya
-          </button>
-          {seviye !== 'dunya' && (
-            <>
-              <span className="text-slate-300">›</span>
-              <button onClick={() => setSeviye('ulke')} className="text-brand hover:underline">
-                Türkiye
-              </button>
-            </>
-          )}
-          {seviye === 'sehir' && (
-            <>
-              <span className="text-slate-300">›</span>
-              <span className="text-slate-500">Manisa</span>
-            </>
-          )}
+      <div className="p-4 sm:p-5 lg:border-r">
+        {/* Seçim çubuğu: nerede olduğun + geri dönüş */}
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+            <button onClick={() => setSeviye('dunya')} className="text-brand hover:underline">
+              Dünya
+            </button>
+            {seviye !== 'dunya' && (
+              <>
+                <span className="text-muted-foreground/40">›</span>
+                <button onClick={() => setSeviye('ulke')} className="text-brand hover:underline">
+                  Türkiye
+                </button>
+              </>
+            )}
+            {seviye === 'sehir' && (
+              <>
+                <span className="text-muted-foreground/40">›</span>
+                <span className="text-muted-foreground">Manisa</span>
+              </>
+            )}
+          </div>
+
+          {/* Ölçüm seçici — harita buna göre renklenir */}
+          <div className="flex gap-1 rounded-lg border p-0.5">
+            {OLCUMLER.map((o) => (
+              <Button
+                key={o.anahtar}
+                size="sm"
+                variant={olcum === o.anahtar ? 'default' : 'ghost'}
+                onClick={() => setOlcum(o.anahtar)}
+                className="h-7 px-2.5 text-xs"
+              >
+                {o.ad}
+              </Button>
+            ))}
+          </div>
         </div>
 
-        <svg
-          viewBox="0 0 900 400"
-          className="block w-full rounded-lg border border-slate-200 bg-slate-50/60"
-          role="img"
-          aria-label="Ziyaretçi haritası"
-        >
-          <g fill="#E8ECF1">
-            <path d="M120 90 L215 70 L265 105 L245 165 L190 215 L150 190 L128 140 Z" />
-            <path d="M195 235 L245 225 L268 285 L240 355 L205 335 L192 285 Z" />
-            <path d="M415 140 L490 132 L512 200 L470 285 L430 265 L405 195 Z" />
-            <path d="M545 105 L690 78 L760 130 L735 195 L640 210 L565 160 Z" />
-            <path d="M700 255 L790 245 L812 300 L745 322 L698 295 Z" />
-          </g>
-          <path d="M400 75 L470 62 L505 88 L487 120 L430 128 L398 105 Z" fill="#c30716" opacity=".28" />
-          <path d="M487 95 L545 88 L560 118 L520 132 L484 122 Z" fill="#c30716" opacity=".62" />
-          <g fill="#c30716">
-            <circle cx="522" cy="112" r="9" opacity=".85" />
-            <circle cx="505" cy="104" r="5" opacity=".6" />
-            <circle cx="452" cy="96" r="4.5" opacity=".5" />
-            <circle cx="430" cy="112" r="3.5" opacity=".4" />
-            <circle cx="612" cy="140" r="3" opacity=".35" />
-          </g>
-        </svg>
+        {hata ? (
+          <div className="flex aspect-[2/1] items-center justify-center rounded-lg border border-dashed text-xs text-muted-foreground">
+            Harita yüklenemedi: {hata}
+          </div>
+        ) : (
+          <IzgaraHarita
+            izgara={izgara}
+            degerler={degerler}
+            yukleniyor={yukleniyor}
+            onBolgeTikla={haritayaTikla}
+          />
+        )}
+
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          Koyu = yoğun. Noktaya tıklayarak alt kırılıma inebilirsin. Harita verisi: geoBoundaries
+          (CC BY 4.0).
+        </p>
       </div>
 
-      <div className="p-5">
-        <div className="mb-1 flex items-center gap-2">
-          <h4 className="text-[13px] font-semibold">{baslik}</h4>
-        </div>
-        <p className="mb-3 text-[11.5px] text-slate-500">
+      <div className="p-4 sm:p-5">
+        <h4 className="text-[13px] font-semibold">{baslik}</h4>
+        <p className="mb-3 text-[11.5px] text-muted-foreground">
           {seviye === 'sehir' ? 'En ince kırılım' : 'Satıra tıkla, bir alt kırılıma in'}
         </p>
         <CubukListe

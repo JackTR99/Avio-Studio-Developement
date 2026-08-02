@@ -51,14 +51,15 @@ export const canliBaslangic = 23
 
 /* ---------------------------------------------------------------- 2. KONUM */
 
-export type Konum = { ad: string; bayrak: string; sayi: number; yuzde: number }
+/** `kod`: haritayla eşleşme için. Ülkelerde ISO-3, il/ilçede yok (ada göre eşleşir). */
+export type Konum = { ad: string; bayrak: string; sayi: number; yuzde: number; kod?: string }
 
 export const ulkeler: Konum[] = [
-  { ad: 'Türkiye', bayrak: '🇹🇷', sayi: 6240, yuzde: 74 },
-  { ad: 'Almanya', bayrak: '🇩🇪', sayi: 742, yuzde: 9 },
-  { ad: 'Hollanda', bayrak: '🇳🇱', sayi: 418, yuzde: 5 },
-  { ad: 'İngiltere', bayrak: '🇬🇧', sayi: 301, yuzde: 4 },
-  { ad: 'Fransa', bayrak: '🇫🇷', sayi: 196, yuzde: 2 },
+  { ad: 'Türkiye', kod: 'TUR', bayrak: '🇹🇷', sayi: 6240, yuzde: 74 },
+  { ad: 'Almanya', kod: 'DEU', bayrak: '🇩🇪', sayi: 742, yuzde: 9 },
+  { ad: 'Hollanda', kod: 'NLD', bayrak: '🇳🇱', sayi: 418, yuzde: 5 },
+  { ad: 'İngiltere', kod: 'GBR', bayrak: '🇬🇧', sayi: 301, yuzde: 4 },
+  { ad: 'Fransa', kod: 'FRA', bayrak: '🇫🇷', sayi: 196, yuzde: 2 },
   { ad: 'Diğer', bayrak: '🌍', sayi: 515, yuzde: 6 },
 ]
 
