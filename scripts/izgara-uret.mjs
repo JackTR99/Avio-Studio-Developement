@@ -105,6 +105,25 @@ function sinirKutusu(poligonlar) {
   return [x1, y1, x2, y2]
 }
 
+/**
+ * ÇİFT KODLAMA ONARIMI
+ * geoBoundaries'in bazı dosyalarında isimler iki kez UTF-8'e çevrilmiş:
+ * "Región" → "RegiÃ³n", "Marañón" → "MaraÃ±on". Kaynak verinin hatası.
+ *
+ * Düzeltme: baytları latin-1 gibi geri okuyup tekrar UTF-8 çözmek.
+ * Sadece çift kodlama İMZASI olan dizelerde uygulanır — yoksa "Åland",
+ * "Äänekoski" gibi gerçekten doğru İskandinav adları bozulurdu.
+ */
+function kodlamaOnar(s) {
+  if (!/[À-ÿ][-¿]/.test(s)) return s
+  try {
+    const d = Buffer.from(s, 'latin1').toString('utf8')
+    return d.includes('�') ? s : d
+  } catch {
+    return s
+  }
+}
+
 /** GeoJSON özelliğini {ad, kod, poligonlar, kutu} biçimine çevirir. */
 function bolgeleriHazirla(geojson, adAlanlari, kodAlanlari) {
   const bolgeler = []
@@ -119,7 +138,12 @@ function bolgeleriHazirla(geojson, adAlanlari, kodAlanlari) {
     const ad = adAlanlari.map((a) => p[a]).find(Boolean) ?? 'Bilinmiyor'
     const kod = kodAlanlari.map((a) => p[a]).find(Boolean) ?? ad
 
-    bolgeler.push({ ad: String(ad), kod: String(kod), poligonlar, kutu: sinirKutusu(poligonlar) })
+    bolgeler.push({
+      ad: kodlamaOnar(String(ad)),
+      kod: String(kod),
+      poligonlar,
+      kutu: sinirKutusu(poligonlar),
+    })
   }
   return bolgeler
 }
@@ -130,7 +154,7 @@ function bolgeleriHazirla(geojson, adAlanlari, kodAlanlari) {
  * Bölgelerin üstüne ızgara geçirir.
  * hedefNokta: yaklaşık kaç nokta çıksın (adım buna göre hesaplanır)
  */
-function izgaraCiz(bolgeler, hedefNokta, kutuElle) {
+function izgaraCiz(bolgeler, hedefNokta, kutuElle, adimElle) {
   // Tüm bölgeleri kapsayan kutu
   let [x1, y1, x2, y2] = kutuElle ?? [Infinity, Infinity, -Infinity, -Infinity]
   if (!kutuElle)
@@ -144,8 +168,8 @@ function izgaraCiz(bolgeler, hedefNokta, kutuElle) {
   const en = x2 - x1
   const boy = y2 - y1
   // Kara oranı ~%35 varsayımıyla adım seç, sonra gerçek sayıya göre düzeltilebilir
-  let adim = Math.sqrt((en * boy * 0.35) / hedefNokta)
-  adim = Number(adim.toFixed(4))
+  let adim = adimElle ?? Math.sqrt((en * boy * 0.35) / hedefNokta)
+  adim = Number(adim.toFixed(5))
 
   const sutun = Math.ceil(en / adim)
   const satir = Math.ceil(boy / adim)
@@ -180,6 +204,280 @@ function izgaraCiz(bolgeler, hedefNokta, kutuElle) {
   return { adim, sutun, satir, x1, y1, x2, y2, noktalar, bolgeler: bolgeListesi }
 }
 
+/**
+ * Hedef nokta sayısına YAKLAŞARAK çizer.
+ *
+ * `izgaraCiz` adımı "kara oranı ~%35" varsayımıyla seçer. Gerçek oran ülkeden
+ * ülkeye çok değişir: Şili ince bir şerittir (1.228 nokta çıkmıştı), Svaziland
+ * kutusunu neredeyse doldurur (18.851 nokta). Sonuç: bazı haritalar seyrek,
+ * bazıları gereksiz ağır. Burada ölçüp adımı düzeltiyoruz.
+ */
+function izgaraCizHedefli(bolgeler, hedef, kutu, tavan = 900) {
+  let t = izgaraCiz(bolgeler, hedef, kutu)
+  const en = (kutu ?? t)[2] - (kutu ?? t)[0] || t.sutun * t.adim
+  const boy = (kutu ?? t)[3] - (kutu ?? t)[1] || t.satir * t.adim
+
+  for (let deneme = 0; deneme < 4; deneme++) {
+    const n = t.noktalar.length
+    if (n >= hedef * 0.65 && n <= hedef * 1.6) break
+    const oran = Math.max(0.3, Math.min(3, Math.sqrt(Math.max(1, n) / hedef)))
+    const yeniAdim = t.adim * oran
+    const sutun = Math.ceil(en / yeniAdim)
+    const satir = Math.ceil(boy / yeniAdim)
+    if (sutun > tavan || satir > tavan || sutun < 4 || satir < 4) break
+    t = izgaraCiz(bolgeler, hedef, kutu ?? [t.x1, t.y1, t.x2, t.y2], yeniAdim)
+  }
+  return t
+}
+
+/* ---------------------------------------------------------------- PARÇALI HARİTA */
+
+/**
+ * 180. MERİDYEN DÜZELTMESİ
+ * Fiji 177°D ile 178°B arasına yayılır. Boylam orada +180'den -180'e atladığı
+ * için sınır kutusu "dünyanın tamamı" gibi çıkar ve harita 91:1 oranında ezilir.
+ * Çözüm: böyle ülkelerde negatif boylamlar +360 kaydırılır, ülke bütün hâle gelir.
+ */
+function meridyenDuzelt(bolgeler) {
+  let x1 = Infinity
+  let x2 = -Infinity
+  for (const b of bolgeler) {
+    x1 = Math.min(x1, b.kutu[0])
+    x2 = Math.max(x2, b.kutu[2])
+  }
+  if (x2 - x1 <= 180) return bolgeler
+
+  return bolgeler.map((b) => {
+    const poligonlar = b.poligonlar.map((p) =>
+      p.map((halka) => halka.map(([x, y]) => [x < 0 ? x + 360 : x, y])),
+    )
+    return { ...b, poligonlar, kutu: sinirKutusu(poligonlar) }
+  })
+}
+
+/** Bir halkanın alanı (ayakkabı bağı formülü) — işaretsiz. */
+function halkaAlani(halka) {
+  let t = 0
+  for (let i = 0, j = halka.length - 1; i < halka.length; j = i++)
+    t += (halka[j][0] + halka[i][0]) * (halka[j][1] - halka[i][1])
+  return Math.abs(t / 2)
+}
+
+/** Bölgelerin gerçek KARA alanı — sınır kutusu alanı değil. */
+function karaAlani(bolgeler) {
+  let t = 0
+  for (const b of bolgeler)
+    for (const p of b.poligonlar) {
+      t += halkaAlani(p[0])
+      for (let i = 1; i < p.length; i++) t -= halkaAlani(p[i])
+    }
+  return t
+}
+
+/** İki sınır kutusu arasındaki mesafe (derece). Kesişiyorsa 0. */
+function kutuMesafesi(a, b) {
+  const dx = a[0] > b[2] ? a[0] - b[2] : b[0] > a[2] ? b[0] - a[2] : 0
+  const dy = a[1] > b[3] ? a[1] - b[3] : b[1] > a[3] ? b[1] - a[3] : 0
+  return Math.hypot(dx, dy)
+}
+
+/**
+ * Bölgeleri coğrafi kümelere ayırır.
+ * Birbirine `esik` dereceden yakın olanlar aynı kümededir.
+ * ABD'de kıta / Alaska / Hawaii üç ayrı küme olur.
+ */
+function kumele(bolgeler, esik = 4) {
+  // Kümeleme POLİGON bazında yapılır, il bazında değil. Çünkü uzak ada çoğu
+  // zaman bir ilin parçasıdır: Paskalya Adası Şili'nin Valparaíso iline,
+  // Hawaii'nin uzak atolleri Hawaii eyaletine aittir. İl bazında bakarsak
+  // ada ana karadan ayrılamaz ve haritayı ezmeye devam eder.
+  const parcacik = []
+  bolgeler.forEach((b, bi) => {
+    for (const p of b.poligonlar) parcacik.push({ bi, poligon: p, kutu: sinirKutusu([p]) })
+  })
+
+  const ata = parcacik.map((_, i) => i)
+  const bul = (i) => (ata[i] === i ? i : (ata[i] = bul(ata[i])))
+
+  for (let i = 0; i < parcacik.length; i++)
+    for (let j = i + 1; j < parcacik.length; j++) {
+      if (bul(i) === bul(j)) continue
+      if (kutuMesafesi(parcacik[i].kutu, parcacik[j].kutu) <= esik) ata[bul(i)] = bul(j)
+    }
+
+  const gruplar = new Map()
+  parcacik.forEach((p, i) => {
+    const k = bul(i)
+    if (!gruplar.has(k)) gruplar.set(k, [])
+    gruplar.get(k).push(p)
+  })
+
+  return [...gruplar.values()]
+    .map((g) => {
+      // Aynı ile ait poligonları tek bölge hâlinde topla
+      const ileGore = new Map()
+      for (const p of g) {
+        if (!ileGore.has(p.bi)) ileGore.set(p.bi, [])
+        ileGore.get(p.bi).push(p.poligon)
+      }
+      const kumeBolgeleri = [...ileGore.entries()].map(([bi, poligonlar]) => ({
+        ad: bolgeler[bi].ad,
+        kod: bolgeler[bi].kod,
+        poligonlar,
+        kutu: sinirKutusu(poligonlar),
+      }))
+
+      const kutu = kumeBolgeleri.reduce(
+        (a, b) => [
+          Math.min(a[0], b.kutu[0]),
+          Math.min(a[1], b.kutu[1]),
+          Math.max(a[2], b.kutu[2]),
+          Math.max(a[3], b.kutu[3]),
+        ],
+        [Infinity, Infinity, -Infinity, -Infinity],
+      )
+      return {
+        bolgeler: kumeBolgeleri,
+        kutu,
+        alan: (kutu[2] - kutu[0]) * (kutu[3] - kutu[1]),
+        // Kutu sıralaması KARA alanına göre yapılır. Sınır kutusu alanı
+        // yanıltıcı: Hawaii'nin ıssız kuzeybatı atolleri kocaman bir kutu
+        // kaplar ama içinde neredeyse kara yoktur.
+        karaAlan: karaAlani(kumeBolgeleri),
+        poligonSayisi: g.length,
+      }
+    })
+    .sort((a, b) => b.alan - a.alan)
+}
+
+const EN_FAZLA_KUTU = 5 // ana harita + en fazla 5 küçük kutu
+const KUTU_NOKTA = 900 // her uzak toprak kutusu için hedef nokta
+
+/**
+ * Bir ülkeyi ana harita + uzak toprak kutuları olarak çizer.
+ * (ABD haritalarındaki Alaska/Hawaii kutuları gibi.)
+ *
+ * Bölge indeksleri TÜM parçalarda ortaktır — renklendirme ve tıklama
+ * tek bir bölge listesi üzerinden çalışır.
+ */
+function parcaliIzgaraCiz(hamBolgeler, hedefNokta) {
+  const bolgeler = meridyenDuzelt(hamBolgeler)
+  let kumeler = kumele(bolgeler)
+
+  // Tek parçaysa eski davranış — gereksiz karmaşa yok
+  if (kumeler.length === 1) {
+    const t = izgaraCizHedefli(bolgeler, hedefNokta, kumeler[0].kutu)
+    return { parcalar: [{ ...t, bolgeler: undefined }], bolgeler: t.bolgeler, atlanan: [] }
+  }
+
+  // Ana parça = en çok il içeren küme (en geniş kutu değil; Alaska devasa
+  // ama tek eyalet, kıta ABD daha kalabalık)
+  const anaIndeks = kumeler.reduce(
+    (en, k, i) => (k.bolgeler.length > kumeler[en].bolgeler.length ? i : en),
+    0,
+  )
+  const ana = kumeler[anaIndeks]
+  let adaylar = kumeler.filter((_, i) => i !== anaIndeks)
+
+  // 1) Ana haritayı fazla büyütmeyen kümeler ana haritaya katılır.
+  //    (Ege adaları Yunanistan'ın yanı başında — ayrı kutu saçma olurdu.)
+  const anaAlan = () => (ana.kutu[2] - ana.kutu[0]) * (ana.kutu[3] - ana.kutu[1])
+  const kalan = []
+  for (const k of adaylar) {
+    const yeniKutu = [
+      Math.min(ana.kutu[0], k.kutu[0]),
+      Math.min(ana.kutu[1], k.kutu[1]),
+      Math.max(ana.kutu[2], k.kutu[2]),
+      Math.max(ana.kutu[3], k.kutu[3]),
+    ]
+    const yeniAlan = (yeniKutu[2] - yeniKutu[0]) * (yeniKutu[3] - yeniKutu[1])
+    if (yeniAlan <= anaAlan() * 1.25) {
+      ana.bolgeler.push(...k.bolgeler)
+      ana.kutu = yeniKutu
+    } else kalan.push(k)
+  }
+  adaylar = kalan
+
+  // 2) Kutu hakkı: yalnızca ana haritada HİÇ görünmeyen il taşıyan kümeler.
+  //    Paskalya Adası Valparaíso iline aittir, o il ana haritada zaten var —
+  //    ayrı kutu açmak bilgi katmaz, sadece yer kaplar.
+  const temsilEdilen = new Set(ana.bolgeler.map((b) => b.kod))
+  const atlanan = []
+  const kutuAdaylari = []
+
+  // Büyükten küçüğe dolaşılır ve her seçimden sonra "temsil edilenler"
+  // güncellenir — yoksa Hawaii'nin iki ada kümesi iki ayrı kutu açardı.
+  for (const k of [...adaylar].sort((a, b) => b.karaAlan - a.karaAlan)) {
+    const yeni = k.bolgeler.filter((b) => !temsilEdilen.has(b.kod))
+    if (!yeni.length || kutuAdaylari.length >= EN_FAZLA_KUTU) {
+      atlanan.push(...k.bolgeler.map((b) => b.ad))
+      continue
+    }
+    for (const b of k.bolgeler) temsilEdilen.add(b.kod)
+    kutuAdaylari.push(k)
+  }
+
+  const sira = [ana, ...kutuAdaylari]
+  if (sira.length === 1) {
+    const t = izgaraCizHedefli(ana.bolgeler, hedefNokta, ana.kutu)
+    return { parcalar: [{ ...t, ad: null, bolgeler: undefined }], bolgeler: t.bolgeler, atlanan }
+  }
+
+  // Ortak bölge listesi
+  const indeks = new Map()
+  const ortakBolgeler = []
+  for (const k of sira)
+    for (const b of k.bolgeler)
+      if (!indeks.has(b.kod)) {
+        indeks.set(b.kod, ortakBolgeler.length)
+        ortakBolgeler.push({ kod: b.kod, ad: b.ad })
+      }
+
+  // Nokta bütçesi: ana haritaya çoğu. Küçük kutular ekranda benzer boyutta
+  // çizildiği için her birine EŞİT pay verilir — alana göre bölünürse
+  // Alaska bütçeyi yer, Hawaii 6 noktaya düşerdi.
+  const parcalar = sira.map((k, i) => {
+    const hedef = i === 0 ? Math.round(hedefNokta * 0.85) : KUTU_NOKTA
+    // Kutular ekranda küçük çizilir; sütun tavanı da düşük tutulur
+    const t = izgaraCizHedefli(k.bolgeler, hedef, k.kutu, i === 0 ? 900 : 400)
+    // izgaraCiz kendi yerel indekslerini üretir — ortak indekse çeviriyoruz
+    const yerelSira = t.bolgeler.map((b) => indeks.get(b.kod) ?? 0)
+    return {
+      ad:
+        i === 0
+          ? null
+          : k.bolgeler.length === 1
+            ? k.bolgeler[0].ad
+            : `${k.bolgeler[0].ad} +${k.bolgeler.length - 1}`,
+      adim: t.adim,
+      sutun: t.sutun,
+      satir: t.satir,
+      x1: t.x1,
+      y1: t.y1,
+      x2: t.x2,
+      y2: t.y2,
+      noktalar: t.noktalar.map(([sx, sy, bi]) => [sx, sy, yerelSira[bi]]),
+    }
+  })
+
+  // Hiç nokta çıkmayan kutuyu hiç yazma (ana parça her zaman kalır)
+  const dolu = parcalar.filter((p, i) => i === 0 || p.noktalar.length > 0)
+
+  // Hiç nokta almayan bölgeleri listeden çıkar, indeksleri sıkıştır
+  const kullanildi = new Set()
+  for (const p of dolu) for (const [, , bi] of p.noktalar) kullanildi.add(bi)
+  const yeni = new Map()
+  const temizBolgeler = []
+  ortakBolgeler.forEach((b, i) => {
+    if (!kullanildi.has(i)) return
+    yeni.set(i, temizBolgeler.length)
+    temizBolgeler.push(b)
+  })
+  for (const p of dolu) p.noktalar = p.noktalar.map(([sx, sy, bi]) => [sx, sy, yeni.get(bi)])
+
+  return { parcalar: dolu, bolgeler: temizBolgeler, atlanan }
+}
+
 /* ---------------------------------------------------------------- YAZ */
 
 async function yaz(dosyaAdi, veri) {
@@ -188,7 +486,10 @@ async function yaz(dosyaAdi, veri) {
   const json = JSON.stringify(veri)
   await writeFile(yol, json)
   const kb = (Buffer.byteLength(json) / 1024).toFixed(1)
-  console.log(`  ✓ ${dosyaAdi}  ${veri.noktalar.length} nokta · ${veri.bolgeler.length} bölge · ${kb} KB`)
+  const nokta = veri.parcalar
+    ? veri.parcalar.reduce((t, p) => t + p.noktalar.length, 0)
+    : veri.noktalar.length
+  console.log(`  ✓ ${dosyaAdi}  ${nokta} nokta · ${veri.bolgeler.length} bölge · ${kb} KB`)
 }
 
 /* ---------------------------------------------------------------- İŞLER */
@@ -208,8 +509,45 @@ async function ulkeUret(iso) {
   const gj = await geoJsonAl(ULKE(iso, 'ADM1'))
   const bolgeler = bolgeleriHazirla(gj, ['shapeName'], ['shapeID', 'shapeName'])
   console.log(`  ${bolgeler.length} il bulundu, ızgara çiziliyor…`)
-  const sonuc = izgaraCiz(bolgeler, 2000)
+  const sonuc = parcaliIzgaraCiz(bolgeler, HEDEF_ULKE)
+  if (sonuc.parcalar.length > 1)
+    console.log(`  uzak toprak kutusu: ${sonuc.parcalar.length - 1} adet`)
+  if (sonuc.atlanan.length) console.log(`  ⚠️ atlanan: ${sonuc.atlanan.join(', ')}`)
   await yaz(`${iso}.json`, { ad: iso, seviye: 'il', ...sonuc })
+}
+
+/** Sadece ülke (ADM1) haritalarını yeniden üretir — ilçe dosyalarına dokunmaz. */
+async function ulkeleriYenile() {
+  const dunya = JSON.parse(await readFile(path.join(CIKTI, 'dunya.json'), 'utf8'))
+  const isoListesi = [...new Set(dunya.bolgeler.map((b) => b.kod))].filter((k) =>
+    /^[A-Z]{3}$/.test(k),
+  )
+  console.log(`${isoListesi.length} ülke haritası yenilenecek (ilçelere dokunulmaz)\n`)
+
+  let parcali = 0
+  const atlananlar = []
+  for (let i = 0; i < isoListesi.length; i++) {
+    const iso = isoListesi[i]
+    try {
+      const gj = await geoJsonAl(ULKE(iso, 'ADM1'))
+      const bolgeler = bolgeleriHazirla(gj, ['shapeName'], ['shapeID', 'shapeName'])
+      if (!bolgeler.length) continue
+      const sonuc = parcaliIzgaraCiz(bolgeler, HEDEF_ULKE)
+      await yaz(`${iso}.json`, { ad: iso, seviye: 'il', ...sonuc })
+      if (sonuc.parcalar.length > 1) {
+        parcali++
+        console.log(`   └─ ${sonuc.parcalar.length - 1} uzak toprak kutusu`)
+      }
+      if (sonuc.atlanan.length) atlananlar.push(`${iso}: ${sonuc.atlanan.join(', ')}`)
+    } catch (e) {
+      console.log(`[${i + 1}/${isoListesi.length}] ${iso} atlandı — ${e.message}`)
+    }
+  }
+  console.log(`\nBİTTİ — ${parcali} ülke parçalı haritaya çevrildi`)
+  if (atlananlar.length) {
+    console.log('\nHaritaya sığmayan uzak topraklar (en fazla 5 kutu kuralı):')
+    for (const a of atlananlar) console.log('  ' + a)
+  }
 }
 
 async function ilUret(iso, ilAdi) {
@@ -532,11 +870,13 @@ try {
   else if (komut === 'ulke') await ulkeUret(a1 ?? 'TUR')
   else if (komut === 'il') await ilUret(a1 ?? 'TUR', a2 ?? 'Manisa')
   else if (komut === 'hepsi') await hepsiniUret()
+  else if (komut === 'ulkeler') await ulkeleriYenile()
   else {
     console.log('Kullanım:')
     console.log('  node scripts/izgara-uret.mjs dunya [hedefNokta]')
     console.log('  node scripts/izgara-uret.mjs ulke TUR')
     console.log('  node scripts/izgara-uret.mjs il TUR Manisa')
+    console.log('  node scripts/izgara-uret.mjs ulkeler   ← tüm ülke haritaları (ilçeler kalır)')
     console.log('  node scripts/izgara-uret.mjs hepsi     ← dünyanın tamamı (saatler sürer)')
     process.exit(1)
   }

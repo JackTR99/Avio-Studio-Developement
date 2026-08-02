@@ -16,14 +16,23 @@ import { cn } from '@/lib/utils'
  * Sınır verisi: geoBoundaries (CC BY 4.0).
  */
 
-export type Izgara = {
-  ad: string
-  seviye: 'ulke' | 'il' | 'ilce'
-  adim: number
+/**
+ * Bir harita parçası. Çoğu ülke tek parçadır. Uzak toprakları olan ülkeler
+ * (ABD'nin Alaska ve Hawaii'si, Fransa'nın Guyana'sı) ayrı kutulara bölünür —
+ * yoksa ana kara minicik kalır. `ad` doluysa o parça küçük bir kutudur.
+ */
+export type Parca = {
+  ad: string | null
   sutun: number
   satir: number
   /** [sütun, satır, bölgeIndeksi] */
   noktalar: [number, number, number][]
+}
+
+export type Izgara = {
+  ad: string
+  seviye: 'ulke' | 'il' | 'ilce'
+  parcalar: Parca[]
   bolgeler: { kod: string; ad: string }[]
 }
 
@@ -102,14 +111,50 @@ export function IzgaraHarita({
   }, [izgara, degerler])
 
   /**
-   * Hangi hücrede kaç nokta var — fare takibi için.
+   * Her parça için "hangi hücrede hangi bölge var" tablosu — fare takibi için.
    * Anahtar: satır * sütunSayısı + sütun → bölge indeksi
    */
-  const hucreHaritasi = useMemo(() => {
-    const m = new Map<number, number>()
-    if (!izgara) return m
-    for (const [sx, sy, bi] of izgara.noktalar) m.set(sy * izgara.sutun + sx, bi)
-    return m
+  const hucreHaritalari = useMemo(() => {
+    if (!izgara) return []
+    return izgara.parcalar.map((p) => {
+      const m = new Map<number, number>()
+      for (const [sx, sy, bi] of p.noktalar) m.set(sy * p.sutun + sx, bi)
+      return m
+    })
+  }, [izgara])
+
+  /**
+   * YERLEŞİM — ana harita üstte tam genişlik, uzak toprak kutuları altta şerit.
+   * Her parça kendi en/boy oranını korur; kutular şerit içinde ortalanır.
+   */
+  const duzen = useMemo(() => {
+    if (!izgara || !izgara.parcalar.length) return null
+    return (en: number) => {
+      const [ana, ...kutular] = izgara.parcalar
+      const anaOlcek = en / ana.sutun
+      const anaBoy = ana.satir * anaOlcek
+      const yerler = [{ px: 0, py: 0, olcek: anaOlcek, parca: ana }]
+
+      if (!kutular.length) return { yerler, toplamBoy: anaBoy }
+
+      const bosluk = 8
+      const ust = 10 // ana haritayla şerit arası
+      const kutuEn = (en - bosluk * (kutular.length - 1)) / kutular.length
+      const seritTavan = anaBoy * 0.4
+      const olcekler = kutular.map((k) => Math.min(kutuEn / k.sutun, seritTavan / k.satir))
+      const seritBoy = Math.max(...kutular.map((k, i) => k.satir * olcekler[i]))
+
+      kutular.forEach((k, i) => {
+        const o = olcekler[i]
+        yerler.push({
+          px: i * (kutuEn + bosluk) + (kutuEn - k.sutun * o) / 2,
+          py: anaBoy + ust + (seritBoy - k.satir * o) / 2,
+          olcek: o,
+          parca: k,
+        })
+      })
+      return { yerler, toplamBoy: anaBoy + ust + seritBoy }
+    }
   }, [izgara])
 
   /* --- Çizim --- */
@@ -119,9 +164,10 @@ export function IzgaraHarita({
     if (!cv || !sarmal || !izgara) return
 
     function ciz() {
-      if (!cv || !sarmal || !izgara) return
+      if (!cv || !sarmal || !izgara || !duzen) return
       const en = sarmal.clientWidth
-      const boy = Math.round((en * izgara.satir) / izgara.sutun)
+      const { yerler, toplamBoy } = duzen(en)
+      const boy = Math.round(toplamBoy)
       const oran = window.devicePixelRatio || 1
 
       cv.width = en * oran
@@ -134,21 +180,37 @@ export function IzgaraHarita({
       ctx.setTransform(oran, 0, 0, oran, 0, 0)
       ctx.clearRect(0, 0, en, boy)
 
-      const hucre = en / izgara.sutun
-      const r = Math.max(0.6, hucre * 0.36)
+      for (const { px, py, olcek, parca } of yerler) {
+        const r = Math.max(0.6, olcek * 0.36)
 
-      for (const [sx, sy, bi] of izgara.noktalar) {
-        const b = bolgeBilgi[bi]
-        const vurgulu = uzerinde === bi
-        if (b.deger > 0) {
-          const a = 0.22 + b.yogunluk * 0.78
-          ctx.fillStyle = `rgba(${MARKA[0]},${MARKA[1]},${MARKA[2]},${vurgulu ? 1 : a})`
-        } else {
-          ctx.fillStyle = vurgulu ? 'rgba(100,116,139,0.7)' : 'rgba(100,116,139,0.28)'
+        for (const [sx, sy, bi] of parca.noktalar) {
+          const b = bolgeBilgi[bi]
+          if (!b) continue
+          const vurgulu = uzerinde === bi
+          if (b.deger > 0) {
+            const a = 0.22 + b.yogunluk * 0.78
+            ctx.fillStyle = `rgba(${MARKA[0]},${MARKA[1]},${MARKA[2]},${vurgulu ? 1 : a})`
+          } else {
+            ctx.fillStyle = vurgulu ? 'rgba(100,116,139,0.7)' : 'rgba(100,116,139,0.28)'
+          }
+          ctx.beginPath()
+          ctx.arc(
+            px + (sx + 0.5) * olcek,
+            py + (sy + 0.5) * olcek,
+            vurgulu ? r * 1.3 : r,
+            0,
+            Math.PI * 2,
+          )
+          ctx.fill()
         }
-        ctx.beginPath()
-        ctx.arc((sx + 0.5) * hucre, (sy + 0.5) * hucre, vurgulu ? r * 1.3 : r, 0, Math.PI * 2)
-        ctx.fill()
+
+        // Uzak toprak kutusunun etiketi
+        if (parca.ad) {
+          ctx.fillStyle = 'rgba(100,116,139,0.85)'
+          ctx.font = '600 9px ui-sans-serif, system-ui, sans-serif'
+          ctx.textBaseline = 'top'
+          ctx.fillText(parca.ad, px, py + parca.satir * olcek + 3)
+        }
       }
     }
 
@@ -156,17 +218,26 @@ export function IzgaraHarita({
     const gozlemci = new ResizeObserver(ciz)
     gozlemci.observe(sarmal)
     return () => gozlemci.disconnect()
-  }, [izgara, bolgeBilgi, uzerinde])
+  }, [izgara, bolgeBilgi, uzerinde, duzen])
 
-  /* --- Fare/parmak: hangi hücre? Basit bölme işlemi --- */
+  /* --- Fare/parmak: hangi parçanın hangi hücresi? Basit bölme işlemi --- */
   function hucreBul(e: { clientX: number; clientY: number }) {
     const cv = canvasRef.current
-    if (!cv || !izgara) return null
+    if (!cv || !izgara || !duzen) return null
     const k = cv.getBoundingClientRect()
-    const hucre = k.width / izgara.sutun
-    const sx = Math.floor((e.clientX - k.left) / hucre)
-    const sy = Math.floor((e.clientY - k.top) / hucre)
-    return hucreHaritasi.get(sy * izgara.sutun + sx) ?? null
+    const x = e.clientX - k.left
+    const y = e.clientY - k.top
+
+    const { yerler } = duzen(k.width)
+    for (let i = 0; i < yerler.length; i++) {
+      const { px, py, olcek, parca } = yerler[i]
+      const sx = Math.floor((x - px) / olcek)
+      const sy = Math.floor((y - py) / olcek)
+      if (sx < 0 || sy < 0 || sx >= parca.sutun || sy >= parca.satir) continue
+      const bi = hucreHaritalari[i]?.get(sy * parca.sutun + sx)
+      if (bi !== undefined) return bi
+    }
+    return null
   }
 
   if (yukleniyor || !izgara) {
@@ -288,8 +359,22 @@ export function useIzgara(dosya: string | null) {
         if (!c.ok) throw new Error(`Harita bulunamadı (${c.status})`)
         return c.json()
       })
-      .then((v: Izgara) => {
-        if (!iptal) setIzgara(v)
+      .then((v: Izgara & Partial<Parca>) => {
+        // Tek parça üretilmiş eski dosyalar da tek elemanlı parça listesine çevrilir
+        const d: Izgara = v.parcalar
+          ? v
+          : {
+              ...v,
+              parcalar: [
+                {
+                  ad: null,
+                  sutun: v.sutun as number,
+                  satir: v.satir as number,
+                  noktalar: v.noktalar as [number, number, number][],
+                },
+              ],
+            }
+        if (!iptal) setIzgara(d)
       })
       .catch((e) => {
         if (!iptal) setHata(e.message)
