@@ -159,13 +159,13 @@ async function yaz(dosyaAdi, veri) {
 
 /* ---------------------------------------------------------------- İŞLER */
 
-async function dunyaUret() {
-  console.log('DÜNYA (ülkeler)')
+async function dunyaUret(hedef = 7500) {
+  console.log(`DÜNYA (ülkeler) — hedef ~${hedef} nokta`)
   const gj = await geoJsonAl(CGAZ('ADM0'))
   const bolgeler = bolgeleriHazirla(gj, ['shapeName'], ['shapeGroup', 'shapeISO'])
   console.log(`  ${bolgeler.length} ülke bulundu, ızgara çiziliyor…`)
   // Antarktika haritayı ezmesin: -60 güney sınırı
-  const sonuc = izgaraCiz(bolgeler, 5000, [-180, -60, 180, 84])
+  const sonuc = izgaraCiz(bolgeler, hedef, [-180, -60, 180, 84])
   await yaz('dunya.json', { ad: 'Dünya', seviye: 'ulke', ...sonuc })
 }
 
@@ -216,7 +216,7 @@ async function ilUret(iso, ilAdi) {
 const [, , komut, a1, a2] = process.argv
 
 try {
-  if (komut === 'dunya') await dunyaUret()
+  if (komut === 'dunya') await dunyaUret(a1 ? Number(a1) : undefined)
   else if (komut === 'ulke') await ulkeUret(a1 ?? 'TUR')
   else if (komut === 'il') await ilUret(a1 ?? 'TUR', a2 ?? 'Manisa')
   else {
