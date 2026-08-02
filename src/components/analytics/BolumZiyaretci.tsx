@@ -185,12 +185,23 @@ export function ZamanGrafigi() {
   )
 }
 
-/** Bölge adını sadeleştirir (Manisa/manisa/MANİSA aynı sayılsın). */
-function anahtarla(s: string) {
+/**
+ * Dosya adı için sadeleştirir. `scripts/izgara-uret.mjs` içindeki `slug` ile
+ * BİREBİR AYNI olmalı — yoksa dosya bulunamaz.
+ */
+function slug(s: string) {
   return s
     .toLocaleLowerCase('tr')
-    .replace(/[ıİ]/g, 'i')
-    .replace(/[^a-z0-9]/g, '')
+    .replace(/ı/g, 'i')
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
 /** Haritanın renkleneceği ölçüm. */
@@ -202,20 +213,47 @@ const OLCUMLER = [
 
 type OlcumAnahtari = (typeof OLCUMLER)[number]['anahtar']
 
+/** Haritada nerede olduğumuz. */
+type Konum =
+  | { seviye: 'dunya' }
+  | { seviye: 'ulke'; kod: string; ad: string }
+  | { seviye: 'il'; ulkeKod: string; ulkeAd: string; ad: string }
+
 /** 21,22,23,24 — ızgara harita (dot map) + ülke → il → ilçe. */
 export function KonumBlogu() {
   const { veri } = useVeri()
-  const [seviye, setSeviye] = useState<'dunya' | 'ulke' | 'sehir'>('dunya')
+  const [konum, setKonum] = useState<Konum>({ seviye: 'dunya' })
   const [olcum, setOlcum] = useState<OlcumAnahtari>('ziyaretci')
-
-  const liste =
-    seviye === 'dunya' ? veri.ulkeler : seviye === 'ulke' ? veri.sehirler : veri.ilceler
-  const baslik = seviye === 'dunya' ? 'Ülkeler' : seviye === 'ulke' ? 'İller' : 'İlçeler'
 
   // Hangi ızgara dosyası yüklenecek — sadece bakılan bölge indirilir
   const dosya =
-    seviye === 'dunya' ? 'dunya.json' : seviye === 'ulke' ? 'TUR.json' : 'TUR-manisa.json'
+    konum.seviye === 'dunya'
+      ? 'dunya.json'
+      : konum.seviye === 'ulke'
+        ? `${konum.kod}.json`
+        : `${konum.ulkeKod}-${slug(konum.ad)}.json`
   const { izgara, yukleniyor, hata } = useIzgara(dosya)
+
+  // Yandaki liste: elimizde sahte veri olan seviyeler için o veri,
+  // diğer ülkelerde haritadaki bölgeler (değer yok).
+  const turkiyede = konum.seviye !== 'dunya' && ('kod' in konum ? konum.kod : konum.ulkeKod) === 'TUR'
+  const liste =
+    konum.seviye === 'dunya'
+      ? veri.ulkeler
+      : konum.seviye === 'ulke' && turkiyede
+        ? veri.sehirler
+        : konum.seviye === 'il' && turkiyede && slug(konum.ad) === 'manisa'
+          ? veri.ilceler
+          : (izgara?.bolgeler ?? []).map((b) => ({
+              ad: b.ad,
+              kod: b.kod,
+              bayrak: '📍',
+              sayi: 0,
+              yuzde: 0,
+            }))
+
+  const baslik =
+    konum.seviye === 'dunya' ? 'Ülkeler' : konum.seviye === 'ulke' ? 'İller' : 'İlçeler'
 
   // Seçili ölçüme göre değerler. Ziyaretçi dışındakiler orantıyla türetilir (taslak).
   const carpan = olcum === 'ziyaretci' ? 1 : olcum === 'sayfa' ? 2.84 : 0.078
@@ -225,10 +263,18 @@ export function KonumBlogu() {
     deger: Math.round(k.sayi * carpan),
   }))
 
+  /** Haritada bir bölgeye tıklanınca bir alt seviyeye in. */
   function haritayaTikla(b: { kod: string; ad: string; deger: number }) {
-    if (b.deger === 0) return
-    if (seviye === 'dunya' && b.kod.toUpperCase() === 'TUR') setSeviye('ulke')
-    else if (seviye === 'ulke' && anahtarla(b.ad) === 'manisa') setSeviye('sehir')
+    if (konum.seviye === 'dunya') setKonum({ seviye: 'ulke', kod: b.kod, ad: b.ad })
+    else if (konum.seviye === 'ulke')
+      setKonum({ seviye: 'il', ulkeKod: konum.kod, ulkeAd: konum.ad, ad: b.ad })
+  }
+
+  /** Listede bir satıra tıklanınca da aynısı. */
+  function listeyeTikla(ad: string) {
+    const b = liste.find((k) => k.ad === ad)
+    if (!b) return
+    haritayaTikla({ kod: b.kod ?? ad, ad, deger: b.sayi })
   }
 
   return (
@@ -237,21 +283,31 @@ export function KonumBlogu() {
         {/* Seçim çubuğu: nerede olduğun + geri dönüş */}
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2 text-[13px]">
-            <button onClick={() => setSeviye('dunya')} className="text-brand hover:underline">
+            <button
+              onClick={() => setKonum({ seviye: 'dunya' })}
+              className={konum.seviye === 'dunya' ? 'text-muted-foreground' : 'text-brand hover:underline'}
+            >
               Dünya
             </button>
-            {seviye !== 'dunya' && (
+            {konum.seviye !== 'dunya' && (
               <>
                 <span className="text-muted-foreground/40">›</span>
-                <button onClick={() => setSeviye('ulke')} className="text-brand hover:underline">
-                  Türkiye
+                <button
+                  onClick={() =>
+                    konum.seviye === 'il'
+                      ? setKonum({ seviye: 'ulke', kod: konum.ulkeKod, ad: konum.ulkeAd })
+                      : undefined
+                  }
+                  className={konum.seviye === 'ulke' ? 'text-muted-foreground' : 'text-brand hover:underline'}
+                >
+                  {konum.seviye === 'ulke' ? konum.ad : konum.ulkeAd}
                 </button>
               </>
             )}
-            {seviye === 'sehir' && (
+            {konum.seviye === 'il' && (
               <>
                 <span className="text-muted-foreground/40">›</span>
-                <span className="text-muted-foreground">Manisa</span>
+                <span className="text-muted-foreground">{konum.ad}</span>
               </>
             )}
           </div>
@@ -273,8 +329,11 @@ export function KonumBlogu() {
         </div>
 
         {hata ? (
-          <div className="flex aspect-[2/1] items-center justify-center rounded-lg border border-dashed text-xs text-muted-foreground">
-            Harita yüklenemedi: {hata}
+          <div className="flex aspect-[2/1] flex-col items-center justify-center gap-2 rounded-lg border border-dashed px-6 text-center">
+            <span className="text-[13px] font-medium">Bu bölgenin haritası henüz üretilmedi</span>
+            <span className="text-[11px] text-muted-foreground">
+              Dünyanın tamamı toplu üretiliyor; hazır olunca burada görünecek.
+            </span>
           </div>
         ) : (
           <IzgaraHarita
@@ -294,11 +353,11 @@ export function KonumBlogu() {
       <div className="p-4 sm:p-5">
         <h4 className="text-[13px] font-semibold">{baslik}</h4>
         <p className="mb-3 text-[11.5px] text-muted-foreground">
-          {seviye === 'sehir' ? 'En ince kırılım' : 'Satıra tıkla, bir alt kırılıma in'}
+          {konum.seviye === 'il' ? 'En ince kırılım' : 'Satıra tıkla, bir alt kırılıma in'}
         </p>
         <CubukListe
-          tiklanabilir={seviye !== 'sehir'}
-          onTikla={() => setSeviye(seviye === 'dunya' ? 'ulke' : 'sehir')}
+          tiklanabilir={konum.seviye !== 'il'}
+          onTikla={listeyeTikla}
           satirlar={liste.map((k) => ({ ad: k.ad, sol: k.bayrak, sayi: k.sayi, yuzde: k.yuzde }))}
         />
       </div>

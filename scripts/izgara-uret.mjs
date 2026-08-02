@@ -14,10 +14,35 @@
  * Kaynak: geoBoundaries — https://www.geoboundaries.org  (CC BY 4.0)
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile, readFile, access } from 'node:fs/promises'
 import path from 'node:path'
 
 const CIKTI = path.join(process.cwd(), 'public', 'izgara')
+
+/** Dosya adı için sadeleştirir: "Şanlıurfa" → "sanliurfa" */
+export function slug(s) {
+  return s
+    .toLocaleLowerCase('tr')
+    .replace(/ı/g, 'i')
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+async function varMi(yol) {
+  try {
+    await access(yol)
+    return true
+  } catch {
+    return false
+  }
+}
 
 /* ---------------------------------------------------------------- KAYNAK */
 
@@ -211,6 +236,110 @@ async function ilUret(iso, ilAdi) {
   })
 }
 
+/* ---------------------------------------------------------------- TOPLU ÜRETİM */
+
+/**
+ * DÜNYANIN TAMAMI: her ülkenin illeri + her ilin ilçeleri.
+ * Kaldığı yerden devam eder — üretilmiş dosyayı atlar.
+ * Sonuçta `liste.json` yazar: hangi bölgenin haritası var, uygulama onu okur.
+ */
+async function hepsiniUret() {
+  console.log('TOPLU ÜRETİM — dünyadaki tüm ülke, il ve ilçeler\n')
+
+  // Ülke listesi dünya ızgarasından (zaten ISO kodları var)
+  const dunyaYol = path.join(CIKTI, 'dunya.json')
+  if (!(await varMi(dunyaYol))) {
+    console.log('Önce dünya ızgarası üretilmeli: node scripts/izgara-uret.mjs dunya')
+    return
+  }
+  const dunya = JSON.parse(await readFile(dunyaYol, 'utf8'))
+  const isoListesi = [...new Set(dunya.bolgeler.map((b) => b.kod))].filter(
+    (k) => /^[A-Z]{3}$/.test(k),
+  )
+  console.log(`${isoListesi.length} ülke işlenecek\n`)
+
+  const liste = { dunya: true, ulkeler: {}, iller: {} }
+  let sayac = 0
+  const basla = Date.now()
+
+  for (const iso of isoListesi) {
+    sayac++
+    const onEk = `[${String(sayac).padStart(3)}/${isoListesi.length}] ${iso}`
+
+    /* --- İLLER (ADM1) --- */
+    const ulkeDosya = `${iso}.json`
+    let iller = null
+    try {
+      if (await varMi(path.join(CIKTI, ulkeDosya))) {
+        const v = JSON.parse(await readFile(path.join(CIKTI, ulkeDosya), 'utf8'))
+        liste.ulkeler[iso] = v.bolgeler.length
+        console.log(`${onEk} iller: atlandı (var, ${v.bolgeler.length} il)`)
+      } else {
+        const gj = await geoJsonAl(ULKE(iso, 'ADM1'))
+        iller = bolgeleriHazirla(gj, ['shapeName'], ['shapeID', 'shapeName'])
+        if (iller.length) {
+          const sonuc = izgaraCiz(iller, Math.min(2500, Math.max(400, iller.length * 30)))
+          await yaz(ulkeDosya, { ad: iso, seviye: 'il', ...sonuc })
+          liste.ulkeler[iso] = sonuc.bolgeler.length
+        } else {
+          console.log(`${onEk} iller: veri yok`)
+        }
+      }
+    } catch {
+      console.log(`${onEk} iller: ADM1 bulunamadı, atlandı`)
+      continue
+    }
+
+    /* --- İLÇELER (ADM2) — ülkenin dosyası bir kez inip tüm illere kullanılır --- */
+    try {
+      // İl sınırları lazım (ilçeleri hangi ile ait diye ayırmak için)
+      if (!iller) {
+        const gj1 = await geoJsonAl(ULKE(iso, 'ADM1'))
+        iller = bolgeleriHazirla(gj1, ['shapeName'], ['shapeID', 'shapeName'])
+      }
+      const gj2 = await geoJsonAl(ULKE(iso, 'ADM2'))
+      const tumIlceler = bolgeleriHazirla(gj2, ['shapeName'], ['shapeID', 'shapeName'])
+      if (!tumIlceler.length) throw new Error('ADM2 boş')
+
+      let uretilen = 0
+      for (const il of iller) {
+        const dosya = `${iso}-${slug(il.ad)}.json`
+        if (await varMi(path.join(CIKTI, dosya))) {
+          liste.iller[`${iso}-${slug(il.ad)}`] = true
+          continue
+        }
+        // Merkezi bu ilin içine düşen ilçeler
+        const ilceler = tumIlceler.filter((b) => {
+          const mx = (b.kutu[0] + b.kutu[2]) / 2
+          const my = (b.kutu[1] + b.kutu[3]) / 2
+          if (mx < il.kutu[0] || mx > il.kutu[2] || my < il.kutu[1] || my > il.kutu[3]) return false
+          return il.poligonlar.some((p) => poligonIcinde(mx, my, p))
+        })
+        if (ilceler.length < 2) continue // tek ilçeli il için harita anlamsız
+        const sonuc = izgaraCiz(ilceler, Math.min(900, Math.max(200, ilceler.length * 25)))
+        await writeFile(
+          path.join(CIKTI, dosya),
+          JSON.stringify({ ad: il.ad, seviye: 'ilce', ...sonuc }),
+        )
+        liste.iller[`${iso}-${slug(il.ad)}`] = true
+        uretilen++
+      }
+      const gecen = Math.round((Date.now() - basla) / 60000)
+      console.log(`${onEk} ilçeler: ${uretilen} il için üretildi  (${gecen} dk geçti)`)
+    } catch {
+      console.log(`${onEk} ilçeler: ADM2 yok, atlandı`)
+    }
+
+    // Her ülkeden sonra listeyi güncelle (yarıda kalırsa kaybolmasın)
+    await writeFile(path.join(CIKTI, 'liste.json'), JSON.stringify(liste))
+  }
+
+  const dk = Math.round((Date.now() - basla) / 60000)
+  console.log(
+    `\nBİTTİ — ${Object.keys(liste.ulkeler).length} ülke, ${Object.keys(liste.iller).length} il haritası · ${dk} dakika`,
+  )
+}
+
 /* ---------------------------------------------------------------- ÇALIŞTIR */
 
 const [, , komut, a1, a2] = process.argv
@@ -219,11 +348,13 @@ try {
   if (komut === 'dunya') await dunyaUret(a1 ? Number(a1) : undefined)
   else if (komut === 'ulke') await ulkeUret(a1 ?? 'TUR')
   else if (komut === 'il') await ilUret(a1 ?? 'TUR', a2 ?? 'Manisa')
+  else if (komut === 'hepsi') await hepsiniUret()
   else {
     console.log('Kullanım:')
-    console.log('  node scripts/izgara-uret.mjs dunya')
+    console.log('  node scripts/izgara-uret.mjs dunya [hedefNokta]')
     console.log('  node scripts/izgara-uret.mjs ulke TUR')
     console.log('  node scripts/izgara-uret.mjs il TUR Manisa')
+    console.log('  node scripts/izgara-uret.mjs hepsi     ← dünyanın tamamı (saatler sürer)')
     process.exit(1)
   }
 } catch (e) {
