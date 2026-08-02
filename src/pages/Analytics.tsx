@@ -46,10 +46,14 @@ import {
   VitalsBlogu,
 } from '@/components/analytics/BolumTeknik'
 
-/** İçeriğin kaydırıldığı kapsayıcıyı en üste alır (AppShell'deki main). */
+/**
+ * İçeriğin kaydırıldığı kapsayıcıyı en üste alır (AppShell'deki main).
+ * Anında (smooth değil): sekme değişiminde yumuşak animasyon, kullanıcı o sırada
+ * tekerleği çevirirse onunla çakışıyor ve takılma hissi veriyor.
+ */
 function basaKaydir() {
   const kap = document.querySelector<HTMLElement>('[data-kaydirma-alani]')
-  kap?.scrollTo({ top: 0, behavior: 'smooth' })
+  kap?.scrollTo({ top: 0, behavior: 'auto' })
 }
 
 export default function Analytics() {

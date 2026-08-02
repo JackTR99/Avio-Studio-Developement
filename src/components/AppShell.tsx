@@ -195,9 +195,11 @@ export default function AppShell() {
           </>
         )}
 
+        {/* overscroll-contain: iç alanın sonuna gelince kaydırma dışarı devredilmesin.
+            Yoksa üstte/altta macOS'un zıplama davranışı "takılma" hissi veriyor. */}
         <main
           data-kaydirma-alani
-          className="flex min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto"
+          className="flex min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain"
         >
           <Outlet />
         </main>
