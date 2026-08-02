@@ -649,6 +649,56 @@ Yerleşim konuşmaları bittiği için geliştirme yardımcıları temizlendi:
 **Kalıcı çözüm:** Yönlendirme artık **numara değil İSİM** kullanıyor (`setIstenenBolum('Hız')`). Sekme listesi tek yerde (`lib/secim.tsx` → `BOLUMLER`) ve TypeScript yanlış isim yazılmasına izin vermiyor. Sıra değişse bile bir daha kayamaz.
 Ayrıca sekme her değiştiğinde içerik alanı otomatik başa kaydırılıyor (`data-kaydirma-alani`).
 
+### DİREKTİF 9 — IZGARA HARİTA (dot map) — KESİNLEŞTİ, kurulacak
+
+Kaan'ın isteği: harita kare/nokta ızgarasından oluşsun, hem güzel görünsün hem anlaşılması kolay olsun.
+
+#### Kararlar
+| Konu | Karar |
+|---|---|
+| Kare/nokta = veri mi | **Evet.** Her nokta bir bölgeye ait, o bölgenin verisini taşır |
+| Şekil | **Nokta (dot map).** Beğenilmezse yuvarlak kareye dönülecek |
+| Seviyeler | **Ülke · İl · İlçe** — üçü AYRI harita, her birinin kendi ızgara sıklığı var |
+| Gezinme | Bölgeye tıkla → alt seviyeye in. Üstteki seçim çubuğu da güncellenir (Dünya ‹ Türkiye ‹ Manisa) |
+| Çözünürlük | **Orta** — dünyada ~5.000 nokta, Türkiye'de ~2.000, tek ilde ~400. Her bölgeye ~25 nokta düşer |
+| Kapsam | **Dünyanın TAMAMI, her seviyede.** Gerekçe (Kaan): müşteri trafiğin nereden geldiğini görüp kampanyasını ona göre optimize edecek |
+| Denizler | **Çizilmeyecek** — sadece kara noktaları |
+| Veri gelmeyen bölge | **Gri çizilecek** (harita bütün kalsın) |
+| Renk | **Seçili ölçüme göre.** Haritanın üstünde ölçüm seçici olacak (Ziyaretçi / Dönüşüm / Sayfa görüntüleme / Hız...). Renk hem seçilen ölçümden hem bulunulan seviyeden gelir |
+| Renk dağılımı | Bir bölgenin **tüm noktaları aynı tonda** — ton o bölgenin değerinden gelir |
+
+#### Veri kaynağı (ARAŞTIRILDI, DOĞRULANDI)
+| Kaynak | Kapsam | Lisans | Karar |
+|---|---|---|---|
+| **geoBoundaries** | Her ülke: ADM0 (ülke) · ADM1 (il) · **ADM2 (ilçe)** | **CC BY 4.0 — ticari kullanım SERBEST**, sadece kaynak belirtmek yeterli | ✅ **KULLANILACAK** |
+| Natural Earth | Ülke sınırları | Kamu malı | ✅ Dünya haritası için |
+| **GADM** | En zengin veri | ⛔ **Ticari kullanım ve dağıtım YASAK** | ❌ **PROJEDE KULLANILMAYACAK** |
+
+⚠️ **TUZAK:** GADM en kolay bulunan kaynak ama ticari kullanıma kapalı. Ürün satışa çıkacaksa GADM verisi projede olamaz. Yanlışlıkla kullanılmasın.
+
+#### Nasıl çalışacak
+1. **Bir kerelik hazırlık (betik):** Sınır verisi indirilir → üstüne ızgara geçirilir → her noktanın merkezi hangi bölgenin içine düşüyor hesaplanır → sonuç küçük dosyalara yazılır (`x, y, bölge kodu`). Denize düşen noktalar atılır.
+2. **Uygulama çalışırken hesap YOK** — hazır listeyi okuyup çizer. Harita kütüphanesi yok, dış servis yok, döşeme sunucusu yok.
+
+#### Dosya yapısı ve yükleme mantığı (Kaan onayladı)
+Her ızgara **ayrı küçük dosya**. Kullanıcı sadece **baktığı bölgenin** dosyasını indirir:
+- Dünya haritası → 1 dosya (~35 KB)
+- Bir ülkeye tıkla → o ülkenin il ızgarası (~15 KB)
+- Bir ile tıkla → o ilin ilçe ızgarası (~4 KB)
+
+Toplam üretilecek: **1 dünya + ~200 ülke + ~3.600 il = ~3.800 dosya**, toplamı ~14-20 MB.
+**Kullanıcı bunun tamamını asla indirmez** — tek seferde en fazla birkaç on KB.
+
+#### Üretim gerçeği
+- Dünyada ~200 ülke, ~3.600 il, ~47.000 ilçe var.
+- Toplu üretim otomatik betikle yapılır; birkaç saatlik işlem + geçici olarak büyük kaynak dosya indirmesi gerekir.
+- **Kaan kararı: hepsi üretilecek.** (Kademeli üretim önerildi ama Kaan tam kapsam istedi — müşteri her ülkeden gelen trafiği kırılımlı görebilmeli.)
+
+#### ⏳ SONRAYA — VERİ MERKEZİ KATMANI (Kaan isteği, NOT ALINDI)
+Haritaya **ek bir katman** gelecek: trafiğin **veri merkezlerinden** (AWS, Google Cloud, Hetzner, DigitalOcean, VPN çıkışları vb.) gelip gelmediğini gösterecek.
+**Amacı:** "boş trafiği" görmek — yani gerçek insan olmayan, bot/tarayıcı/VPN kaynaklı ziyaretleri ayırt etmek. Mevcut bot filtresini (58) coğrafi olarak tamamlar.
+**Ne zaman:** Fonksiyonlar kurulurken yapılacak, şimdi değil.
+
 ### KOMPONENT TEST SAYFASI (Kaan isteği — KESİN)
 ~~Panelde bir "Laboratuvar" sayfası olacak.~~ → **İPTAL (Kaan):** Ayrı bir Laboratuvar sayfası yok. **Development klasörünün kendisi laboratuvardır.** Bileşenler orada denenir, tutan production'a aktarılır, tutmayan development'ta kalır. Bu yüzden sayfa sayısı 5'te kalıyor: Dashboard · Siteler · Analytics · Raporlar · Ayarlar.
 
