@@ -65,7 +65,9 @@ export default function AppShell() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-slate-50">
+    // h-dvh (h-screen değil): mobil tarayıcılarda 100vh adres çubuğunu da sayar,
+    // uygulamanın altı görünen alanın dışında kalır ve en aşağıya inilemez.
+    <div className="flex h-dvh flex-col bg-slate-50">
       {/* Üst bar */}
       <header className="border-b border-slate-200 bg-white">
         <div className="flex h-16 items-center justify-between gap-4 px-4">

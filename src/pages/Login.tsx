@@ -89,7 +89,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center overflow-hidden bg-brand px-4 pt-[30vh] pb-12">
+    <div className="min-h-dvh flex flex-col items-center overflow-hidden bg-brand px-4 pt-[30vh] pb-12">
       <div className="w-full max-w-sm">
         {/* Lockup — ortadan açılır: logo sola, Studio sağa */}
         <div className="flex items-center justify-center gap-3">

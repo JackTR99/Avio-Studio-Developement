@@ -78,7 +78,7 @@ export default function Analytics() {
   const beklemede = site.durum === 'beklemede'
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-6">
+    <div className="mx-auto w-full max-w-6xl px-4 pt-5 pb-16 sm:px-6 sm:pt-6 sm:pb-20">
       {/* Site seçici + tarih aralığı */}
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <SiteSecici />

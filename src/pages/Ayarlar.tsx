@@ -10,7 +10,7 @@ export default function Ayarlar() {
   const [uyariListesi, setUyariListesi] = useState(uyarilar)
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-5 px-4 py-5 sm:px-6 sm:py-6">
+    <div className="mx-auto w-full max-w-6xl space-y-5 px-4 pt-5 pb-16 sm:px-6 sm:pt-6 sm:pb-20">
       {/* 66 — arama motoru bağlantıları */}
       <Bolum
         no={66}
