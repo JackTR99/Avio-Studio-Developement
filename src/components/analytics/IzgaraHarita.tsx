@@ -2,13 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * IZGARA HARİTA (dot map)
+ * IZGARA HARİTA (dot map) — canvas ile çizilir.
  *
  * Harita nokta nokta çizilir. Her nokta bir bölgeye aittir; bölgenin değerine
  * göre renklenir. Denizler çizilmez. Veri gelmeyen bölge gri kalır.
  *
- * Veri `public/izgara/*.json` içinden gelir — uygulama hesap yapmaz, hazır
- * listeyi çizer. Dosyalar `scripts/izgara-uret.mjs` ile üretilir.
+ * NEDEN CANVAS: On binlerce noktayı SVG ile çizmek tarayıcıyı yorar (her nokta
+ * ayrı bir DOM ögesi olur). Canvas'ta tek yüzeye çizilir. Normalde canvas'ın
+ * zorluğu "fare hangi ögenin üstünde" sorusudur; bizde ızgara DÜZENLİ olduğu
+ * için bu basit bir bölme işlemi — arama gerekmiyor.
+ *
+ * Veri `public/izgara/*.json` içinden gelir; `scripts/izgara-uret.mjs` üretir.
  * Sınır verisi: geoBoundaries (CC BY 4.0).
  */
 
@@ -26,7 +30,7 @@ export type Izgara = {
 /** Haritaya verilen değerler. `kod` varsa önce onunla, yoksa adla eşleşir. */
 export type BolgeDegeri = { ad: string; kod?: string; deger: number }
 
-/** Bölge adını eşleştirmek için sadeleştirir (büyük/küçük, aksan, boşluk). */
+/** Bölge adını eşleştirmek için sadeleştirir. */
 function anahtar(s: string) {
   return s
     .toLocaleLowerCase('tr')
@@ -39,46 +43,121 @@ function anahtar(s: string) {
     .replace(/[^a-z0-9]/g, '')
 }
 
+const MARKA = [195, 7, 22] // #c30716
+
 export function IzgaraHarita({
   izgara,
   degerler,
-  seciliKod,
   onBolgeTikla,
   yukleniyor,
   className,
 }: {
   izgara: Izgara | null
   degerler: BolgeDegeri[]
-  seciliKod?: string | null
   onBolgeTikla?: (bolge: { kod: string; ad: string; deger: number }) => void
   yukleniyor?: boolean
   className?: string
 }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const sarmalRef = useRef<HTMLDivElement>(null)
   const [uzerinde, setUzerinde] = useState<number | null>(null)
   const [imlec, setImlec] = useState({ x: 0, y: 0 })
-  const ref = useRef<SVGSVGElement>(null)
 
   /** Bölge indeksi → { ad, kod, deger, yogunluk 0..1 } */
   const bolgeBilgi = useMemo(() => {
     if (!izgara) return []
-    // Önce koda, sonra ada göre eşleştir (dünyada ülke adları İngilizce gelir)
-    const kodaGore = new Map<string, number>()
-    const adaGore = new Map<string, number>()
+    // Eşleşme koda, yoksa ada göre. Eşleşince BİZİM adımızı kullanırız —
+    // harita verisinde ülke adları İngilizce ("Turkey"), bizde Türkçe.
+    const kodaGore = new Map<string, BolgeDegeri>()
+    const adaGore = new Map<string, BolgeDegeri>()
     for (const d of degerler) {
-      if (d.kod) kodaGore.set(d.kod.toUpperCase(), d.deger)
-      adaGore.set(anahtar(d.ad), d.deger)
+      if (d.kod) kodaGore.set(d.kod.toUpperCase(), d)
+      adaGore.set(anahtar(d.ad), d)
     }
-    const ham = izgara.bolgeler.map(
-      (b) => kodaGore.get(b.kod.toUpperCase()) ?? adaGore.get(anahtar(b.ad)) ?? 0,
+    const eslesen = izgara.bolgeler.map(
+      (b) => kodaGore.get(b.kod.toUpperCase()) ?? adaGore.get(anahtar(b.ad)) ?? null,
     )
-    const enBuyuk = Math.max(1, ...ham)
-    return izgara.bolgeler.map((b, i) => ({
-      ...b,
-      deger: ham[i],
-      // Karekök: küçük değerler de görünür olsun, tek bölge her şeyi ezmesin
-      yogunluk: ham[i] > 0 ? Math.sqrt(ham[i] / enBuyuk) : 0,
-    }))
+    const enBuyuk = Math.max(1, ...eslesen.map((e) => e?.deger ?? 0))
+    return izgara.bolgeler.map((b, i) => {
+      const e = eslesen[i]
+      const deger = e?.deger ?? 0
+      return {
+        kod: b.kod,
+        ad: e?.ad ?? b.ad, // eşleşme varsa Türkçe adımız
+        deger,
+        // Karekök: küçük değerler de görünür olsun, tek bölge her şeyi ezmesin
+        yogunluk: deger > 0 ? Math.sqrt(deger / enBuyuk) : 0,
+      }
+    })
   }, [izgara, degerler])
+
+  /**
+   * Hangi hücrede kaç nokta var — fare takibi için.
+   * Anahtar: satır * sütunSayısı + sütun → bölge indeksi
+   */
+  const hucreHaritasi = useMemo(() => {
+    const m = new Map<number, number>()
+    if (!izgara) return m
+    for (const [sx, sy, bi] of izgara.noktalar) m.set(sy * izgara.sutun + sx, bi)
+    return m
+  }, [izgara])
+
+  /* --- Çizim --- */
+  useEffect(() => {
+    const cv = canvasRef.current
+    const sarmal = sarmalRef.current
+    if (!cv || !sarmal || !izgara) return
+
+    function ciz() {
+      if (!cv || !sarmal || !izgara) return
+      const en = sarmal.clientWidth
+      const boy = Math.round((en * izgara.satir) / izgara.sutun)
+      const oran = window.devicePixelRatio || 1
+
+      cv.width = en * oran
+      cv.height = boy * oran
+      cv.style.width = `${en}px`
+      cv.style.height = `${boy}px`
+
+      const ctx = cv.getContext('2d')
+      if (!ctx) return
+      ctx.setTransform(oran, 0, 0, oran, 0, 0)
+      ctx.clearRect(0, 0, en, boy)
+
+      const hucre = en / izgara.sutun
+      const r = Math.max(0.6, hucre * 0.36)
+
+      for (const [sx, sy, bi] of izgara.noktalar) {
+        const b = bolgeBilgi[bi]
+        const vurgulu = uzerinde === bi
+        if (b.deger > 0) {
+          const a = 0.22 + b.yogunluk * 0.78
+          ctx.fillStyle = `rgba(${MARKA[0]},${MARKA[1]},${MARKA[2]},${vurgulu ? 1 : a})`
+        } else {
+          ctx.fillStyle = vurgulu ? 'rgba(100,116,139,0.7)' : 'rgba(100,116,139,0.28)'
+        }
+        ctx.beginPath()
+        ctx.arc((sx + 0.5) * hucre, (sy + 0.5) * hucre, vurgulu ? r * 1.3 : r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+
+    ciz()
+    const gozlemci = new ResizeObserver(ciz)
+    gozlemci.observe(sarmal)
+    return () => gozlemci.disconnect()
+  }, [izgara, bolgeBilgi, uzerinde])
+
+  /* --- Fare: hangi hücre? Basit bölme işlemi --- */
+  function hucreBul(e: React.MouseEvent) {
+    const cv = canvasRef.current
+    if (!cv || !izgara) return null
+    const k = cv.getBoundingClientRect()
+    const hucre = k.width / izgara.sutun
+    const sx = Math.floor((e.clientX - k.left) / hucre)
+    const sy = Math.floor((e.clientY - k.top) / hucre)
+    return hucreHaritasi.get(sy * izgara.sutun + sx) ?? null
+  }
 
   if (yukleniyor || !izgara) {
     return (
@@ -93,52 +172,35 @@ export function IzgaraHarita({
     )
   }
 
-  // Nokta yarıçapı: ızgara sıklığına göre; aralarında hafif boşluk kalsın
-  const r = 0.36
-  const G = izgara.sutun
-  const Y = izgara.satir
-
   const aktif = uzerinde !== null ? bolgeBilgi[uzerinde] : null
 
   return (
-    <div className={cn('relative w-full', className)}>
-      <svg
-        ref={ref}
-        viewBox={`0 0 ${G} ${Y}`}
+    <div ref={sarmalRef} className={cn('relative w-full', className)}>
+      <canvas
+        ref={canvasRef}
         className="block w-full"
-        role="img"
-        aria-label={`${izgara.ad} haritası`}
+        style={{ cursor: aktif && onBolgeTikla ? 'pointer' : 'default' }}
+        onMouseMove={(e) => {
+          const bi = hucreBul(e)
+          setUzerinde(bi)
+          if (bi !== null) {
+            const k = e.currentTarget.getBoundingClientRect()
+            setImlec({ x: e.clientX - k.left, y: e.clientY - k.top })
+          }
+        }}
         onMouseLeave={() => setUzerinde(null)}
-      >
-        {izgara.noktalar.map(([sx, sy, bi], i) => {
+        onClick={(e) => {
+          const bi = hucreBul(e)
+          if (bi === null) return
           const b = bolgeBilgi[bi]
-          const vurgulu = uzerinde === bi || (seciliKod != null && b.kod === seciliKod)
-          const dolu = b.deger > 0
-          return (
-            <circle
-              key={i}
-              cx={sx + 0.5}
-              cy={sy + 0.5}
-              r={vurgulu ? r * 1.25 : r}
-              fill={dolu ? '#c30716' : 'currentColor'}
-              className={dolu ? '' : 'text-muted-foreground/25'}
-              fillOpacity={dolu ? 0.22 + b.yogunluk * 0.78 : 1}
-              onMouseEnter={(e) => {
-                setUzerinde(bi)
-                const kap = ref.current?.getBoundingClientRect()
-                if (kap) setImlec({ x: e.clientX - kap.left, y: e.clientY - kap.top })
-              }}
-              onClick={() => onBolgeTikla?.({ kod: b.kod, ad: b.ad, deger: b.deger })}
-              style={{ cursor: onBolgeTikla ? 'pointer' : 'default' }}
-            />
-          )
-        })}
-      </svg>
+          onBolgeTikla?.({ kod: b.kod, ad: b.ad, deger: b.deger })
+        }}
+      />
 
       {aktif && (
         <div
           className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg bg-popover px-2.5 py-1.5 text-[11px] whitespace-nowrap text-popover-foreground shadow-md ring-1 ring-border"
-          style={{ left: imlec.x, top: imlec.y - 8 }}
+          style={{ left: imlec.x, top: imlec.y - 10 }}
         >
           <div className="font-semibold">{aktif.ad}</div>
           <div className="text-muted-foreground">
