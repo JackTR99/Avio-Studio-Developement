@@ -1,0 +1,900 @@
+{
+ "PRT": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (distrito)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe (concelho / município)",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "mahalle (freguesia)",
+    "cogul": "Mahalleler"
+   }
+  },
+  "not": "Sayımla doğrulandı: ADM1=20 (18 distrito + Azorlar ve Madeira özerk bölgeleri), ADM2=311 (resmî 308 belediye/concelho), ADM3=2905 (freguesia, mahalle/köy eşdeğeri). Concelho ortalama ~33 bin nüfus, yani bizim ilçe tanımına birebir oturuyor; freguesialar (~3,5 bin) gizlilik eşiğinin altında kalmalı."
+ },
+ "GRC": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 4,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "yönetim bölgesi (merkezî olmayan yönetim)",
+    "cogul": "Yönetim Bölgeleri"
+   },
+   "2": {
+    "tekil": "bölge (periferia)",
+    "cogul": "Bölgeler"
+   },
+   "3": {
+    "tekil": "belediye (dimos)",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "Adlar dosyadan doğrulandı: ADM1=8 (7 merkezî olmayan yönetim + Aynaroz/Agion Oros), ADM2=14 (13 periferia + Aynaroz), ADM3=326 (325 belediye + Aynaroz). DİKKAT: burada ADM1 ve ADM2 İtalya'daki makro bölge/regione mantığında, yani ikisi de il değil bölge. Yunanistan'ın il benzeri 74 'bölgesel birimi' (periferiaki enotita) bu veri setinde YOK; ilçe karşılığı doğrudan ADM3 belediyesi (ortalama ~33 bin nüfus). ADM3 en alt kademe olduğu için pratikte hiçbir kademe gizlenmeyecek."
+ },
+ "ROU": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 2,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "il (județ)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "komün / kasaba (comună, oraș)",
+    "cogul": "Komünler ve Kasabalar"
+   }
+  },
+  "not": "ADM1=42 (41 județ + Bükreş), ADM2=3235 (comuna/oraș, adlar dosyadan doğrulandı). Romanya'da il ile komün arasında ARA KADEME YOK; rayonlar 1968'de kaldırıldı. ADM2 ortalama sadece ~6 bin nüfus, yani bizim ilçe değil Fransa'daki 'commune' (köy/belde) seviyesi. Bu yüzden ilceKademesi=1 verdim: județ (ort. ~460 bin) her zaman adıyla gösterilsin, ~6 binlik komünler gizlilik eşiğine tabi olsun. UI'da ADM1 'İl' diye etiketlenmeli; ilceKademesi sadece eşik için 1. | ADM2 comuna/oraș küçük birim"
+ },
+ "BGR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (oblast)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe (obştina)",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "ADM1=28 (resmî 28 oblast), ADM2=265 (resmî 265 obştina; adlar dosyadan doğrulandı: Velingrad, Balçık, Dobriç, Varna...). Obştina ortalama ~24 bin nüfus, ilçe tanımına oturuyor. Veri setinde ADM2'nin altı yok."
+ },
+ "HRV": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 2,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "il (jupanya / županija)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "belediye / şehir (općina, grad)",
+    "cogul": "Belediyeler ve Şehirler"
+   }
+  },
+  "not": "ADM1=21 (20 jupanya + Zagreb şehri, adlar doğrulandı), ADM2=560 = 413 općina + 126 grad + 19 ada poligonu (OSM kaynaklı artık kayıt; resmî sayı 428 općina + 128 grad). Romanya gibi Hırvatistan'da da il ile belediye arasında ara kademe yok; ADM2 ortalama ~7 bin nüfus, İtalya'daki comune seviyesi. Bu yüzden ilceKademesi=1: jupanya (ort. ~185 bin) hep gösterilsin, küçük općinalar eşiğe tabi olsun. | ADM2 općina/grad küçük birim"
+ },
+ "SVK": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge (kraj)",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "ilçe (okres)",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "belediye / köy (obec)",
+    "cogul": "Belediyeler ve Köyler"
+   },
+   "4": {
+    "tekil": "kadastro bölgesi (katastrálne územie)",
+    "cogul": "Kadastro Bölgeleri"
+   }
+  },
+  "enFazlaKademe": 3,
+  "not": "ADM1=8 (resmî 8 kraj), ADM2=79 (resmî 79 okres, ort. ~69 bin nüfus = ilçe), ADM3 dosyada tam 2927 birim (resmî 2927 obec; büyük şehirlerde Bratislava/Košice ilçeleri ayrı kayıt), ADM4 dosyada 3577 birim (resmî 3559 kadastro alanına çok yakın). ADM4 etiketi 'kadastro bölgesi' tahmini biraz daha zayıf ama ilçe kademesini etkilemiyor; ADM3 ve ADM4 gizlilik eşiğine tabi olmalı."
+ },
+ "HUN": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (megye)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe (járás)",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "belediye / yerleşim (település)",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=20 (19 megye + Budapeşte), ADM2=198 = 175 járás + 23 Budapeşte semt belediyesi (adlar dosyadan doğrulandı: Bóly, Komló, Mohács, Pécsvárad...). Járás ortalama ~48 bin nüfus, ilçe tanımına oturuyor. ADM3=3357 (resmî ~3155 település) gizlilik eşiğine tabi olmalı."
+ },
+ "UKR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (oblast)",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe (rayon)",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "köy konseyi (silrada)",
+    "cogul": "Köy Konseyleri"
+   }
+  },
+  "not": "ADM1=27 (24 oblast + Kırım Özerk Cumhuriyeti + Kiev + Sivastopol), ADM2=495 rayon (adlar doğrulandı: Bahçesaray, Simferopol, Beyaz Kale...), ADM3=10375 köy/kasaba konseyi. DİKKAT: veri 2020 idari reformundan ÖNCEKİ yapıyı yansıtıyor; bugün 136 rayon var ve köy konseyleri yerine hromada (birleşik topluluk) geçti. Yine de reform öncesi rayon (ort. ~83 bin nüfus) ilçe karşılığıdır; ADM3 çok küçük olduğu için mutlaka eşiğe tabi olmalı."
+ },
+ "USA": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "county",
+    "cogul": "County'ler"
+   }
+  },
+  "not": "Dogrulandi: ADM1=56 (50 eyalet + Washington DC + Porto Riko/Guam/Virgin Adalari/Samoa/Kuzey Mariana), ADM2=3233 county. Kaynak US Census Bureau TIGER. Louisiana'da ayni birime 'parish', Alaska'da 'borough' denir ama gbOpen hepsini ADM2'de topluyor. gbOpen'da ADM3/ADM4 YOK, yani ilce seviyesi en alt kademe; gizlilik esigi hicbir kademede devreye girmez."
+ },
+ "CAN": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 3,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "ekonomik bolge",
+    "cogul": "Ekonomik Bolgeler"
+   },
+   "3": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "DIKKAT - burada kayma var. ADM1=13 (10 eyalet + 3 'territory'). ADM2=76 ama bunlar county DEGIL, Statistics Canada'nin 'economic region' dedigi istatistik bolgeleri (isimleri dogrudan okundu: 'Kitchener--Waterloo--Barrie', 'Cariboo', 'Annapolis Valley', 'Abitibi-Temiscamingue'); ortalama nufus ~500 bin, yani ilceden cok buyuk. Kanada'nin gercek county karsiligi olan 'census division' (293 adet) gbOpen'da HIC YOK. ADM3=5162 ise 'census subdivision', yani belediye/koy/yerli rezervi (isimler dogrulandi: 'Trochu', 'Soowahlie 14', 'Division No. 2, Subd. E'); ortalama nufus ~7 bin, bircogu birkac yuz kisi. ilceKademesi=2 secildi cunku eyaletin altindaki ilk kademe o ve boylece cok kucuk ADM3 birimleri gizlilik esigine giriyor - mahremiyet acisindan guvenli taraf. 3 secilseydi 200 kisilik koyler tek ziyaretciyle adiyla gorunurdu. | ADM2 istatistik bölgesi; belediye ADM3"
+ },
+ "MEX": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=32 (31 eyalet + Mexico City), ADM2=2457 'municipio'. Meksika'da municipio bizim ilce karsiligimizdir (eyaletin altindaki ilk yonetim birimi, secilmis belediye baskani var). Mexico City'de ayni kademeye 'alcaldia' denir. gbOpen'da ADM3/ADM4 yok."
+ },
+ "BRA": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=27 (26 eyalet + Federal Bolge Brasilia), ADM2=5570 'municipio'. Brezilya'da eyalet ile belediye arasinda BASKA KADEME YOK; 'mesorregiao/microrregiao' sadece istatistikseldir ve gbOpen'da bulunmaz. Uyari: en kucuk belediyeler ~800 kisi. ADM2 altinda kademe olmadigi icin gizlilik esigi hic calismaz - istersen Brezilya'ya ozel olarak esigi ADM2'nin kendisine de uygulamayi degerlendir."
+ },
+ "ARG": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "departamento",
+    "cogul": "Departamento'lar"
+   }
+  },
+  "not": "ADM1=23 'provincia' (federal ulke, eyalet gibi calisir). Isimler okundu: 22 eyalet + Ciudad Autonoma de Buenos Aires; gbOpen setinde Entre Rios EKSIK gorunuyor ve 'La Rioja' yanlis yazilmis ('La Roja') - ekranda duzeltme gerekebilir. ADM2=526 'departamento'; Buenos Aires eyaletinde ayni birime 'partido', Buenos Aires sehrinde 'comuna' denir. gbOpen'da ADM3 yok."
+ },
+ "CHL": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "bolge",
+    "cogul": "Bolgeler"
+   },
+   "2": {
+    "tekil": "provincia",
+    "cogul": "Provincia'lar"
+   },
+   "3": {
+    "tekil": "comuna",
+    "cogul": "Comuna'lar"
+   }
+  },
+  "not": "Yapi Italya ile birebir ayni, sadece bir kademe yukari kaymis: ADM1=16 'region' (Italya'daki regione = bizim il/eyalet karsiligi), ADM2=56 'provincia' (isimler dogrudan okundu: 'Provincia de Antofagasta', 'Provincia de Chiloe'...), ADM3=345 'comuna' (Italya'daki comune karsiligi). Italya'da ilceKademesi=provincia oldugu icin burada da 2 secildi. Kararsizlik noktasi: Sili'de gercek yerel yonetim comuna'dir (secilmis belediye baskani, ort. 55 bin nufus, en kucugu ~300 kisi) ve provincia'nin neredeyse hic yetkisi kalmamistir; birisi 3 demeyi savunabilir. 2 secmek comuna'lari gizlilik esigine soktugu icin mahremiyet acisindan guvenli taraftir."
+ },
+ "COL": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "departamento",
+    "cogul": "Departamento'lar"
+   },
+   "2": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=33 (32 departamento + Bogota Baskent Bolgesi); departamento bizim il/eyalet karsiligimizdir. ADM2=1122 ve isimler dogrudan okundu (Abejorral, Aguachica, Amalfi...) - bunlar 'municipio', yani ilce karsiligi; icinde ~1103 municipio + ~20 belediyelesmemis alan var. Bogota'nin ic bolumleri (localidad) gbOpen'da yok. ADM3 yok."
+ },
+ "PER": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "departamento",
+    "cogul": "Departamento'lar"
+   },
+   "2": {
+    "tekil": "provincia",
+    "cogul": "Provincia'lar"
+   }
+  },
+  "not": "ADM1=26, isimler okundu: 24 departamento + El Callao + Municipalidad Metropolitana de Lima; departamento = il/eyalet karsiligi (resmi adi artik 'region'). ADM2=196 'provincia' = ilce karsiligi (departamentonun altindaki ilk kademe). Peru'nun gercek en alt birimi 'distrito' (1874 adet) ama gbOpen'da YOK, o yuzden ADM2 en alt kademe ve gizlilik esigi pratikte devreye girmez."
+ },
+ "TUR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "Kayma YOK. ADM1=81 il, ADM2=999 ilçe. Kaynak OSM/OSM Boundaries 2021. Resmî ilçe sayısı 973; 999 farkı OSM'de bazı ilçelerin parçalı/mükerrer kaydından geliyor, kademe anlamını değiştirmiyor. ADM3/ADM4 veri setinde yok, dolayısıyla gizlilik eşiği pratikte hiç devreye girmez (ilçe kademesinin altı boş)."
+ },
+ "ARE": {
+  "ilceKademesi": 1,
+  "maskeBaslangici": 9,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "emirlik",
+    "cogul": "Emirlikler"
+   }
+  },
+  "not": "gbOpen'da ARE için SADECE ADM1 var: 7 emirlik (Abu Dabi, Dubai, Şarika, Acman, Ummülkayveyn, Re'sülhayme, Fuceyre). Emirlik = eyalet/il düzeyi; ilçe düzeyi veri setinde YOK, o yüzden 0. ÖNEMLİ UYARI: 0'ı 'eşik ADM1'den itibaren uygulansın' diye yorumlama — doğru yorum 'alt kademe yok, gizlilik eşiğine gerek yok'. Emirlik nüfusları 70 bin ile 3,6 milyon arasında, ad göstermede mahremiyet riski yok. Yanlış yorumlanırsa BAE verisinin tamamı gereksiz gizlenir. | Tek kademe; maskelenecek alt kademe yok"
+ },
+ "SAU": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "muhafaza",
+    "cogul": "Muhafazalar"
+   }
+  },
+  "not": "ADM1=13 idari bölge (Arapça 'mıntıka'; ör. Riyad Bölgesi, Mekke Bölgesi, Doğu Bölgesi) = il/eyalet düzeyi. ADM2=147 muhafaza (governorate; ör. Hufuf/El-Ahsa, Cubeyl, Uneyze) = ilçe düzeyi. Resmî muhafaza sayısı kaynağa göre 136–150 arasında değişiyor (2012'de 118'den 136'ya çıkarıldı), 147 bu aralıkta — kademe anlamı kesin. DİKKAT: Arapça 'muhafaza' Suudi'de 2. kademe ama Mısır'da 1. kademe; iki ülkeyi aynı etiketle eşleştirme. ADM3/ADM4 yok."
+ },
+ "EGY": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "vilayet",
+    "cogul": "Vilayetler"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "ADM1=27 muhafaza (governorate; Kahire, İskenderiye, Giza, Asvan...) = il/vilayet düzeyi — Türkçe ekranda 'Vilayetler' veya 'Muhafazalar' ikisi de doğru. ADM2=365 birim: kırsalda 'merkez' (markaz, ör. Abnub, Ebu Tîc), kentte 'kısım' (qism, ör. Abdin) — her ikisi de ilçe düzeyi, karışık tek katmanda. ADM3/ADM4 yok, eşiğin altında kademe kalmıyor."
+ },
+ "ZAF": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "bölge belediyesi",
+    "cogul": "Bölge Belediyeleri"
+   },
+   "3": {
+    "tekil": "yerel belediye",
+    "cogul": "Yerel Belediyeler"
+   },
+   "4": {
+    "tekil": "seçim bölgesi (ward)",
+    "cogul": "Seçim Bölgeleri"
+   }
+  },
+  "not": "Sayılar resmî yapıyla BİREBİR: ADM1=9 eyalet; ADM2=52 (44 bölge belediyesi + 8 büyükşehir, ör. Alfred Nzo, City of Cape Town); ADM3=213 (205 yerel belediye + 8 büyükşehir); ADM4=4392 ward (numaralı, ör. 'Makhado 001'). İlçe kademesi=2 seçildi çünkü 'eyaletin altındaki ilk yönetim birimi' tanımına uyan tek kademe bu. AMA nüfus ölçeğine bakılırsa tartışmalı: bölge belediyesi ort. ~1,15 mln, yerel belediye ort. ~280 bin, ward ort. ~14 bin. 2 seçimi daha korumacı (ADM3+ADM4 eşiğe girer); 3 de savunulabilirdi. Gerçek mahremiyet riski ADM4'te (ward) ve 2 ile de 3 ile de ADM4 korunuyor, yani yanlış tarafa düşme riski düşük."
+ },
+ "MAR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "vilayet",
+    "cogul": "Vilayetler"
+   }
+  },
+  "not": "ADM1=12 bölge (région; 2015 reformu sonrası yapı — Tanca-Tetuan-El Hoceima, Kazablanka-Settat, Rabat-Salé-Kenitra... Batı Sahra'daki 3 bölge de dahil) = il/eyalet düzeyi, İtalya'daki 'regione'nin muadili. ADM2=75 = 62 province (kırsal, Arapça 'ikliym') + 13 préfecture (kentsel) — veri setinde adlar karışık Fransızca/Arapça ('Province de Kenitra إقليم القنيطرة'). Fas idari yapısı Fransız sisteminin kopyası; Fas province'ı Fransız département'ının karşılığı → ilçe kademesi=2, Fransa ile tutarlı. Cercle ve komün (~1500) kademesi gbOpen'da YOK."
+ },
+ "NGA": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "yerel yönetim bölgesi",
+    "cogul": "Yerel Yönetim Bölgeleri"
+   }
+  },
+  "not": "ADM1=37 = 36 eyalet + Abuja Federal Başkent Bölgesi. ADM2=774 LGA (Local Government Area). Nijerya'nın anayasal LGA sayısı tam olarak 774 — birebir uyuyor, şüphe yok. LGA county/ilçe karşılığıdır (ort. ~290 bin kişi). Ekranda 'LGA' kısaltmasını parantezle vermek okunurluğu artırır. ADM3/ADM4 yok. Kaynak GRID3, 2022."
+ },
+ "ISR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "alt bölge",
+    "cogul": "Alt Bölgeler"
+   }
+  },
+  "not": "ADM1=6 'mehoz' (district: Kuzey, Hayfa, Merkez, Tel Aviv, Kudüs, Güney) = il düzeyi. ADM2=15 'nafa' (sub-district: Beer Şeva, Aşkelon, Safed, Akka, Golan, Kinneret, Yizreel...) = ilçe düzeyi, resmî 15 alt bölgeyle birebir. NOT: İsrail'in resmî 7. bölgesi olan Yehuda ve Şomron (Batı Şeria) bu sette YOK — Filistin toprakları ayrı PSE ISO kodunda. ADM2 en derin kademe olduğu için gizlilik eşiği pratikte hiç devreye girmez; alt bölge nüfusları 400 bin–1 mln aralığında, risk zaten yok."
+ },
+ "DEU": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 4,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "idari bölge",
+    "cogul": "İdari Bölgeler"
+   },
+   "3": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "ADM1=16 eyalet (Bundesland). ADM2=38 Regierungsbezirk — sadece birkaç eyalette gerçek idari bölge, geri kalanında istatistik bölgesi; ortalama 2,2 milyon nüfus, ilçe değil. ADM3=428 Kreis / kreisfreie Stadt (isimler doğruladı: Zollernalbkreis, Werra-Meißner-Kreis, 'Stuttgart, Stadtkreis'). Kreis Almanya'nın county karşılığıdır, ilçe kademesi budur. ADM4 yok, yani eşiğin altında kalan kademe hiç yok. Küçük not: gerçek Kreis sayısı ~401, veri setinde 428 çıkıyor; birkaç birim parçalara bölünmüş olabilir, kademe tespitini etkilemiyor."
+ },
+ "FRA": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "departman",
+    "cogul": "Departmanlar"
+   },
+   "3": {
+    "tekil": "arrondisman",
+    "cogul": "Arrondismanlar"
+   },
+   "4": {
+    "tekil": "kanton",
+    "cogul": "Kantonlar"
+   }
+  },
+  "not": "ADM1=13 bölge (sadece Avrupa kıtası, denizaşırı yok), ADM2=96 departman, ADM3=320 arrondisman, ADM4=2054 kanton (2015 kanton reformundaki sayıyla birebir; isimlerdeki 'Narbonne-2', 'Autun-1' biçimi bunu doğruluyor). ÖNEMLİ: Fransa'da bir de ADM5=35.010 komün var, bu şemada 5. alan olmadığı için dışarıda kaldı. Uygulama ADM5'e iniyorsa gizlilik eşiği orada mutlaka çalışmalı — ortalama komün nüfusu ~1.900."
+ },
+ "ITA": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 4,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "makro bölge",
+    "cogul": "Makro Bölgeler"
+   },
+   "2": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "3": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "4": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "Doğruladım: ADM1=5 makro bölge (Nord-Ovest, Nord-Est, Centro, Sud, Isole) — bunlar idari değil istatistiksel birimler, kimse burada yaşadığını söylemez. ADM2=20 regione gerçek üst kademe (Lombardia, Toscana...). ADM3=107 provincia. ADM4=7901 comune. Türkiye'ye göre iki kademe kaymış: ekranda ADM1'e 'il' demek tamamen yanlış olur."
+ },
+ "ESP": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "özerk bölge",
+    "cogul": "Özerk Bölgeler"
+   },
+   "2": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "3": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=19 (17 özerk topluluk + Ceuta ve Melilla özerk şehirleri), ADM2=52 (50 provincia + Ceuta + Melilla), ADM3=8205 belediye (municipio). İspanya'da il ile belediye arasında haritada ara kademe YOK. Belediyelerin ortalama nüfusu ~5.700, binlercesi 1.000 kişinin altında — bu yüzden ilçe kademesini 2 yaptım ki gizlilik eşiği ADM3'te devreye girsin. ADM3'ü ilçe saymak mahremiyet açığı yaratırdı. İtalya'da provincia'nın ilçe kademesi sayılmasıyla da tutarlı: her iki ülkede de provincia kademesi eşiğin üstünde kalıyor. | ADM2 il; ADM3 belediye ortalama 5.700 kişi"
+ },
+ "NLD": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=12 il (provincie), ADM2=344 belediye (gemeente). Belediye ortalama nüfusu ~51 bin — tanımdaki 'ilin altındaki ilk birim, nüfusu on binler' ölçüsüne birebir uyuyor, Türkiye'deki ilçe ortalamasına (~85 bin) da yakın. Daha alt kademe yok, yani eşiğin altında kalan kademe bulunmuyor; Türkiye'deki durumun aynısı."
+ },
+ "BEL": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 4,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "3": {
+    "tekil": "arrondisman",
+    "cogul": "Arrondismanlar"
+   },
+   "4": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=3 bölge (Flaman, Valon, Brüksel-Başkent). ADM2=11 = 10 il + Brüksel-Başkent Bölgesi (isimler Flamanca geliyor: Henegouwen, Luik, Namen). ADM3=43 idari arrondisman. ADM4=589 belediye — bu 2019 birleşmeleri ÖNCESİ sayı (bugün 581), yani veri biraz eski. İlin altındaki ilk birim arrondisman olduğu için ilçe kademesini 3 yaptım. Güven 'orta' çünkü arrondisman nüfusu (~270 bin) tipik bir ilçeden büyük; ama 3 demek 589 belediyeyi (ortalama ~19,5 bin) gizlilik eşiğinin altına aldığı için mahremiyet açısından doğru taraf burası. | Arrondisman ilçe karşılığı"
+ },
+ "AUT": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   },
+   "4": {
+    "tekil": "kadastro birimi",
+    "cogul": "Kadastro Birimleri"
+   }
+  },
+  "enFazlaKademe": 3,
+  "not": "ADM1=9 eyalet (Bundesland). ADM2=94 Bezirk = 79 ilçe + 15 kendi statüsü olan şehir; isimler doğruladı (Amstetten, Baden, 'Graz(Stadt)', 'Linz(Stadt)'). Ortalama ~95 bin nüfus, tam ilçe karşılığı. ADM3=2097 belediye (Gemeinde). ADM4=7850 büyük olasılıkla Katastralgemeinde (kadastro birimi; resmî sayı ~7.856 ile örtüşüyor, Viyana'da isimler semt gibi görünüyor: Innere Stadt, Josefstadt, Landstraße). ADM4'ün tam adından %100 emin değilim ama ilçe kademesi tespiti bundan etkilenmiyor; her hâlükârda eşiğin altında kalıyor."
+ },
+ "CHE": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "kanton",
+    "cogul": "Kantonlar"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "ADM1=26 kanton, ADM2=169 Bezirk/district (ortalama ~52 bin nüfus, tam ilçe karşılığı), ADM3=2286 belediye (Gemeinde/commune, ortalama ~3.800 kişi — eşik burada şart). UYARI: bazı küçük kantonların hiç ilçesi yok; Obwalden, Appenzell Innerrhoden, Schaffhausen gibi kantonlar ADM2 listesinde kendi adlarıyla tek parça çıkıyor. Arayüzde o kantonlara inince 'tek ilçe' görünmesi hata değil, ülkenin gerçek yapısı."
+ },
+ "CHN": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 9,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "ilçe (ayrıntılı)",
+    "cogul": "İlçeler (ayrıntılı)"
+   }
+  },
+  "enFazlaKademe": 2,
+  "not": "Sayımlar: ADM1=34, ADM2=2391, ADM3=2867. ADM1 = il düzeyi birimler (22 eyalet + Tayvan + 5 özerk bölge + 4 merkeze bağlı şehir Pekin/Şanghay/Tiencin/Çongçing + Hong Kong ve Makao). DİKKAT - KAYMA VAR: Çin'in gerçek yapısında eyaletin altında 'prefektür şehri' (地级市, 333 adet) kademesi vardır ama geoBoundaries'te bu kademe TAMAMEN YOK. Hem ADM2 hem ADM3 aynı granülerlikte, ilçe düzeyi (县级) birimlerdir - iki farklı kaynaktan gelen iki paralel katman. ADM2 adları pinyin ve son ekleri sayıldı: 1593 -xian (ilçe), 610 -shi (şehir), 116 özerk ilçe, 51 -qi (banner/Moğol ilçesi). ADM2 kentsel alanları prefektür şehri olarak tek parça bırakıyor (sadece 8 adet -qu/kent ilçesi var). ADM3 ise kent ilçelerini ayırıyor: 1479 County + 893 District + 345 City + 51 Banner; Çin'in gerçek 2844 ilçe düzeyi birim sayısına ADM3 daha yakın. ilceKademesi=2 seçildi çünkü ADM2 zaten ağırlıklı olarak ilçe düzeyidir ve mahremiyet açısından güvenli taraf budur; ADM3 de ilçe düzeyi olduğu için maskeleme bir miktar gereksiz olabilir ama kimse ifşa olmaz. Güven 'orta' - iki katmanın da aynı seviyede olması alışılmadık bir durum. Ek veri hatası: ADM1'de Guangdong yanlışlıkla 'Guangzhou Province' yazılmış. | ADM3 = ADM2 ile aynı düzey"
+ },
+ "JPN": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "belediye",
+    "cogul": "Belediyeler"
+   }
+  },
+  "not": "Sayımlar: ADM1=47, ADM2=1745 (dosyada 1718 kayıt). ADM1 = 47 prefektörlük (都道府県 todōfuken: Tokyo-to, Hokkaido, Osaka-fu, Kyoto-fu ve 43 ken). Türkçede 'il' olarak veriliyor, yerel adı prefektörlük. ADM2 = 1741 belediye (市町村 shi/chō/son = şehir/kasaba/köy) + Tokyo'nun 23 özel ilçesi; indirilen adlar bunu doğruluyor (Ine, Kyotango, Miyazu, Fukuchiyama - hepsi Kyoto ilindeki belediyeler). UYARI: geoBoundaries'in kendi boundaryCanonical alanı ADM2 için 'Subprefectures' (alt-prefektörlük) yazıyor, bu YANLIŞ - Japonya'da alt-prefektörlük sadece Hokkaido ve birkaç yerde var, toplam ~90 tane. Gerçek veri belediye düzeyi. Japonya'da il ile belediye arasında BAŞKA yönetim kademesi yoktur (郡 gun/kaza sadece adres birimidir, yönetim birimi değil), dolayısıyla ilin altındaki ilk yönetim birimi ADM2'dir. Ortalama nüfus 127M/1741 ≈ 73.000 - tanımdaki 'on binler' ölçüsüne tam oturuyor. ADM3 ve altı gbOpen'da yok."
+ },
+ "KOR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "mahalle",
+    "cogul": "Mahalleler"
+   }
+  },
+  "not": "Sayımlar: ADM1=17, ADM2=229 (dosyada 228), ADM3=3504. ADM1 = 17 geniş alan yönetimi (9 do/eyalet + Seul özel şehri + 6 büyükşehir + Sejong özel özerk şehri); veride Gangwon, Gyeonggi, Incheon, Busan görülüyor. ADM2 = 226-229 temel yerel yönetim: 시 si (şehir) / 군 gun (kaza) / 구 gu (kent ilçesi); indirilen adlar son ekleriyle doğruluyor (Sokcho-si, Goseong-gun, Yangyang-gun, Gangneung-si). Bu ilin altındaki ilk yönetim birimidir, yani bizim ilçe karşılığımız. ADM3 = 3504 alt-belediye birimi (읍/면/동 eup/myeon/dong); adlar -dong ekiyle geliyor (Sajik-dong, Samcheong-dong, Buam-dong) - bunlar tam olarak bizim mahalle karşılığımız. Not: Kore ilçeleri nüfusça büyük (ortalama 51,7M/229 ≈ 226.000) ama yapısal olarak doğru kademe ADM2'dir; asıl mahremiyet riski ADM3/mahalle düzeyindedir ve orası maskelenecek."
+ },
+ "IND": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "distrikt",
+    "cogul": "Distriktler"
+   },
+   "3": {
+    "tekil": "tehsil",
+    "cogul": "Tehsiller"
+   },
+   "4": {
+    "tekil": "kalkınma bloğu",
+    "cogul": "Kalkınma blokları"
+   }
+  },
+  "not": "Sayımlar: ADM1=36, ADM2=736, ADM3=6836, ADM4=7152, ADM5=649.771. Bu ülkede geoBoundaries kademe adlarını kendi boundaryCanonical alanında AÇIKÇA yazmış, tahmine gerek kalmadı: ADM1='State / Union Territory' (28 eyalet + 8 birlik toprağı), ADM2='District' (zila), ADM3='Sub-District' (tehsil/taluk/mandal), ADM4='CD Block' (Community Development Block = kalkınma bloğu), ADM5='village' (köy). ADM3 ve ADM4 sayıca birbirine çok yakın ve 4117 ad ikisinde de ortak - Hindistan'da tehsil ile blok sınırları çoğu yerde çakışır ama bunlar farklı idari hatlardır (tehsil gelir idaresi, blok kalkınma idaresi). ilceKademesi=2: distrikt, eyaletin altındaki ilk yönetim birimidir ve ABD county / Türkiye ilçe karşılığıdır. UYARI: Hindistan distriktleri nüfusça çok büyüktür (ortalama 1,4 milyar / 736 ≈ 1,9 milyon), yani görevdeki 'on binler' ölçüsünü aşar; ama yapısal karşılık kesin olarak budur ve altındaki tehsil/blok/köy kademeleri doğru şekilde maskelenmiş olur. Şema adm4'e kadar gittiği için ADM5=köy burada gösterilemedi, uygulamada 5. kademe de maskelenmelidir."
+ },
+ "IDN": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "Sayımlar: ADM1=34, ADM2=519. ADM1 = provinsi (il); 2017 verisi olduğu için 34 tane - Endonezya o tarihten sonra Batı Papua'yı bölerek 38'e çıkardı, geoBoundaries henüz eski halde. ADM2 = 514-519 kabupaten (regency/kaza) ve kota (şehir); geoBoundaries canonical alanı 'regency, city' diyor, indirilen adlar da doğruluyor (Aceh Barat, Aceh Besar, Aceh Jaya - hepsi kabupaten). Bu ilin altındaki ilk yönetim birimidir, yani ilceKademesi=2. Yerel adı kabupaten/kota; Türkçe karşılığı olarak 'ilçe' kullanıldı çünkü işlevi aynı. Ortalama nüfus 275M/519 ≈ 530.000 - bizim ilçemizden büyük ama kademe doğru. Endonezya'nın altında ayrıca kecamatan (yaklaşık 7.200 alt-ilçe) ve desa/kelurahan (yaklaşık 83.000 köy/mahalle) vardır ama bunlar gbOpen'da YOK, ADM2 en alt kademe. Yani bu ülkede pratikte hiçbir kademe maskelenmeyecek."
+ },
+ "THA": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il",
+    "cogul": "İller"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   }
+  },
+  "not": "Sayımlar: ADM1=77, ADM2=928. ADM1 = 76 changwat (il) + Bangkok özel yönetim bölgesi = 77; Tayland'ın resmi il sayısıyla birebir uyuşuyor. ADM2 = 928 amphoe (ilçe) + Bangkok'un 50 khet'i (kent ilçesi); geoBoundaries canonical alanı 'districts' diyor, indirilen adlar da amphoe adları (Akat Amnuai, Amphawa, Aranyaprathet, Ao Luek). 878 amphoe + 50 khet = 928, tam tutuyor. ilceKademesi=2 ve bu listedeki EN TEMİZ eşleşme: ortalama nüfus 70M/928 ≈ 75.000, yani görevdeki 'on binler' tanımına ders kitabı gibi oturuyor - Türkiye'nin il/ilçe yapısının neredeyse aynısı. Taylandda amphoe altında tambon (yaklaşık 7.255 alt-ilçe) ve muban (köy) vardır ama gbOpen'da YOK, ADM2 en alt kademe."
+ },
+ "AUS": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "yerel yönetim bölgesi",
+    "cogul": "Yerel yönetim bölgeleri"
+   }
+  },
+  "not": "Sayımlar: ADM1=9, ADM2=547. Kaynak Avustralya İstatistik Kurumu (ABS). ADM1'in 9 adının tamamı çekildi: New South Wales, Victoria, Queensland, South Australia, Western Australia, Tasmania, Northern Territory, Australian Capital Territory ve 'Other Territories' (Diğer Topraklar - Norfolk, Christmas Adası, Cocos vb.). Yani 6 eyalet + 2 anakara toprağı + 1 toplu 'diğer' kutusu. ADM2 = 547 LGA (Local Government Area = yerel yönetim bölgesi); geoBoundaries canonical alanı 'Local Government Areas' diyor. Adlar belediye/kent konseyi adları (Albury, Armidale, Ballina, Blacktown, Bayside (NSW)). 'İlçe' yerine 'yerel yönetim bölgesi' denildi çünkü Avustralyalılar bunlara asla ilçe/county demez, LGA der; Türkçe okunuşlu karşılık olarak açık ad tercih edildi. ilceKademesi=2: LGA, eyaletin altındaki TEK yönetim kademesidir (arada başka birim yok). Ortalama nüfus 26M/547 ≈ 47.000 - 'on binler' tanımına uyuyor. Not: Avustralya'nın bazı seyrek nüfuslu bölgeleri hiçbir LGA'ya bağlı değildir (unincorporated), bu alanlar veride boşluk olarak görünebilir. ADM3 ve altı gbOpen'da yok."
+ },
+ "NZL": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge",
+    "cogul": "Bölgeler"
+   },
+   "2": {
+    "tekil": "ilçe",
+    "cogul": "İlçeler"
+   },
+   "3": {
+    "tekil": "seçim bölgesi",
+    "cogul": "Seçim bölgeleri"
+   }
+  },
+  "enFazlaKademe": 2,
+  "not": "Sayımlar: ADM1=17, ADM2=88, ADM3=245. Kaynak Stats NZ. ADM1'in 17 adının tamamı çekildi: 16 Region (Northland, Auckland, Waikato, Bay of Plenty, Gisborne, Hawke's Bay, Taranaki, Manawatu-Wanganui, Wellington, West Coast, Canterbury, Otago, Southland, Tasman, Nelson, Marlborough) + Chatham Islands Territory. Türkçesi 'bölge' - eyalet DEĞİL, Yeni Zelanda üniter bir devlettir. ADM2 = 88, geoBoundaries canonical 'Territorial Authorities'; ad son ekleri sayıldı: 53 District + 12 City + 21 'Local Board Area' + 1 Territory + 1 Authority. 21 Local Board Area, Auckland'ın yerel kurul bölgeleridir (Rodney, Hibiscus and Bays, Upper Harbour, Devonport-Takapuna vb.) - yani Yeni Zelanda'nın 67 yerel yönetiminden Auckland tek parça yerine 21'e bölünmüş, toplam 88 çıkıyor. Adların çoğu zaten 'District' dediği için Türkçesi 'ilçe' verildi. ilceKademesi=2: ortalama nüfus 5,1M/88 ≈ 58.000, tanıma uyuyor. ADM3 = 245 ve HEPSİNİN adı 'Ward' ile bitiyor (Te Hiku Ward, Denby Ward, Okara Ward) - ward, belediye meclisi seçim bölgesidir, yönetim birimi değildir; ortalama 21.000 kişi, mahremiyet açısından maskelenmesi doğru. UYARI: Yeni Zelanda'da bölge ile yerel yönetim sınırları her yerde iç içe geçmez; örneğin Taupo District dört bölgeye birden yayılır, bu yüzden kademeler arası geçişte küçük tutarsızlıklar görülebilir."
+ },
+ "GBR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 9,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "kurucu ülke",
+    "cogul": "Kurucu Ülkeler"
+   },
+   "2": {
+    "tekil": "county (kontluk)",
+    "cogul": "County'ler"
+   },
+   "3": {
+    "tekil": "county (kontluk)",
+    "cogul": "County'ler"
+   }
+  },
+  "enFazlaKademe": 2,
+  "not": "gbOpen sayımları: ADM1=4, ADM2=216, ADM3=216. ADM1 = 4 kurucu ülke (İngiltere, İskoçya, Galler, Kuzey İrlanda) - Eurostat NUTS1 değil, ülke düzeyi. ADM2 = ONS 'Counties and Unitary Authorities' (2019): 216 birim = İngiltere county+üniter otorite+Londra ilçeleri (151) + Galler (22) + İskoçya (32) + K.İrlanda (11). DİKKAT: ADM3, ADM2'nin birebir kopyası - isim listesi tamamen aynı (Rochdale, Norfolk, Powys, Tower Hamlets...), sadece kaynak yılı farklı (2020). Uygulamada ADM3'ü ayrı kademe olarak göstermeyin, yoksa kullanıcı aynı listeye iki kez iner. İngiltere'nin 'local authority district' (374) kademesi gbOpen'da YOK. ilceKademesi=2 seçildi çünkü county/üniter otorite ADM1'in altındaki ilk ve tek yönetim birimi (ABD county analojisi). ADM3 kopya olduğu için gizlilik maskesi orada devreye girer - ADM3'ü UI'dan kaldırırsanız sorun kalmaz. | ADM3 = ADM2 kopyası, gizlendi"
+ },
+ "IRL": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 9,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "eyalet (province)",
+    "cogul": "Eyaletler"
+   },
+   "2": {
+    "tekil": "yerel seçim bölgesi (LEA)",
+    "cogul": "Yerel Seçim Bölgeleri"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=4, ADM2=166. ADM1 = Leinster, Munster, Ulster, Connacht - bunlar TARİHİ/coğrafi eyalet, seçilmiş yönetimi yok. ADM2 = 'Local Electoral Area' (LEA); isimler veride 'BANTRY-WEST CORK LEA-4', 'CARLOW LEA-7' gibi büyük harf + LEA-n son ekiyle geliyor, ekranda göstermeden önce temizlenmeli. ÖNEMLİ EKSİK: İrlanda'nın gerçek il/ilçe karşılığı olan 31 yerel yönetim (county + city council) kademesi gbOpen'da HİÇ YOK; veri eyaletten doğrudan seçim bölgesine atlıyor. LEA ortalama nüfusu ~31 bin, yani 'on binler' tanımına uyuyor, bu yüzden ilceKademesi=2 verildi ve altında kademe olmadığı için hiçbir şey maskelenmiyor. Daha korumacı davranmak isterseniz ilceKademesi=1 yapın; o zaman LEA'lar 5 kişinin altında isimsiz gösterilir. Güven 'orta' çünkü LEA aslında county-altı bir birim. | Sınırlı kapsam: 31 yerel yönetim veride yok"
+ },
+ "SWE": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (län)",
+    "cogul": "İller (Län)"
+   },
+   "2": {
+    "tekil": "belediye (kommun)",
+    "cogul": "Belediyeler (Kommun)"
+   },
+   "3": {
+    "tekil": "distrikt",
+    "cogul": "Distriktler"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=21, ADM2=290, ADM3=2652. ADM1 = län (Örebro län, Skåne län...) = il, tam karşılık. ADM2 = kommun (290) = Türkiye'deki ilçeye çok benzer yapı: il başına ~14 birim, ortalama nüfus ~36 bin. ADM3 = distrikt: 2016'da kurulan, 1999 kilise cemaati (församling/socken) sınırlarına dayanan belediye-altı bölgeler (Munkarp, Sankt Sigfrid, Degeberga gibi). Resmî distrikt sayısı 2.523; gbOpen'da 2.652 var, yani ~129 fazla (muhtemelen ada/bölünmüş parçalar) - kademe anlamı yine de net: belediye altı. VERİ HATASI: ADM3 isimleri bozuk kodlanmış (mojibake) - 'HammarÃ¶', 'Ã–stra NÃ¶bbelÃ¶v'; latin1 olarak okunup UTF-8'e çevrilmesi gerekiyor. ilceKademesi=2, yani distrikt kademesinde 5 kişi altı bölgeler isimsiz gösterilecek - doğru davranış."
+ },
+ "NOR": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "il (fylke)",
+    "cogul": "İller (Fylke)"
+   },
+   "2": {
+    "tekil": "belediye (kommune)",
+    "cogul": "Belediyeler (Kommune)"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=11, ADM2=431. ADM1 = fylke (2022 sınırları, 11 adet) = il. ADM2 = kommune = belediye, fylkenin altındaki ilk ve tek yönetim birimi, ortalama nüfus ~12 bin. İKİ VERİ SORUNU: (1) ADM2 kaynağı 2013 tarihli, o yüzden 431 birim var; Norveç 2020 birleşmelerinden sonra 356 belediyeye düştü, yani sınırlar güncel değil ve ADM1 (2022) ile ADM2 (2013) uyumsuz. (2) İsimlerin sonuna ' nor' eki yapışmış ve bazıları tırnaklı/numaralı: 'Tokke nor', '\"Nordre Land\" nor', 'Kåfjord nor 2' - ekranda göstermeden önce ' nor' eki, tırnaklar ve sondaki rakam temizlenmeli. Altında kademe olmadığı için ilceKademesi=2 ile hiçbir şey maskelenmez."
+ },
+ "DNK": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge (region)",
+    "cogul": "Bölgeler (Region)"
+   },
+   "2": {
+    "tekil": "belediye (kommune)",
+    "cogul": "Belediyeler (Kommune)"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=5, ADM2=98. ADM1 = 2007 reformuyla kurulan 5 bölge (Hovedstaden, Sjælland, Syddanmark, Midtjylland, Nordjylland) - eski 'amt' (il) kademesi kaldırıldığı için Danimarka'da il karşılığı budur; ortalama ~1,2 milyon nüfus. ADM2 = kommune (98) = bölgenin altındaki ilk yönetim birimi, ortalama nüfus ~60 bin, ilçe karşılığı. Altında kademe yok, dolayısıyla ilceKademesi=2 ile maskeleme devreye girmez."
+ },
+ "FIN": {
+  "ilceKademesi": 3,
+  "maskeBaslangici": 4,
+  "guven": "orta",
+  "adlar": {
+   "1": {
+    "tekil": "bölge (maakunta)",
+    "cogul": "Bölgeler (Maakunta)"
+   },
+   "2": {
+    "tekil": "alt bölge (seutukunta)",
+    "cogul": "Alt Bölgeler (Seutukunta)"
+   },
+   "3": {
+    "tekil": "belediye (kunta)",
+    "cogul": "Belediyeler (Kunta)"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=19, ADM2=70, ADM3=312. ADM1 = maakunta (bölge; Uusimaa, Lappi, Åland...) = il karşılığı. ADM2 = seutukunta (alt bölge, 70) - DİKKAT: bu SEÇİLMİŞ BİR YÖNETİM DEĞİL, Tilastokeskus'un belirlediği istatistik/kalkınma gruplamasıdır (eski AB LAU-1); belediyelerin kümesi. ADM3 = kunta (belediye, 312) = Finlandiya'nın gerçek yerel yönetimi, ortalama nüfus ~17,6 bin. ilceKademesi=3 SEÇİLDİ çünkü göreve verilen tanım 'ilin altındaki ilk YÖNETİM birimi' ve seutukunta yönetim birimi değil; kunta ise İsveç/Norveç/Danimarka'daki kommun ile yapısal olarak aynı kademe (o ülkelerde de ilçe kademesi olarak işaretlendi). SONUCU: Finlandiya'da hiçbir kademe maskelenmez. ALTERNATİF: gizlilikte daha korumacı olmak isterseniz ilceKademesi=2 yapın - o zaman 312 belediye 5 kişi altında isimsiz gösterilir (Sottunga gibi 90 nüfuslu belediyeler korunur), ama Finlandiya kırılımının çoğu isimsiz kalır. Karar sizin; güven bu yüzden 'orta'. İsimler karışık dilde: ADM1'de hem Fince (Uusimaa, Kainuu) hem İngilizce (Northern Ostrobothnia, Lapland, Finland Proper) var."
+ },
+ "POL": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "voyvodalık",
+    "cogul": "Voyvodalıklar"
+   },
+   "2": {
+    "tekil": "powiat (ilçe)",
+    "cogul": "Powiatlar (İlçeler)"
+   },
+   "3": {
+    "tekil": "gmina (komün)",
+    "cogul": "Gminalar (Komünler)"
+   }
+  },
+  "not": "gbOpen sayımları: ADM1=16, ADM2=380, ADM3=2478 - üçü de resmî Polonya yapısıyla birebir tutuyor. ADM1 = województwo (voyvodalık, 16) = il. ADM2 = powiat (380 = 314 kırsal powiat + 66 şehir-powiat; veride 'powiat myszkowski' ve 'Tychy', 'Szczecin' gibi şehirler bir arada) = ilçe karşılığı, ortalama ~100 bin nüfus. ADM3 = gmina (2478) = powiat altındaki komün/belediye, maskelenmesi gereken kademe. VERİ NOTU: ADM1 isimleri veride İNGİLİZCE geliyor ('Lesser Poland Voivodeship', 'Masovian Voivodeship'); Türkçe/Lehçe göstermek isterseniz eşleme tablosu gerekir (Lesser Poland = Małopolska, Masovian = Mazowsze vb.)."
+ },
+ "CZE": {
+  "ilceKademesi": 2,
+  "maskeBaslangici": 3,
+  "guven": "yuksek",
+  "adlar": {
+   "1": {
+    "tekil": "bölge (kraj)",
+    "cogul": "Bölgeler (Kraj)"
+   },
+   "2": {
+    "tekil": "okres (ilçe)",
+    "cogul": "Okresler (İlçeler)"
+   },
+   "3": {
+    "tekil": "belediye (obec)",
+    "cogul": "Belediyeler (Obec)"
+   },
+   "4": {
+    "tekil": "kadastro bölgesi (katastrální území)",
+    "cogul": "Kadastro Bölgeleri"
+   }
+  },
+  "enFazlaKademe": 3,
+  "not": "gbOpen sayımları: ADM1=14, ADM2=77, ADM3=6257, ADM4=13090. ADM1 = kraj (13 bölge + Prag) = il. ADM2 = okres (77) = ilçe karşılığı, ortalama ~136 bin nüfus (Chrudim, Písek, Karlovy Vary...). ADM3 = obec (belediye, resmî sayı 6.258 ile birebir). ADM4 = katastrální území (kadastro bölgesi; resmî sayı ~13.078, veride 13.090 - eşleşiyor; 'Trebetice u Dacic', 'Chlum u Letovic' gibi klasik kadastro adlandırması). Bu en alt kademe idari değil, tapu/kadastro amaçlıdır - istatistik göstermek için anlamı düşük, UI'dan çıkarmayı düşünebilirsiniz. VERİ HATASI: ADM3 ve ADM4 isimleri ciddi biçimde bozuk - Çekçe aksanlı harfler rakama/harfe dönüşmüş ('Kr0snB Hora nad Vltavou' = Krásná Hora nad Vltavou, 'Debl4n' = Deblín, 'CZhan'); bu iki kademeyi göstermeden önce isim kaynağını değiştirmek (ör. ČÚZK/OSM'den yeniden çekmek) gerekir. ADM2'de de İngilizceleşmiş adlar var ('Brno-City', 'Brno-Country'). ilceKademesi=2 ile obec ve kadastro kademeleri maskelenir - doğru davranış."
+ }
+}

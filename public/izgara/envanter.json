@@ -1,0 +1,3264 @@
+{
+ "ABW": {
+  "ad": "Aruba",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "AFG": {
+  "ad": "Afghanistan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 34,
+   "ADM2": 398
+  },
+  "enDerin": 2,
+  "dosyaAyri": 35,
+  "dosyaGomulu": 35,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 35
+ },
+ "AGO": {
+  "ad": "Angola",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 158,
+   "ADM3": 558
+  },
+  "enDerin": 3,
+  "dosyaAyri": 177,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 9.8,
+  "gomme": true,
+  "dosyaSecilen": 19
+ },
+ "AIA": {
+  "ad": "Anguilla",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "ALB": {
+  "ad": "Albania",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 37,
+   "ADM3": 373
+  },
+  "enDerin": 3,
+  "dosyaAyri": 50,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 4.1,
+  "gomme": true,
+  "dosyaSecilen": 13
+ },
+ "AND": {
+  "ad": "Andorra",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "ARE": {
+  "ad": "United Arab Emirates",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "ARG": {
+  "ad": "Argentina",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 23,
+   "ADM2": 526
+  },
+  "enDerin": 2,
+  "dosyaAyri": 24,
+  "dosyaGomulu": 24,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 24
+ },
+ "ARM": {
+  "ad": "Armenia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11,
+   "ADM2": 39
+  },
+  "enDerin": 2,
+  "dosyaAyri": 12,
+  "dosyaGomulu": 12,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 12
+ },
+ "ASM": {
+  "ad": "American Samoa",
+  "kademe": {
+   "ADM0": 1,
+   "ADM3": 16
+  },
+  "enDerin": 3,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "ATA": {
+  "ad": "Antartica",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "ATG": {
+  "ad": "Antigua and Barbuda",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "AUS": {
+  "ad": "Australia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 547
+  },
+  "enDerin": 2,
+  "dosyaAyri": 10,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 10
+ },
+ "AUT": {
+  "ad": "Austria",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 94,
+   "ADM3": 2097,
+   "ADM4": 7850
+  },
+  "enDerin": 4,
+  "dosyaAyri": 2201,
+  "dosyaGomulu": 104,
+  "izgaraPerDosya": 23.3,
+  "gomme": false,
+  "dosyaSecilen": 2201
+ },
+ "AZE": {
+  "ad": "Azerbaijan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 2,
+   "ADM2": 79
+  },
+  "enDerin": 2,
+  "dosyaAyri": 3,
+  "dosyaGomulu": 3,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 3
+ },
+ "BDI": {
+  "ad": "Burundi",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 119,
+   "ADM3": 2615
+  },
+  "enDerin": 3,
+  "dosyaAyri": 138,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 7.6,
+  "gomme": true,
+  "dosyaSecilen": 19
+ },
+ "BEL": {
+  "ad": "Belgium",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 3,
+   "ADM2": 11,
+   "ADM3": 43,
+   "ADM4": 589
+  },
+  "enDerin": 4,
+  "dosyaAyri": 58,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 4.9,
+  "gomme": true,
+  "dosyaSecilen": 15
+ },
+ "BEN": {
+  "ad": "Benin",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 77,
+   "ADM3": 546
+  },
+  "enDerin": 3,
+  "dosyaAyri": 90,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 7.4,
+  "gomme": true,
+  "dosyaSecilen": 13
+ },
+ "BES": {
+  "ad": "Bonaire Sint Eustatius and Saba",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "BFA": {
+  "ad": "Burkina Faso",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 45,
+   "ADM3": 351
+  },
+  "enDerin": 3,
+  "dosyaAyri": 59,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 4.5,
+  "gomme": true,
+  "dosyaSecilen": 14
+ },
+ "BGD": {
+  "ad": "Bangladesh",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 64,
+   "ADM3": 544,
+   "ADM4": 5160
+  },
+  "enDerin": 4,
+  "dosyaAyri": 617,
+  "dosyaGomulu": 73,
+  "izgaraPerDosya": 9.5,
+  "gomme": true,
+  "dosyaSecilen": 73
+ },
+ "BGR": {
+  "ad": "Bulgaria",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 28,
+   "ADM2": 265
+  },
+  "enDerin": 2,
+  "dosyaAyri": 29,
+  "dosyaGomulu": 29,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 29
+ },
+ "BHR": {
+  "ad": "Bahrain",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "BHS": {
+  "ad": "Bahamas",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 32,
+   "ADM2": 34
+  },
+  "enDerin": 2,
+  "dosyaAyri": 33,
+  "dosyaGomulu": 33,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 33
+ },
+ "BIH": {
+  "ad": "Bosnia and Herzegovina",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 3,
+   "ADM2": 12,
+   "ADM3": 142
+  },
+  "enDerin": 3,
+  "dosyaAyri": 16,
+  "dosyaGomulu": 4,
+  "izgaraPerDosya": 5,
+  "gomme": true,
+  "dosyaSecilen": 4
+ },
+ "BLM": {
+  "ad": "Saint Barthélemy",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "BLR": {
+  "ad": "Belarus",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 118
+  },
+  "enDerin": 2,
+  "dosyaAyri": 8,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 8
+ },
+ "BLZ": {
+  "ad": "Belize",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 31
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "BMU": {
+  "ad": "Bermuda",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "BOL": {
+  "ad": "Bolivia (Plurinational State of)",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 110,
+   "ADM3": 339
+  },
+  "enDerin": 3,
+  "dosyaAyri": 120,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 13.2,
+  "gomme": true,
+  "dosyaSecilen": 10
+ },
+ "BRA": {
+  "ad": "Brazil",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 27,
+   "ADM2": 5570
+  },
+  "enDerin": 2,
+  "dosyaAyri": 28,
+  "dosyaGomulu": 28,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 28
+ },
+ "BRB": {
+  "ad": "Barbados",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "BRN": {
+  "ad": "Brunei Darussalam",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 38
+  },
+  "enDerin": 2,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 5,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 5
+ },
+ "BTN": {
+  "ad": "Bhutan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 20,
+   "ADM2": 205
+  },
+  "enDerin": 2,
+  "dosyaAyri": 21,
+  "dosyaGomulu": 21,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 21
+ },
+ "BWA": {
+  "ad": "Botswana",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 25
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "CAF": {
+  "ad": "Central African Republic",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 17,
+   "ADM2": 72,
+   "ADM3": 175
+  },
+  "enDerin": 3,
+  "dosyaAyri": 90,
+  "dosyaGomulu": 18,
+  "izgaraPerDosya": 5.2,
+  "gomme": true,
+  "dosyaSecilen": 18
+ },
+ "CAN": {
+  "ad": "Canada",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 76,
+   "ADM3": 5162
+  },
+  "enDerin": 3,
+  "dosyaAyri": 90,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 6.8,
+  "gomme": true,
+  "dosyaSecilen": 14
+ },
+ "CHE": {
+  "ad": "Switzerland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 26,
+   "ADM2": 169,
+   "ADM3": 2286
+  },
+  "enDerin": 3,
+  "dosyaAyri": 196,
+  "dosyaGomulu": 27,
+  "izgaraPerDosya": 7.5,
+  "gomme": true,
+  "dosyaSecilen": 27
+ },
+ "CHL": {
+  "ad": "Chile",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 56,
+   "ADM3": 345
+  },
+  "enDerin": 3,
+  "dosyaAyri": 73,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 4.5,
+  "gomme": true,
+  "dosyaSecilen": 17
+ },
+ "CHN": {
+  "ad": "China",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 34,
+   "ADM2": 2391,
+   "ADM3": 2867
+  },
+  "enDerin": 3,
+  "dosyaAyri": 2426,
+  "dosyaGomulu": 35,
+  "izgaraPerDosya": 71.3,
+  "gomme": false,
+  "dosyaSecilen": 2426
+ },
+ "CIV": {
+  "ad": "Côte d'Ivoire",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 33,
+   "ADM3": 510
+  },
+  "enDerin": 3,
+  "dosyaAyri": 48,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 3.4,
+  "gomme": true,
+  "dosyaSecilen": 15
+ },
+ "CMR": {
+  "ad": "Cameroon",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 60,
+   "ADM3": 360
+  },
+  "enDerin": 3,
+  "dosyaAyri": 71,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 7,
+  "gomme": true,
+  "dosyaSecilen": 11
+ },
+ "COD": {
+  "ad": "Democratic Republic of the Congo",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 26,
+   "ADM2": 189
+  },
+  "enDerin": 2,
+  "dosyaAyri": 27,
+  "dosyaGomulu": 27,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 27
+ },
+ "COG": {
+  "ad": "Congo",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 46
+  },
+  "enDerin": 2,
+  "dosyaAyri": 13,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 13
+ },
+ "COK": {
+  "ad": "Cook Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "COL": {
+  "ad": "Colombia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 33,
+   "ADM2": 1122
+  },
+  "enDerin": 2,
+  "dosyaAyri": 34,
+  "dosyaGomulu": 34,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 34
+ },
+ "COM": {
+  "ad": "Comoros",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 3,
+   "ADM2": 17,
+   "ADM3": 55
+  },
+  "enDerin": 3,
+  "dosyaAyri": 21,
+  "dosyaGomulu": 4,
+  "izgaraPerDosya": 6.7,
+  "gomme": true,
+  "dosyaSecilen": 4
+ },
+ "CPV": {
+  "ad": "Cabo Verde",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 32
+  },
+  "enDerin": 2,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 23
+ },
+ "CRI": {
+  "ad": "Costa Rica",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 83,
+   "ADM3": 472
+  },
+  "enDerin": 3,
+  "dosyaAyri": 91,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 12.9,
+  "gomme": true,
+  "dosyaSecilen": 8
+ },
+ "CUB": {
+  "ad": "Cuba",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 168
+  },
+  "enDerin": 2,
+  "dosyaAyri": 17,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 17
+ },
+ "CUW": {
+  "ad": "Curaçao",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "CYM": {
+  "ad": "Cayman Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "CYP": {
+  "ad": "Cyprus",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 612
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "CZE": {
+  "ad": "Czechia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 77,
+   "ADM3": 6257,
+   "ADM4": 13090
+  },
+  "enDerin": 4,
+  "dosyaAyri": 6349,
+  "dosyaGomulu": 92,
+  "izgaraPerDosya": 82.3,
+  "gomme": false,
+  "dosyaSecilen": 6349
+ },
+ "DEU": {
+  "ad": "Germany",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 38,
+   "ADM3": 428
+  },
+  "enDerin": 3,
+  "dosyaAyri": 55,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 3.4,
+  "gomme": true,
+  "dosyaSecilen": 17
+ },
+ "DJI": {
+  "ad": "Djibouti",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 11
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "DMA": {
+  "ad": "Dominica",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "DNK": {
+  "ad": "Denmark",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 98
+  },
+  "enDerin": 2,
+  "dosyaAyri": 6,
+  "dosyaGomulu": 6,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 6
+ },
+ "DOM": {
+  "ad": "Dominican Republic",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 32,
+   "ADM2": 155
+  },
+  "enDerin": 2,
+  "dosyaAyri": 33,
+  "dosyaGomulu": 33,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 33
+ },
+ "DZA": {
+  "ad": "Algeria",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 48,
+   "ADM2": 48,
+   "ADM3": 1540
+  },
+  "enDerin": 3,
+  "dosyaAyri": 97,
+  "dosyaGomulu": 49,
+  "izgaraPerDosya": 2,
+  "gomme": true,
+  "dosyaSecilen": 49
+ },
+ "ECU": {
+  "ad": "Ecuador",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 24,
+   "ADM2": 224
+  },
+  "enDerin": 2,
+  "dosyaAyri": 25,
+  "dosyaGomulu": 25,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 25
+ },
+ "EGY": {
+  "ad": "Egypt",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 27,
+   "ADM2": 365
+  },
+  "enDerin": 2,
+  "dosyaAyri": 28,
+  "dosyaGomulu": 28,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 28
+ },
+ "ERI": {
+  "ad": "Eritrea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 58
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "ESP": {
+  "ad": "Spain",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 19,
+   "ADM2": 52,
+   "ADM3": 8205
+  },
+  "enDerin": 3,
+  "dosyaAyri": 72,
+  "dosyaGomulu": 20,
+  "izgaraPerDosya": 3.7,
+  "gomme": true,
+  "dosyaSecilen": 20
+ },
+ "EST": {
+  "ad": "Estonia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 15,
+   "ADM2": 215,
+   "ADM3": 4797
+  },
+  "enDerin": 3,
+  "dosyaAyri": 231,
+  "dosyaGomulu": 16,
+  "izgaraPerDosya": 15.3,
+  "gomme": true,
+  "dosyaSecilen": 16
+ },
+ "ETH": {
+  "ad": "Ethiopia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11,
+   "ADM2": 74,
+   "ADM3": 690
+  },
+  "enDerin": 3,
+  "dosyaAyri": 86,
+  "dosyaGomulu": 12,
+  "izgaraPerDosya": 7.7,
+  "gomme": true,
+  "dosyaSecilen": 12
+ },
+ "FIN": {
+  "ad": "Finland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 19,
+   "ADM2": 70,
+   "ADM3": 313
+  },
+  "enDerin": 3,
+  "dosyaAyri": 90,
+  "dosyaGomulu": 20,
+  "izgaraPerDosya": 4.7,
+  "gomme": true,
+  "dosyaSecilen": 20
+ },
+ "FJI": {
+  "ad": "Fiji",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 15,
+   "ADM3": 86,
+   "ADM4": 1602
+  },
+  "enDerin": 4,
+  "dosyaAyri": 106,
+  "dosyaGomulu": 20,
+  "izgaraPerDosya": 6.7,
+  "gomme": true,
+  "dosyaSecilen": 20
+ },
+ "FLK": {
+  "ad": "Falkland Islands (Malvinas)",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "FRA": {
+  "ad": "France",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 96,
+   "ADM3": 320,
+   "ADM4": 2054
+  },
+  "enDerin": 4,
+  "dosyaAyri": 430,
+  "dosyaGomulu": 110,
+  "izgaraPerDosya": 4.3,
+  "gomme": true,
+  "dosyaSecilen": 110
+ },
+ "FRO": {
+  "ad": "Faroe Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "FSM": {
+  "ad": "Micronesia (Fed. States of)",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 75
+  },
+  "enDerin": 2,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 5,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 5
+ },
+ "GAB": {
+  "ad": "Gabon",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 49
+  },
+  "enDerin": 2,
+  "dosyaAyri": 10,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 10
+ },
+ "GBR": {
+  "ad": "United Kingdom",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 216,
+   "ADM3": 216
+  },
+  "enDerin": 3,
+  "dosyaAyri": 221,
+  "dosyaGomulu": 5,
+  "izgaraPerDosya": 55,
+  "gomme": false,
+  "dosyaSecilen": 221
+ },
+ "GEO": {
+  "ad": "Georgia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 68
+  },
+  "enDerin": 2,
+  "dosyaAyri": 13,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 13
+ },
+ "GGY": {
+  "ad": "Guernsey",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "GHA": {
+  "ad": "Ghana",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 260
+  },
+  "enDerin": 2,
+  "dosyaAyri": 17,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 17
+ },
+ "GIB": {
+  "ad": "Gibraltar",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "GIN": {
+  "ad": "Guinea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 34,
+   "ADM3": 340
+  },
+  "enDerin": 3,
+  "dosyaAyri": 43,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 5.3,
+  "gomme": true,
+  "dosyaSecilen": 9
+ },
+ "GLP": {
+  "ad": "Guadeloupe",
+  "kademe": {
+   "ADM0": 1,
+   "ADM4": 32
+  },
+  "enDerin": 4,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "GMB": {
+  "ad": "Gambia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 48,
+   "ADM3": 120
+  },
+  "enDerin": 3,
+  "dosyaAyri": 57,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 7,
+  "gomme": true,
+  "dosyaSecilen": 9
+ },
+ "GNB": {
+  "ad": "Guinea-Bissau",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 39
+  },
+  "enDerin": 2,
+  "dosyaAyri": 10,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 10
+ },
+ "GNQ": {
+  "ad": "Equatorial Guinea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 31
+  },
+  "enDerin": 2,
+  "dosyaAyri": 8,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 8
+ },
+ "GRC": {
+  "ad": "Greece",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 14,
+   "ADM3": 326
+  },
+  "enDerin": 3,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 2.8,
+  "gomme": true,
+  "dosyaSecilen": 9
+ },
+ "GRD": {
+  "ad": "Grenada",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "GRL": {
+  "ad": "Greenland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "GTM": {
+  "ad": "Guatemala",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 342
+  },
+  "enDerin": 2,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 23
+ },
+ "GUF": {
+  "ad": "French Guiana",
+  "kademe": {
+   "ADM0": 1,
+   "ADM3": 2
+  },
+  "enDerin": 3,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "GUM": {
+  "ad": "Guam",
+  "kademe": {
+   "ADM0": 1,
+   "ADM2": 19
+  },
+  "enDerin": 2,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "GUY": {
+  "ad": "Guyana",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 27
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "HND": {
+  "ad": "Honduras",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 299
+  },
+  "enDerin": 2,
+  "dosyaAyri": 19,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 19
+ },
+ "HRV": {
+  "ad": "Croatia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 21,
+   "ADM2": 560
+  },
+  "enDerin": 2,
+  "dosyaAyri": 22,
+  "dosyaGomulu": 22,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 22
+ },
+ "HTI": {
+  "ad": "Haiti",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 42,
+   "ADM3": 140
+  },
+  "enDerin": 3,
+  "dosyaAyri": 53,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 5.2,
+  "gomme": true,
+  "dosyaSecilen": 11
+ },
+ "HUN": {
+  "ad": "Hungary",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 20,
+   "ADM2": 198,
+   "ADM3": 3357
+  },
+  "enDerin": 3,
+  "dosyaAyri": 219,
+  "dosyaGomulu": 21,
+  "izgaraPerDosya": 10.9,
+  "gomme": true,
+  "dosyaSecilen": 21
+ },
+ "IDN": {
+  "ad": "Indonesia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 34,
+   "ADM2": 519
+  },
+  "enDerin": 2,
+  "dosyaAyri": 35,
+  "dosyaGomulu": 35,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 35
+ },
+ "IMN": {
+  "ad": "Isle of Man",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "IND": {
+  "ad": "India",
+  "kademe": {
+   "ADM1": 36,
+   "ADM2": 736,
+   "ADM3": 6836,
+   "ADM4": 7152
+  },
+  "enDerin": 4,
+  "dosyaAyri": 7609,
+  "dosyaGomulu": 773,
+  "izgaraPerDosya": 10.3,
+  "gomme": true,
+  "dosyaSecilen": 773
+ },
+ "IRL": {
+  "ad": "Ireland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 166
+  },
+  "enDerin": 2,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 5,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 5
+ },
+ "IRN": {
+  "ad": "Iran (Islamic Republic of)",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 33,
+   "ADM2": 432,
+   "ADM3": 1076,
+   "ADM4": 2815
+  },
+  "enDerin": 4,
+  "dosyaAyri": 1542,
+  "dosyaGomulu": 466,
+  "izgaraPerDosya": 3.5,
+  "gomme": true,
+  "dosyaSecilen": 466
+ },
+ "IRQ": {
+  "ad": "Iraq",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 101
+  },
+  "enDerin": 2,
+  "dosyaAyri": 19,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 19
+ },
+ "ISL": {
+  "ad": "Iceland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 74
+  },
+  "enDerin": 2,
+  "dosyaAyri": 9,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 9
+ },
+ "ISR": {
+  "ad": "Israel",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 15
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "ITA": {
+  "ad": "Italy",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 20,
+   "ADM3": 107,
+   "ADM4": 7901
+  },
+  "enDerin": 4,
+  "dosyaAyri": 133,
+  "dosyaGomulu": 26,
+  "izgaraPerDosya": 6.3,
+  "gomme": true,
+  "dosyaSecilen": 26
+ },
+ "JAM": {
+  "ad": "Jamaica",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 827,
+   "ADM3": 829
+  },
+  "enDerin": 3,
+  "dosyaAyri": 842,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 60.1,
+  "gomme": false,
+  "dosyaSecilen": 842
+ },
+ "JOR": {
+  "ad": "Jordan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 52
+  },
+  "enDerin": 2,
+  "dosyaAyri": 13,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 13
+ },
+ "JPN": {
+  "ad": "Japan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 47,
+   "ADM2": 1745
+  },
+  "enDerin": 2,
+  "dosyaAyri": 48,
+  "dosyaGomulu": 48,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 48
+ },
+ "KAZ": {
+  "ad": "Kazakhstan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 174
+  },
+  "enDerin": 2,
+  "dosyaAyri": 17,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 17
+ },
+ "KEN": {
+  "ad": "Kenya",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 47,
+   "ADM2": 290,
+   "ADM3": 1452
+  },
+  "enDerin": 3,
+  "dosyaAyri": 338,
+  "dosyaGomulu": 48,
+  "izgaraPerDosya": 7.2,
+  "gomme": true,
+  "dosyaSecilen": 48
+ },
+ "KGZ": {
+  "ad": "Kyrgyzstan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 41
+  },
+  "enDerin": 2,
+  "dosyaAyri": 8,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 8
+ },
+ "KHM": {
+  "ad": "Cambodia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 25,
+   "ADM2": 197,
+   "ADM3": 1633
+  },
+  "enDerin": 3,
+  "dosyaAyri": 223,
+  "dosyaGomulu": 26,
+  "izgaraPerDosya": 8.9,
+  "gomme": true,
+  "dosyaSecilen": 26
+ },
+ "KIR": {
+  "ad": "Kiribati",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 3,
+   "ADM2": 24
+  },
+  "enDerin": 2,
+  "dosyaAyri": 4,
+  "dosyaGomulu": 4,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 4
+ },
+ "KNA": {
+  "ad": "Saint Kitts and Nevis",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "KOR": {
+  "ad": "Republic of Korea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 17,
+   "ADM2": 229,
+   "ADM3": 3504
+  },
+  "enDerin": 3,
+  "dosyaAyri": 247,
+  "dosyaGomulu": 18,
+  "izgaraPerDosya": 14.5,
+  "gomme": true,
+  "dosyaSecilen": 18
+ },
+ "KWT": {
+  "ad": "Kuwait",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 138
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "LAO": {
+  "ad": "Lao People's Democratic Republic",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 148
+  },
+  "enDerin": 2,
+  "dosyaAyri": 19,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 19
+ },
+ "LBN": {
+  "ad": "Lebanon",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 26
+  },
+  "enDerin": 2,
+  "dosyaAyri": 10,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 10
+ },
+ "LBR": {
+  "ad": "Liberia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 15,
+   "ADM2": 136
+  },
+  "enDerin": 2,
+  "dosyaAyri": 16,
+  "dosyaGomulu": 16,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 16
+ },
+ "LBY": {
+  "ad": "Libya",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "LCA": {
+  "ad": "Saint Lucia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 547
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "LIE": {
+  "ad": "Liechtenstein",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "LKA": {
+  "ad": "Sri Lanka",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 25,
+   "ADM3": 330,
+   "ADM4": 14044
+  },
+  "enDerin": 4,
+  "dosyaAyri": 365,
+  "dosyaGomulu": 35,
+  "izgaraPerDosya": 14.2,
+  "gomme": true,
+  "dosyaSecilen": 35
+ },
+ "LSO": {
+  "ad": "Lesotho",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 78
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "LTU": {
+  "ad": "Lithuania",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 60,
+   "ADM3": 544
+  },
+  "enDerin": 3,
+  "dosyaAyri": 71,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 7,
+  "gomme": true,
+  "dosyaSecilen": 11
+ },
+ "LUX": {
+  "ad": "Luxembourg",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 105,
+   "ADM3": 102
+  },
+  "enDerin": 3,
+  "dosyaAyri": 118,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 9.8,
+  "gomme": true,
+  "dosyaSecilen": 13
+ },
+ "LVA": {
+  "ad": "Latvia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 43,
+   "ADM2": 589
+  },
+  "enDerin": 2,
+  "dosyaAyri": 44,
+  "dosyaGomulu": 44,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 44
+ },
+ "MAR": {
+  "ad": "Morocco",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 75
+  },
+  "enDerin": 2,
+  "dosyaAyri": 13,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 13
+ },
+ "MCO": {
+  "ad": "Monaco",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 1,
+   "ADM2": 9
+  },
+  "enDerin": 2,
+  "dosyaAyri": 2,
+  "dosyaGomulu": 2,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 2
+ },
+ "MDA": {
+  "ad": "Republic of Moldova",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 37
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MDG": {
+  "ad": "Madagascar",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 119,
+   "ADM3": 1579,
+   "ADM4": 17465
+  },
+  "enDerin": 4,
+  "dosyaAyri": 1721,
+  "dosyaGomulu": 142,
+  "izgaraPerDosya": 14.3,
+  "gomme": true,
+  "dosyaSecilen": 142
+ },
+ "MDV": {
+  "ad": "Maldives",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 21,
+   "ADM2": 21
+  },
+  "enDerin": 2,
+  "dosyaAyri": 22,
+  "dosyaGomulu": 22,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 22
+ },
+ "MEX": {
+  "ad": "Mexico",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 32,
+   "ADM2": 2457
+  },
+  "enDerin": 2,
+  "dosyaAyri": 33,
+  "dosyaGomulu": 33,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 33
+ },
+ "MHL": {
+  "ad": "Marshall Islands",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 24
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MKD": {
+  "ad": "North Macedonia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 84
+  },
+  "enDerin": 2,
+  "dosyaAyri": 9,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 9
+ },
+ "MLI": {
+  "ad": "Mali",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 50,
+   "ADM3": 701
+  },
+  "enDerin": 3,
+  "dosyaAyri": 60,
+  "dosyaGomulu": 10,
+  "izgaraPerDosya": 6.6,
+  "gomme": true,
+  "dosyaSecilen": 10
+ },
+ "MLT": {
+  "ad": "Malta",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 68
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MMR": {
+  "ad": "Myanmar",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 74,
+   "ADM3": 330
+  },
+  "enDerin": 3,
+  "dosyaAyri": 89,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 6.3,
+  "gomme": true,
+  "dosyaSecilen": 15
+ },
+ "MNE": {
+  "ad": "Montenegro",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 23
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MNG": {
+  "ad": "Mongolia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 339
+  },
+  "enDerin": 2,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 23
+ },
+ "MNP": {
+  "ad": "Northern Mariana Islands",
+  "kademe": {
+   "ADM0": 1,
+   "ADM2": 4
+  },
+  "enDerin": 2,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MOZ": {
+  "ad": "Mozambique",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 159,
+   "ADM3": 411
+  },
+  "enDerin": 3,
+  "dosyaAyri": 170,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 16.9,
+  "gomme": true,
+  "dosyaSecilen": 11
+ },
+ "MRT": {
+  "ad": "Mauritania",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 57
+  },
+  "enDerin": 2,
+  "dosyaAyri": 14,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 14
+ },
+ "MSR": {
+  "ad": "Montserrat",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "MTQ": {
+  "ad": "Martinique",
+  "kademe": {
+   "ADM0": 1,
+   "ADM3": 4,
+   "ADM4": 34
+  },
+  "enDerin": 4,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 5,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "MUS": {
+  "ad": "Mauritius",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "MWI": {
+  "ad": "Malawi",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 3,
+   "ADM2": 28,
+   "ADM3": 245
+  },
+  "enDerin": 3,
+  "dosyaAyri": 32,
+  "dosyaGomulu": 4,
+  "izgaraPerDosya": 10.3,
+  "gomme": true,
+  "dosyaSecilen": 4
+ },
+ "MYS": {
+  "ad": "Malaysia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 160,
+   "ADM3": 1859
+  },
+  "enDerin": 3,
+  "dosyaAyri": 177,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 11,
+  "gomme": true,
+  "dosyaSecilen": 17
+ },
+ "MYT": {
+  "ad": "Mayotte",
+  "kademe": {
+   "ADM0": 1,
+   "ADM4": 17
+  },
+  "enDerin": 4,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "NAM": {
+  "ad": "Namibia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 109
+  },
+  "enDerin": 2,
+  "dosyaAyri": 15,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 15
+ },
+ "NCL": {
+  "ad": "New Caledonia",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "NER": {
+  "ad": "Niger",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 67,
+   "ADM3": 266
+  },
+  "enDerin": 3,
+  "dosyaAyri": 74,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 12.2,
+  "gomme": true,
+  "dosyaSecilen": 7
+ },
+ "NGA": {
+  "ad": "Nigeria",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 37,
+   "ADM2": 774
+  },
+  "enDerin": 2,
+  "dosyaAyri": 38,
+  "dosyaGomulu": 38,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 38
+ },
+ "NIC": {
+  "ad": "Nicaragua",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 17,
+   "ADM2": 153
+  },
+  "enDerin": 2,
+  "dosyaAyri": 18,
+  "dosyaGomulu": 18,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 18
+ },
+ "NIU": {
+  "ad": "Niue",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "NLD": {
+  "ad": "Netherlands",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 12,
+   "ADM2": 344
+  },
+  "enDerin": 2,
+  "dosyaAyri": 13,
+  "dosyaGomulu": 13,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 13
+ },
+ "NOR": {
+  "ad": "Norway",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11,
+   "ADM2": 431
+  },
+  "enDerin": 2,
+  "dosyaAyri": 12,
+  "dosyaGomulu": 12,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 12
+ },
+ "NPL": {
+  "ad": "Nepal",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 75,
+   "ADM3": 774
+  },
+  "enDerin": 3,
+  "dosyaAyri": 83,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 11.7,
+  "gomme": true,
+  "dosyaSecilen": 8
+ },
+ "NRU": {
+  "ad": "Nauru",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "NZL": {
+  "ad": "New Zealand",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 17,
+   "ADM2": 88,
+   "ADM3": 245
+  },
+  "enDerin": 3,
+  "dosyaAyri": 106,
+  "dosyaGomulu": 18,
+  "izgaraPerDosya": 6.2,
+  "gomme": true,
+  "dosyaSecilen": 18
+ },
+ "OMN": {
+  "ad": "Oman",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 61
+  },
+  "enDerin": 2,
+  "dosyaAyri": 8,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 8
+ },
+ "PAK": {
+  "ad": "Pakistan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 7,
+   "ADM2": 126,
+   "ADM3": 554
+  },
+  "enDerin": 3,
+  "dosyaAyri": 134,
+  "dosyaGomulu": 8,
+  "izgaraPerDosya": 19,
+  "gomme": true,
+  "dosyaSecilen": 8
+ },
+ "PAN": {
+  "ad": "Panama",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 76,
+   "ADM3": 633
+  },
+  "enDerin": 3,
+  "dosyaAyri": 90,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 6.8,
+  "gomme": true,
+  "dosyaSecilen": 14
+ },
+ "PCN": {
+  "ad": "Pitcairn Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "PER": {
+  "ad": "Peru",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 26,
+   "ADM2": 196
+  },
+  "enDerin": 2,
+  "dosyaAyri": 27,
+  "dosyaGomulu": 27,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 27
+ },
+ "PHL": {
+  "ad": "Philippines",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 17,
+   "ADM2": 87,
+   "ADM3": 1647
+  },
+  "enDerin": 3,
+  "dosyaAyri": 105,
+  "dosyaGomulu": 18,
+  "izgaraPerDosya": 6.1,
+  "gomme": true,
+  "dosyaSecilen": 18
+ },
+ "PLW": {
+  "ad": "Palau",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 77
+  },
+  "enDerin": 2,
+  "dosyaAyri": 17,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 17
+ },
+ "PNG": {
+  "ad": "Papua New Guinea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 87,
+   "ADM3": 326
+  },
+  "enDerin": 3,
+  "dosyaAyri": 110,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 5,
+  "gomme": true,
+  "dosyaSecilen": 23
+ },
+ "POL": {
+  "ad": "Poland",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 16,
+   "ADM2": 380,
+   "ADM3": 2480
+  },
+  "enDerin": 3,
+  "dosyaAyri": 397,
+  "dosyaGomulu": 17,
+  "izgaraPerDosya": 24.8,
+  "gomme": false,
+  "dosyaSecilen": 397
+ },
+ "PRI": {
+  "ad": "Puerto Rico",
+  "kademe": {
+   "ADM2": 78,
+   "ADM3": 901
+  },
+  "enDerin": 3,
+  "dosyaAyri": 79,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 79,
+  "gomme": false,
+  "dosyaSecilen": 79
+ },
+ "PRK": {
+  "ad": "Dem. People's Republic of Korea",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11,
+   "ADM2": 179
+  },
+  "enDerin": 2,
+  "dosyaAyri": 12,
+  "dosyaGomulu": 12,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 12
+ },
+ "PRT": {
+  "ad": "Portugal",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 20,
+   "ADM2": 311,
+   "ADM3": 2905
+  },
+  "enDerin": 3,
+  "dosyaAyri": 332,
+  "dosyaGomulu": 21,
+  "izgaraPerDosya": 16.6,
+  "gomme": true,
+  "dosyaSecilen": 21
+ },
+ "PRY": {
+  "ad": "Paraguay",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 247
+  },
+  "enDerin": 2,
+  "dosyaAyri": 19,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 19
+ },
+ "PSE": {
+  "ad": "State of Palestine",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 2,
+   "ADM2": 16
+  },
+  "enDerin": 2,
+  "dosyaAyri": 3,
+  "dosyaGomulu": 3,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 3
+ },
+ "PYF": {
+  "ad": "French Polynesia",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "QAT": {
+  "ad": "Qatar",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 79
+  },
+  "enDerin": 2,
+  "dosyaAyri": 9,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 9
+ },
+ "REU": {
+  "ad": "Réunion",
+  "kademe": {
+   "ADM0": 1,
+   "ADM3": 4,
+   "ADM4": 24
+  },
+  "enDerin": 4,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 5,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "ROU": {
+  "ad": "Romania",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 42,
+   "ADM2": 3235
+  },
+  "enDerin": 2,
+  "dosyaAyri": 43,
+  "dosyaGomulu": 43,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 43
+ },
+ "RUS": {
+  "ad": "Russian Federation",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 83,
+   "ADM2": 2328
+  },
+  "enDerin": 2,
+  "dosyaAyri": 84,
+  "dosyaGomulu": 84,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 84
+ },
+ "RWA": {
+  "ad": "Rwanda",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 30,
+   "ADM3": 416,
+   "ADM4": 2148
+  },
+  "enDerin": 4,
+  "dosyaAyri": 452,
+  "dosyaGomulu": 36,
+  "izgaraPerDosya": 14.9,
+  "gomme": true,
+  "dosyaSecilen": 36
+ },
+ "SAU": {
+  "ad": "Saudi Arabia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 147
+  },
+  "enDerin": 2,
+  "dosyaAyri": 14,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 14
+ },
+ "SDN": {
+  "ad": "Sudan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 19,
+   "ADM2": 189
+  },
+  "enDerin": 2,
+  "dosyaAyri": 20,
+  "dosyaGomulu": 20,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 20
+ },
+ "SEN": {
+  "ad": "Senegal",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 45,
+   "ADM3": 121
+  },
+  "enDerin": 3,
+  "dosyaAyri": 60,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 4.2,
+  "gomme": true,
+  "dosyaSecilen": 15
+ },
+ "SGP": {
+  "ad": "Singapore",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 55
+  },
+  "enDerin": 2,
+  "dosyaAyri": 6,
+  "dosyaGomulu": 6,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 6
+ },
+ "SHN": {
+  "ad": "Saint Helena",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "SLB": {
+  "ad": "Solomon Islands",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 50,
+   "ADM3": 183,
+   "ADM4": 1344
+  },
+  "enDerin": 4,
+  "dosyaAyri": 244,
+  "dosyaGomulu": 61,
+  "izgaraPerDosya": 4.7,
+  "gomme": true,
+  "dosyaSecilen": 61
+ },
+ "SLE": {
+  "ad": "Sierra Leone",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 14,
+   "ADM3": 165,
+   "ADM4": 1322
+  },
+  "enDerin": 4,
+  "dosyaAyri": 184,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 12.8,
+  "gomme": true,
+  "dosyaSecilen": 19
+ },
+ "SLV": {
+  "ad": "El Salvador",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 272
+  },
+  "enDerin": 2,
+  "dosyaAyri": 15,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 15
+ },
+ "SMR": {
+  "ad": "San Marino",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "SOM": {
+  "ad": "Somalia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 18,
+   "ADM2": 118
+  },
+  "enDerin": 2,
+  "dosyaAyri": 19,
+  "dosyaGomulu": 19,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 19
+ },
+ "SRB": {
+  "ad": "Serbia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 25,
+   "ADM2": 145
+  },
+  "enDerin": 2,
+  "dosyaAyri": 26,
+  "dosyaGomulu": 26,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 26
+ },
+ "SSD": {
+  "ad": "South Sudan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 78
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "STP": {
+  "ad": "Sao Tome and Principe",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 2,
+   "ADM2": 7
+  },
+  "enDerin": 2,
+  "dosyaAyri": 3,
+  "dosyaGomulu": 3,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 3
+ },
+ "SUR": {
+  "ad": "Suriname",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 62
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "SVK": {
+  "ad": "Slovakia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 79,
+   "ADM3": 2941,
+   "ADM4": 3695
+  },
+  "enDerin": 4,
+  "dosyaAyri": 3029,
+  "dosyaGomulu": 88,
+  "izgaraPerDosya": 38.2,
+  "gomme": false,
+  "dosyaSecilen": 3029
+ },
+ "SVN": {
+  "ad": "Slovenia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 2,
+   "ADM2": 213
+  },
+  "enDerin": 2,
+  "dosyaAyri": 3,
+  "dosyaGomulu": 3,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 3
+ },
+ "SWE": {
+  "ad": "Sweden",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 21,
+   "ADM2": 290,
+   "ADM3": 2652
+  },
+  "enDerin": 3,
+  "dosyaAyri": 312,
+  "dosyaGomulu": 22,
+  "izgaraPerDosya": 14.8,
+  "gomme": true,
+  "dosyaSecilen": 22
+ },
+ "SWZ": {
+  "ad": "Eswatini",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 53
+  },
+  "enDerin": 2,
+  "dosyaAyri": 5,
+  "dosyaGomulu": 5,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 5
+ },
+ "SYC": {
+  "ad": "Seychelles",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 26,
+   "ADM2": 8,
+   "ADM3": 27
+  },
+  "enDerin": 3,
+  "dosyaAyri": 35,
+  "dosyaGomulu": 27,
+  "izgaraPerDosya": 1.3,
+  "gomme": true,
+  "dosyaSecilen": 27
+ },
+ "SYR": {
+  "ad": "Syrian Arab Republic",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 61,
+   "ADM3": 272
+  },
+  "enDerin": 3,
+  "dosyaAyri": 76,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 5.4,
+  "gomme": true,
+  "dosyaSecilen": 15
+ },
+ "TCA": {
+  "ad": "Turks and Caicos Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "TCD": {
+  "ad": "Chad",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 23,
+   "ADM2": 70
+  },
+  "enDerin": 2,
+  "dosyaAyri": 24,
+  "dosyaGomulu": 24,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 24
+ },
+ "TGO": {
+  "ad": "Togo",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 37
+  },
+  "enDerin": 2,
+  "dosyaAyri": 6,
+  "dosyaGomulu": 6,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 6
+ },
+ "THA": {
+  "ad": "Thailand",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 77,
+   "ADM2": 928
+  },
+  "enDerin": 2,
+  "dosyaAyri": 78,
+  "dosyaGomulu": 78,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 78
+ },
+ "TJK": {
+  "ad": "Tajikistan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 58
+  },
+  "enDerin": 2,
+  "dosyaAyri": 6,
+  "dosyaGomulu": 6,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 6
+ },
+ "TKM": {
+  "ad": "Turkmenistan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 66
+  },
+  "enDerin": 2,
+  "dosyaAyri": 7,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 7
+ },
+ "TLS": {
+  "ad": "Timor-Leste",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 13,
+   "ADM2": 65
+  },
+  "enDerin": 2,
+  "dosyaAyri": 14,
+  "dosyaGomulu": 14,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 14
+ },
+ "TON": {
+  "ad": "Tonga",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 5,
+   "ADM2": 23
+  },
+  "enDerin": 2,
+  "dosyaAyri": 6,
+  "dosyaGomulu": 6,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 6
+ },
+ "TTO": {
+  "ad": "Trinidad and Tobago",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "TUN": {
+  "ad": "Tunisia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 24,
+   "ADM2": 264,
+   "ADM3": 2083
+  },
+  "enDerin": 3,
+  "dosyaAyri": 289,
+  "dosyaGomulu": 25,
+  "izgaraPerDosya": 12,
+  "gomme": true,
+  "dosyaSecilen": 25
+ },
+ "TUR": {
+  "ad": "Turkey",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 81,
+   "ADM2": 999
+  },
+  "enDerin": 2,
+  "dosyaAyri": 82,
+  "dosyaGomulu": 82,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 82
+ },
+ "TUV": {
+  "ad": "Tuvalu",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 8,
+   "ADM2": 34,
+   "ADM3": 69
+  },
+  "enDerin": 3,
+  "dosyaAyri": 43,
+  "dosyaGomulu": 9,
+  "izgaraPerDosya": 5.3,
+  "gomme": true,
+  "dosyaSecilen": 9
+ },
+ "TWN": {
+  "ad": "Taiwan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 369
+  },
+  "enDerin": 2,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 23
+ },
+ "TZA": {
+  "ad": "United Republic of Tanzania",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 30,
+   "ADM2": 170,
+   "ADM3": 3644
+  },
+  "enDerin": 3,
+  "dosyaAyri": 201,
+  "dosyaGomulu": 31,
+  "izgaraPerDosya": 6.7,
+  "gomme": true,
+  "dosyaSecilen": 31
+ },
+ "UGA": {
+  "ad": "Uganda",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 4,
+   "ADM2": 151,
+   "ADM3": 137,
+   "ADM4": 1521
+  },
+  "enDerin": 4,
+  "dosyaAyri": 293,
+  "dosyaGomulu": 156,
+  "izgaraPerDosya": 1.9,
+  "gomme": true,
+  "dosyaSecilen": 156
+ },
+ "UKR": {
+  "ad": "Ukraine",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 27,
+   "ADM2": 495,
+   "ADM3": 10375
+  },
+  "enDerin": 3,
+  "dosyaAyri": 523,
+  "dosyaGomulu": 28,
+  "izgaraPerDosya": 19.3,
+  "gomme": true,
+  "dosyaSecilen": 28
+ },
+ "URY": {
+  "ad": "Uruguay",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 19,
+   "ADM2": 124
+  },
+  "enDerin": 2,
+  "dosyaAyri": 20,
+  "dosyaGomulu": 20,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 20
+ },
+ "USA": {
+  "ad": "United States of America",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 56,
+   "ADM2": 3233
+  },
+  "enDerin": 2,
+  "dosyaAyri": 57,
+  "dosyaGomulu": 57,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 57
+ },
+ "UZB": {
+  "ad": "Uzbekistan",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 14,
+   "ADM2": 199
+  },
+  "enDerin": 2,
+  "dosyaAyri": 15,
+  "dosyaGomulu": 15,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 15
+ },
+ "VAT": {
+  "ad": "Holy See",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "VCT": {
+  "ad": "Saint Vincent and the Grenadines",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6
+  },
+  "enDerin": 1,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 1
+ },
+ "VEN": {
+  "ad": "Venezuela (Bolivarian Republic of)",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 25,
+   "ADM2": 335
+  },
+  "enDerin": 2,
+  "dosyaAyri": 26,
+  "dosyaGomulu": 26,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 26
+ },
+ "VGB": {
+  "ad": "British Virgin Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "VIR": {
+  "ad": "United States Virgin Islands",
+  "kademe": {
+   "ADM0": 1,
+   "ADM3": 20
+  },
+  "enDerin": 3,
+  "dosyaAyri": 1,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": true,
+  "dosyaSecilen": 1
+ },
+ "VNM": {
+  "ad": "Viet Nam",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 64,
+   "ADM2": 708
+  },
+  "enDerin": 2,
+  "dosyaAyri": 65,
+  "dosyaGomulu": 65,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 65
+ },
+ "VUT": {
+  "ad": "Vanuatu",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 6,
+   "ADM2": 65,
+   "ADM3": 621
+  },
+  "enDerin": 3,
+  "dosyaAyri": 72,
+  "dosyaGomulu": 7,
+  "izgaraPerDosya": 11.8,
+  "gomme": true,
+  "dosyaSecilen": 7
+ },
+ "WLF": {
+  "ad": "Wallis and Futuna Islands",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ },
+ "WSM": {
+  "ad": "Samoa",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 11,
+   "ADM2": 43
+  },
+  "enDerin": 2,
+  "dosyaAyri": 12,
+  "dosyaGomulu": 12,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 12
+ },
+ "XKX": {
+  "ad": "Kosovo",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 48,
+   "ADM2": 38
+  },
+  "enDerin": 2,
+  "dosyaAyri": 49,
+  "dosyaGomulu": 49,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 49
+ },
+ "YEM": {
+  "ad": "Yemen",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 22,
+   "ADM2": 335
+  },
+  "enDerin": 2,
+  "dosyaAyri": 23,
+  "dosyaGomulu": 23,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 23
+ },
+ "ZAF": {
+  "ad": "South Africa",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 9,
+   "ADM2": 52,
+   "ADM3": 213,
+   "ADM4": 4392
+  },
+  "enDerin": 4,
+  "dosyaAyri": 275,
+  "dosyaGomulu": 62,
+  "izgaraPerDosya": 5.1,
+  "gomme": true,
+  "dosyaSecilen": 62
+ },
+ "ZMB": {
+  "ad": "Zambia",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 116
+  },
+  "enDerin": 2,
+  "dosyaAyri": 11,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 11
+ },
+ "ZWE": {
+  "ad": "Zimbabwe",
+  "kademe": {
+   "ADM0": 1,
+   "ADM1": 10,
+   "ADM2": 91,
+   "ADM3": 1961
+  },
+  "enDerin": 3,
+  "dosyaAyri": 102,
+  "dosyaGomulu": 11,
+  "izgaraPerDosya": 10.1,
+  "gomme": true,
+  "dosyaSecilen": 11
+ },
+ "TKL": {
+  "ad": "Tokelau",
+  "kademe": {
+   "ADM0": 1
+  },
+  "enDerin": 0,
+  "dosyaAyri": 0,
+  "dosyaGomulu": 1,
+  "izgaraPerDosya": 1,
+  "gomme": false,
+  "dosyaSecilen": 0
+ }
+}

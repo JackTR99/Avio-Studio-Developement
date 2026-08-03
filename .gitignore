@@ -8,3 +8,4 @@ dist-ssr
 
 # TypeScript derleme artıkları
 *.tsbuildinfo
+.izgara-onbellek/

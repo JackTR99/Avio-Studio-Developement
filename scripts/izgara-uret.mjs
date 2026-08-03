@@ -566,8 +566,8 @@ async function ilUret(iso, ilAdi) {
     return
   }
 
-  const eslesme = ilceleriIlleraAta(iller, hepsi)
-  const sonuc = ilceIzgarasiCiz(hedefIl, eslesme.get(hedefIl.kod) ?? [], HEDEF_ILCE)
+  const eslesme = altlariUstlereAta(iller, hepsi)
+  const sonuc = altIzgarasiCiz(hedefIl, eslesme.get(hedefIl.kod) ?? [], HEDEF_ILCE)
   if (!sonuc) {
     console.log('  ⚠️ bu ile ait ilçe bulunamadı')
     return
@@ -581,7 +581,7 @@ async function ilUret(iso, ilAdi) {
   })
 }
 
-/* ---------------------------------------------------------------- İLÇE → İL EŞLEME */
+/* ---------------------------------------------------------------- ALT → ÜST EŞLEME */
 
 /**
  * Her ilçenin GERÇEK ilini bulur.
@@ -596,46 +596,46 @@ async function ilUret(iso, ilAdi) {
  *  - Kıyı/yarımada ilçeleri (merkezi denize düşenler) kaybolmaz,
  *  - Sınırdan birkaç piksel taşan ilçe komşu ilin listesine sızmaz.
  */
-function ilceleriIlleraAta(iller, tumIlceler) {
-  const harita = new Map() // il.kod → ilçe[]
-  for (const il of iller) harita.set(il.kod, [])
+function altlariUstlereAta(ustler, tumAltlar) {
+  const harita = new Map() // üst.kod → alt[]
+  for (const ust of ustler) harita.set(ust.kod, [])
 
-  for (const ilce of tumIlceler) {
-    const [x1, y1, x2, y2] = ilce.kutu
+  for (const alt of tumAltlar) {
+    const [x1, y1, x2, y2] = alt.kutu
     const adim = Math.max((x2 - x1) / 7, (y2 - y1) / 7, 1e-6)
 
-    // Aday iller: kutusu ilçenin kutusuyla kesişenler
-    const adayIller = iller.filter(
-      (i) => !(i.kutu[2] < x1 || i.kutu[0] > x2 || i.kutu[3] < y1 || i.kutu[1] > y2),
+    // Aday üstler: kutusu altınkiyle kesişenler
+    const adaylar = ustler.filter(
+      (u) => !(u.kutu[2] < x1 || u.kutu[0] > x2 || u.kutu[3] < y1 || u.kutu[1] > y2),
     )
-    if (!adayIller.length) continue
-    if (adayIller.length === 1) {
-      harita.get(adayIller[0].kod).push(ilce)
+    if (!adaylar.length) continue
+    if (adaylar.length === 1) {
+      harita.get(adaylar[0].kod).push(alt)
       continue
     }
 
     const oy = new Map()
     for (let y = y1 + adim / 2; y < y2; y += adim) {
       for (let x = x1 + adim / 2; x < x2; x += adim) {
-        // Nokta gerçekten ilçenin içinde mi?
-        let ilceIcinde = false
-        for (const p of ilce.poligonlar)
+        // Nokta gerçekten alt bölgenin içinde mi?
+        let altIcinde = false
+        for (const p of alt.poligonlar)
           if (poligonIcinde(x, y, p)) {
-            ilceIcinde = true
+            altIcinde = true
             break
           }
-        if (!ilceIcinde) continue
+        if (!altIcinde) continue
 
-        for (const il of adayIller) {
-          if (x < il.kutu[0] || x > il.kutu[2] || y < il.kutu[1] || y > il.kutu[3]) continue
+        for (const ust of adaylar) {
+          if (x < ust.kutu[0] || x > ust.kutu[2] || y < ust.kutu[1] || y > ust.kutu[3]) continue
           let icinde = false
-          for (const p of il.poligonlar)
+          for (const p of ust.poligonlar)
             if (poligonIcinde(x, y, p)) {
               icinde = true
               break
             }
           if (icinde) {
-            oy.set(il.kod, (oy.get(il.kod) ?? 0) + 1)
+            oy.set(ust.kod, (oy.get(ust.kod) ?? 0) + 1)
             break
           }
         }
@@ -643,12 +643,11 @@ function ilceleriIlleraAta(iller, tumIlceler) {
     }
 
     if (!oy.size) {
-      // Hiç iç nokta yakalanamadı (çok küçük ilçe) — kutu ortasıyla son bir deneme
+      // Hiç iç nokta yakalanamadı (çok küçük bölge) — kutu ortasıyla son deneme
       const mx = (x1 + x2) / 2
       const my = (y1 + y2) / 2
-      const il = adayIller.find((i) => i.poligonlar.some((p) => poligonIcinde(mx, my, p)))
-      if (il) harita.get(il.kod).push(ilce)
-      else harita.get(adayIller[0].kod).push(ilce)
+      const ust = adaylar.find((u) => u.poligonlar.some((p) => poligonIcinde(mx, my, p)))
+      harita.get((ust ?? adaylar[0]).kod).push(alt)
       continue
     }
 
@@ -659,7 +658,7 @@ function ilceleriIlleraAta(iller, tumIlceler) {
         enCok = sayi
         enIyi = kod
       }
-    harita.get(enIyi).push(ilce)
+    harita.get(enIyi).push(alt)
   }
 
   return harita
@@ -672,33 +671,34 @@ function kutuyaUzaklik(x, y, [x1, y1, x2, y2]) {
   return dx * dx + dy * dy
 }
 
-/* ---------------------------------------------------------------- İLÇE IZGARASI */
+/* ---------------------------------------------------------------- ALT KADEME IZGARASI */
 
 /**
- * Bir ilin ilçe ızgarası.
+ * Bir üst bölgenin, alt bölgelerini gösteren ızgarası.
+ * (Türkiye'de bir ilin ilçeleri; İtalya'da bir ilin belediyeleri; her kademede aynı.)
  *
- * ⚠️ ESKİ YÖNTEM HATALIYDI: İlçenin sınır kutusunun ORTASI ile "bu ilçe bu ile
- * ait mi" diye test ediliyordu. Kıyı ve yarımada ilçelerinde (Kuşadası, Fethiye,
- * Datça, Bodrum yarımadası…) bu nokta DENİZE düşüyor ve ilçe tamamen atılıyordu.
+ * ⚠️ ESKİ YÖNTEM HATALIYDI: Alt bölgenin sınır kutusunun ORTASI ile "bu üstteki
+ * bölgeye ait mi" diye test ediliyordu. Kıyı ve yarımada ilçelerinde (Kuşadası,
+ * Fethiye, Datça…) bu nokta DENİZE düşüyor ve ilçe tamamen atılıyordu.
  *
- * YENİ YÖNTEM: Izgara ilin sınırı üstüne kurulur. Her nokta için önce "il içinde
- * mi", sonra "hangi ilçede" sorulur. Karar tamamen geometriye ait — hiçbir ilçe
- * tahminle elenmez. Bir ilçe, ilin içinde alanı varsa görünür.
+ * YENİ YÖNTEM: Izgara üst bölgenin sınırı üstüne kurulur. Her nokta için önce
+ * "üst bölgenin içinde mi", sonra "hangi alt bölgede" sorulur. Karar tamamen
+ * geometriye ait — hiçbir alt bölge tahminle elenmez.
  */
-function ilceIzgarasiCiz(il, ilceler, hedefNokta) {
-  const [x1, y1, x2, y2] = il.kutu
+function altIzgarasiCiz(ust, altlar, hedefNokta) {
+  const [x1, y1, x2, y2] = ust.kutu
   const en = x2 - x1
   const boy = y2 - y1
 
-  // İl alanı sınır kutusunun ~%60'ı varsayımıyla adım
+  // Üst bölgenin alanı sınır kutusunun ~%60'ı varsayımıyla adım
   let adim = Math.sqrt((en * boy * 0.6) / hedefNokta)
   adim = Number(adim.toFixed(5))
 
   const sutun = Math.ceil(en / adim)
   const satir = Math.ceil(boy / adim)
 
-  // Bu ile ait ilçeler önceden oylamayla belirlendi — burada tahmin yok
-  const adaylar = ilceler
+  // Alt bölgeler önceden oylamayla belirlendi — burada tahmin yok
+  const adaylar = altlar
   if (!adaylar.length) return null
 
   // Sıra sabit olsun ki dosya her üretimde aynı çıksın
@@ -713,16 +713,16 @@ function ilceIzgarasiCiz(il, ilceler, hedefNokta) {
     for (let sx = 0; sx < sutun; sx++) {
       const x = x1 + (sx + 0.5) * adim
 
-      // 1) İlin içinde mi?
-      let ilIcinde = false
-      for (const p of il.poligonlar)
+      // 1) Üst bölgenin içinde mi?
+      let ustIcinde = false
+      for (const p of ust.poligonlar)
         if (poligonIcinde(x, y, p)) {
-          ilIcinde = true
+          ustIcinde = true
           break
         }
-      if (!ilIcinde) continue
+      if (!ustIcinde) continue
 
-      // 2) Hangi ilçede?
+      // 2) Hangi alt bölgede?
       let bulundu = -1
       for (let i = 0; i < sirali.length; i++) {
         const b = sirali[i]
@@ -737,13 +737,13 @@ function ilceIzgarasiCiz(il, ilceler, hedefNokta) {
       }
 
       if (bulundu >= 0) noktalar.push([sx, sy, bulundu])
-      else bosHucreler.push([sx, sy, x, y]) // il içinde ama hiçbir ilçeye düşmedi
+      else bosHucreler.push([sx, sy, x, y]) // üstün içinde ama hiçbir alta düşmedi
     }
   }
 
-  // Sınır boşluklarını doldur: il içindeki her hücre bir ilçeye ait olmalı.
-  // (ADM1 ve ADM2 ayrı sadeleştirildiği için kıyı ve sınır şeritlerinde
-  //  ince boşluklar kalıyor — en yakın ilçeye verilir.)
+  // Sınır boşluklarını doldur: üst bölgedeki her hücre bir alt bölgeye ait olmalı.
+  // (Kademeler ayrı ayrı sadeleştirildiği için kıyı ve sınır şeritlerinde ince
+  //  boşluklar kalıyor — en yakın alt bölgeye verilir.)
   for (const [sx, sy, x, y] of bosHucreler) {
     let enIyi = -1
     let enYakin = Infinity
@@ -826,7 +826,7 @@ async function hepsiniUret() {
       if (!tumIlceler.length) throw new Error('ADM2 boş')
 
       // Hangi ilçe hangi ile ait — bir kez, oylamayla
-      const eslesme = ilceleriIlleraAta(iller, tumIlceler)
+      const eslesme = altlariUstlereAta(iller, tumIlceler)
 
       let uretilen = 0
       for (const il of iller) {
@@ -836,7 +836,7 @@ async function hepsiniUret() {
           continue
         }
         // Izgara ilin üstüne kurulur, her nokta hangi ilçedeyse ona yazılır
-        const sonuc = ilceIzgarasiCiz(il, eslesme.get(il.kod) ?? [], HEDEF_ILCE)
+        const sonuc = altIzgarasiCiz(il, eslesme.get(il.kod) ?? [], HEDEF_ILCE)
         if (!sonuc || sonuc.bolgeler.length < 2) continue // tek ilçeli il için harita anlamsız
         await writeFile(
           path.join(CIKTI, dosya),
@@ -861,6 +861,145 @@ async function hepsiniUret() {
   )
 }
 
+/* ================================================================ DERİN ÜRETİM
+ *
+ * Kademe sayısı ülkeden ülkeye değişir: Türkiye'de 2 (il→ilçe), İtalya'da 4
+ * (makro bölge→bölge→il→belediye). Aşağıdaki akış kademe sayısını envanterden
+ * okur ve kaç tane varsa o kadar iner.
+ *
+ * DOSYA DÜZENİ — dosya adı, bölgeye giden zincirdir:
+ *   ITA/ulke.json                     → İtalya'nın makro bölgeleri
+ *   ITA/nord-ovest.json               → o makro bölgenin bölgeleri
+ *   ITA/nord-ovest--lombardia.json    → Lombardia'nın illeri
+ *
+ * GÖMME — en alttaki kademe ayrı dosya olmaz, üstündekinin içine `alt` alanına
+ * yazılır. Böylece dosya sayısı barındırma limitinin altında kalır ve kullanıcı
+ * en dibe inerken ek indirme yapmaz.
+ */
+
+const ONBELLEK = path.join(process.cwd(), '.izgara-onbellek')
+
+/** Aynı ülkenin dosyasını iki kez indirmemek için diske alır. */
+async function geoJsonAlOnbellekli(url) {
+  await mkdir(ONBELLEK, { recursive: true })
+  const yol = path.join(ONBELLEK, url.split('/').pop())
+  if (await varMi(yol)) return JSON.parse(await readFile(yol, 'utf8'))
+  const c = await fetch(url)
+  if (!c.ok) throw new Error(`İndirilemedi (${c.status})`)
+  const metin = await c.text()
+  await writeFile(yol, metin)
+  return JSON.parse(metin)
+}
+
+/** Bir ülkenin bütün kademelerini indirir. Yoksa o kademede durur. */
+async function kademeleriAl(iso, enFazla) {
+  const kademeler = {}
+  for (let n = 1; n <= enFazla; n++) {
+    try {
+      const gj = await geoJsonAlOnbellekli(ULKE(iso, 'ADM' + n))
+      const b = bolgeleriHazirla(gj, ['shapeName'], ['shapeID', 'shapeName'])
+      if (!b.length) break
+      kademeler[n] = b
+    } catch {
+      break
+    }
+  }
+  return kademeler
+}
+
+/**
+ * Bir ülkeyi kademe kademe üretir.
+ *
+ * ayar.enFazlaKademe : bu kademeden aşağısı üretilmez
+ * ayar.gomme         : en alt kademe üst dosyaya gömülsün mü
+ * ayar.kademeAdlari  : { 1: 'İller', 2: 'İlçeler', … } ekranda görünecek adlar
+ */
+async function ulkeyiDerinUret(iso, ayar = {}) {
+  const enFazla = ayar.enFazlaKademe ?? 4
+  const kademeler = await kademeleriAl(iso, enFazla)
+  const derin = Math.max(...Object.keys(kademeler).map(Number).filter(Number.isFinite), 0)
+  if (!derin) return { dosya: 0, uyari: 'ADM1 yok' }
+
+  // Her kademenin bir üstteki bölgelere dağılımı
+  const eslesme = {}
+  for (let n = 2; n <= derin; n++) eslesme[n] = altlariUstlereAta(kademeler[n - 1], kademeler[n])
+
+  // Bir bölgeye giden zincir: kod → "nord-ovest--lombardia"
+  const zincir = new Map()
+  for (const b of kademeler[1]) zincir.set(b.kod, slug(b.ad))
+  for (let n = 2; n <= derin; n++)
+    for (const ust of kademeler[n - 1])
+      for (const alt of eslesme[n].get(ust.kod) ?? [])
+        zincir.set(alt.kod, `${zincir.get(ust.kod)}--${slug(alt.ad)}`)
+
+  /**
+   * GÖMME HER YERDE UYGUN DEĞİL.
+   * Gömünce üst dosya, altındaki her bölgenin ızgarasını da taşır. Türkiye'de
+   * ülke dosyasına 81 ilin ilçe ızgarası girerdi → 2,2 MB tek dosya. Ziyaretçi
+   * tek harita için bunu indirmemeli.
+   *
+   * Ölçü: gömülecek ızgara sayısı. Bir ızgara ~28 KB; tavan 15 ≈ 420 KB.
+   */
+  const gomulecekIzgara = derin >= 2 ? kademeler[derin - 1].length / (kademeler[derin - 2]?.length ?? 1) : 0
+  const gomulenKademe =
+    ayar.gomme && derin >= 2 && gomulecekIzgara <= (ayar.gommeTavani ?? 15) ? derin : null
+  const klasor = path.join(CIKTI, iso)
+  await mkdir(klasor, { recursive: true })
+  let yazilan = 0
+
+  /** Gömülecek kademenin ızgaralarını hazırla: üst kodu → ızgara */
+  function gomulu(ustler, kademeNo) {
+    if (gomulenKademe !== kademeNo) return undefined
+    const paket = {}
+    for (const ust of ustler) {
+      const cocuklar = eslesme[kademeNo].get(ust.kod) ?? []
+      if (cocuklar.length < 2) continue
+      const g = altIzgarasiCiz(ust, cocuklar, HEDEF_ILCE)
+      if (g) paket[ust.kod] = { parcalar: [{ ...g, ad: null, bolgeler: undefined }], bolgeler: g.bolgeler }
+    }
+    return Object.keys(paket).length ? paket : undefined
+  }
+
+  // 1. kademe: ülkenin en üst bölümü — uzak toprak kutularıyla
+  const ulkeHaritasi = parcaliIzgaraCiz(kademeler[1], HEDEF_ULKE)
+  await writeFile(
+    path.join(klasor, 'ulke.json'),
+    JSON.stringify({
+      ad: iso,
+      kademe: 1,
+      kademeAdi: ayar.kademeAdlari?.[1] ?? 'Bölgeler',
+      ...ulkeHaritasi,
+      alt: gomulu(kademeler[1], 2),
+    }),
+  )
+  yazilan++
+
+  // 2..derin kademeler: her üst bölge için bir dosya
+  for (let n = 2; n <= derin; n++) {
+    if (n === gomulenKademe) break // bu kademe üstüne gömüldü, ayrı dosya yok
+    for (const ust of kademeler[n - 1]) {
+      const cocuklar = eslesme[n].get(ust.kod) ?? []
+      if (cocuklar.length < 2) continue // tek çocuklu bölge için harita anlamsız
+      const g = altIzgarasiCiz(ust, cocuklar, HEDEF_ILCE)
+      if (!g) continue
+      await writeFile(
+        path.join(klasor, `${zincir.get(ust.kod)}.json`),
+        JSON.stringify({
+          ad: ust.ad,
+          kademe: n,
+          kademeAdi: ayar.kademeAdlari?.[n] ?? 'Bölgeler',
+          parcalar: [{ ...g, ad: null, bolgeler: undefined }],
+          bolgeler: g.bolgeler,
+          alt: gomulu(cocuklar, n + 1),
+        }),
+      )
+      yazilan++
+    }
+  }
+
+  return { dosya: yazilan, derin, gomulenKademe }
+}
+
 /* ---------------------------------------------------------------- ÇALIŞTIR */
 
 const [, , komut, a1, a2] = process.argv
@@ -871,6 +1010,15 @@ try {
   else if (komut === 'il') await ilUret(a1 ?? 'TUR', a2 ?? 'Manisa')
   else if (komut === 'hepsi') await hepsiniUret()
   else if (komut === 'ulkeler') await ulkeleriYenile()
+  else if (komut === 'derin') {
+    const iso = a1 ?? 'ITA'
+    const enFazla = a2 ? Number(a2) : 4
+    console.log(`DERİN ÜRETİM: ${iso} (en fazla ${enFazla} kademe)`)
+    const r = await ulkeyiDerinUret(iso, { enFazlaKademe: enFazla, gomme: true })
+    console.log(
+      `  ${r.dosya} dosya · ${r.derin} kademe · gömülen kademe: ${r.gomulenKademe ?? 'yok'}`,
+    )
+  }
   else {
     console.log('Kullanım:')
     console.log('  node scripts/izgara-uret.mjs dunya [hedefNokta]')
