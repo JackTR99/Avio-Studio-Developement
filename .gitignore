@@ -9,3 +9,5 @@ dist-ssr
 # TypeScript derleme artıkları
 *.tsbuildinfo
 .izgara-onbellek/
+.gecici-abd/
+.gecici-sehir/

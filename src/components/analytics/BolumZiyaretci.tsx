@@ -237,16 +237,22 @@ export function KonumBlogu() {
   const [olcum, setOlcum] = useState<OlcumAnahtari>('ziyaretci')
 
   /**
-   * Hangi dosya inecek. Gömülü adımlar dosya yoluna girmez — onların haritası
-   * zaten inen dosyanın içinde.
+   * Hangi dosya inecek.
+   *
+   * Sadece SON adım gömülüyse dosya yolundan düşer — onun haritası zaten bir
+   * üstteki dosyanın içinde. Ortadaki gömülü adımlar zincirde kalır, çünkü
+   * onların altına ayrı dosya gelebiliyor: Milano gömülü bir belediyedir ama
+   * altında şehrin 88 semti ayrı dosyada durur
+   * (ITA/nord-ovest--lombardia--milano.json).
    */
-  const acikAdimlar = yol.filter((a) => !a.gomulu)
+  const sonGomulu = yol.length > 0 && yol[yol.length - 1].gomulu
+  const dosyaAdimlari = sonGomulu ? yol.slice(0, -1) : yol
   const dosya =
     yol.length === 0
       ? 'dunya.json'
-      : acikAdimlar.length <= 1
+      : dosyaAdimlari.length <= 1
         ? `${yol[0].kod}/ulke.json`
-        : `${yol[0].kod}/${acikAdimlar.slice(1).map((a) => a.slug).join('--')}.json`
+        : `${yol[0].kod}/${dosyaAdimlari.slice(1).map((a) => a.slug).join('--')}.json`
 
   const { izgara: dosyaIzgarasi, yukleniyor, hata } = useIzgara(dosya)
 
