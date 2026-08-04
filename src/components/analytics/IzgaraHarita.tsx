@@ -31,9 +31,23 @@ export type Parca = {
 
 export type Izgara = {
   ad: string
-  seviye: 'ulke' | 'il' | 'ilce'
+  /** Kaçıncı kırılım: 1 = ülkenin ilk bölümü, 2 = onun altı… */
+  kademe: number
+  /** Bu kademenin o ülkedeki adı — "İlçeler", "Belediyeler", "Arrondissement'lar" */
+  kademeAdi?: string
+  /** Bu kademede gizlilik eşiği (5 kişi kuralı) uygulanır mı */
+  maskeli?: boolean
+  /** Daha aşağı inilemez */
+  yaprak?: boolean
   parcalar: Parca[]
   bolgeler: { kod: string; ad: string }[]
+  /**
+   * GÖMÜLÜ ALT KADEME
+   * En alttaki kırılım ayrı dosya olarak değil, üst dosyanın içinde taşınır —
+   * dosya sayısını limitin altında tutmak için. Bölge koduna karşılık o
+   * bölgenin çocuklarının haritası durur; tıklanınca yeni indirme olmaz.
+   */
+  alt?: Record<string, { parcalar: Parca[]; bolgeler: { kod: string; ad: string }[] }>
 }
 
 /** Haritaya verilen değerler. `kod` varsa önce onunla, yoksa adla eşleşir. */
@@ -359,22 +373,8 @@ export function useIzgara(dosya: string | null) {
         if (!c.ok) throw new Error(`Harita bulunamadı (${c.status})`)
         return c.json()
       })
-      .then((v: Izgara & Partial<Parca>) => {
-        // Tek parça üretilmiş eski dosyalar da tek elemanlı parça listesine çevrilir
-        const d: Izgara = v.parcalar
-          ? v
-          : {
-              ...v,
-              parcalar: [
-                {
-                  ad: null,
-                  sutun: v.sutun as number,
-                  satir: v.satir as number,
-                  noktalar: v.noktalar as [number, number, number][],
-                },
-              ],
-            }
-        if (!iptal) setIzgara(d)
+      .then((v: Izgara) => {
+        if (!iptal) setIzgara(v)
       })
       .catch((e) => {
         if (!iptal) setHata(e.message)

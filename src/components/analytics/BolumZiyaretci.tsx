@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useVeri } from '@/lib/veri'
+import { cn } from '@/lib/utils'
 import { IzgaraHarita, useIzgara, type BolgeDegeri } from './IzgaraHarita'
 import { Bolum, CizgiGrafik, CubukListe, Degisim, Ipucu } from './parts'
 
@@ -214,61 +215,109 @@ const OLCUMLER = [
 
 type OlcumAnahtari = (typeof OLCUMLER)[number]['anahtar']
 
-/** Haritada nerede olduğumuz. */
-type Konum =
-  | { seviye: 'dunya' }
-  | { seviye: 'ulke'; kod: string; ad: string }
-  | { seviye: 'il'; ulkeKod: string; ulkeAd: string; ad: string }
+/**
+ * Kırılım zincirinde bir adım.
+ * `gomulu` ise bu adımın haritası ayrı dosyada değil, bir üst dosyanın
+ * içinde taşınıyor demektir — tıklandığında yeni indirme yapılmaz.
+ */
+type Adim = { kod: string; ad: string; slug: string; gomulu: boolean }
 
-/** 21,22,23,24 — ızgara harita (dot map) + ülke → il → ilçe. */
+/** Gizlilik eşiği: bu sayıdan az ziyaretçisi olan bölge adıyla gösterilmez. */
+const ESIK = 5
+
+/**
+ * 21,22,23,24 — ızgara harita (dot map), SINIRSIZ kırılım.
+ *
+ * Kademe sayısı ülkeden ülkeye değişiyor: Türkiye'de il → ilçe (2), İtalya'da
+ * makro bölge → bölge → il → belediye (4). Bu yüzden sabit seviye yok, zincir var.
+ */
 export function KonumBlogu() {
   const { veri } = useVeri()
-  const [konum, setKonum] = useState<Konum>({ seviye: 'dunya' })
+  const [yol, setYol] = useState<Adim[]>([])
   const [olcum, setOlcum] = useState<OlcumAnahtari>('ziyaretci')
 
-  // Hangi ızgara dosyası yüklenecek — sadece bakılan bölge indirilir
+  /**
+   * Hangi dosya inecek. Gömülü adımlar dosya yoluna girmez — onların haritası
+   * zaten inen dosyanın içinde.
+   */
+  const acikAdimlar = yol.filter((a) => !a.gomulu)
   const dosya =
-    konum.seviye === 'dunya'
+    yol.length === 0
       ? 'dunya.json'
-      : konum.seviye === 'ulke'
-        ? `${konum.kod}.json`
-        : `${konum.ulkeKod}-${slug(konum.ad)}.json`
-  const { izgara, yukleniyor, hata } = useIzgara(dosya)
+      : acikAdimlar.length <= 1
+        ? `${yol[0].kod}/ulke.json`
+        : `${yol[0].kod}/${acikAdimlar.slice(1).map((a) => a.slug).join('--')}.json`
 
-  // Yandaki liste: elimizde sahte veri olan seviyeler için o veri,
-  // diğer ülkelerde haritadaki bölgeler (değer yok).
-  const turkiyede = konum.seviye !== 'dunya' && ('kod' in konum ? konum.kod : konum.ulkeKod) === 'TUR'
-  const liste =
-    konum.seviye === 'dunya'
+  const { izgara: dosyaIzgarasi, yukleniyor, hata } = useIzgara(dosya)
+
+  // Son adım gömülüyse gösterilecek harita dosyanın içinden gelir
+  const sonAdim = yol[yol.length - 1]
+  const gomuluHarita = sonAdim?.gomulu ? dosyaIzgarasi?.alt?.[sonAdim.kod] : undefined
+  const izgara = gomuluHarita
+    ? { ...dosyaIzgarasi!, ...gomuluHarita, kademe: (dosyaIzgarasi?.kademe ?? 1) + 1, alt: undefined }
+    : dosyaIzgarasi
+
+  // Yandaki liste: sahte verimiz olan yerlerde o veri, diğerlerinde haritadaki
+  // bölgeler (değer yok — gerçek veri Supabase bağlanınca gelecek).
+  const turkiyede = yol[0]?.kod === 'TUR'
+  const haritaListesi = (izgara?.bolgeler ?? []).map((b) => ({
+    ad: b.ad,
+    kod: b.kod,
+    bayrak: '',
+    sayi: 0,
+    yuzde: 0,
+  }))
+  const hamListe =
+    yol.length === 0
       ? veri.ulkeler
-      : konum.seviye === 'ulke' && turkiyede
+      : turkiyede && yol.length === 1
         ? veri.sehirler
-        : konum.seviye === 'il' && turkiyede && slug(konum.ad) === 'manisa'
+        : turkiyede && yol.length === 2 && yol[1].slug === 'manisa'
           ? veri.ilceler
-          : (izgara?.bolgeler ?? []).map((b) => ({
-              ad: b.ad,
-              kod: b.kod,
-              bayrak: '📍',
-              sayi: 0,
-              yuzde: 0,
-            }))
+          : haritaListesi
 
-  const baslik =
-    konum.seviye === 'dunya' ? 'Ülkeler' : konum.seviye === 'ulke' ? 'İller' : 'İlçeler'
+  /**
+   * GİZLİLİK EŞİĞİ
+   * İlçenin altındaki kırılımlarda (belediye, mahalle, posta kodu) 5 kişiden
+   * az ziyaretçisi olan bölge adıyla gösterilmez — tek kişi tanımlanabilir
+   * hale gelmesin diye. Bu bölgeler "Diğer" içinde toplanır.
+   */
+  const maskeli = izgara?.maskeli ?? (izgara?.kademe ?? 0) >= 3
+  const gizlenen = maskeli ? hamListe.filter((k) => k.sayi > 0 && k.sayi < ESIK) : []
+  const liste = maskeli
+    ? [
+        ...hamListe.filter((k) => k.sayi === 0 || k.sayi >= ESIK),
+        ...(gizlenen.length
+          ? [
+              {
+                ad: `Diğer (${gizlenen.length} bölge)`,
+                kod: '__diger__',
+                bayrak: '',
+                sayi: gizlenen.reduce((t, k) => t + k.sayi, 0),
+                yuzde: gizlenen.reduce((t, k) => t + k.yuzde, 0),
+              },
+            ]
+          : []),
+      ]
+    : hamListe
+
+  const baslik = yol.length === 0 ? 'Ülkeler' : (izgara?.kademeAdi ?? 'Bölgeler')
 
   // Seçili ölçüme göre değerler. Ziyaretçi dışındakiler orantıyla türetilir (taslak).
   const carpan = olcum === 'ziyaretci' ? 1 : olcum === 'sayfa' ? 2.84 : 0.078
-  const degerler: BolgeDegeri[] = liste.map((k) => ({
-    ad: k.ad,
-    kod: k.kod,
-    deger: Math.round(k.sayi * carpan),
-  }))
+  const degerler: BolgeDegeri[] = liste
+    .filter((k) => k.kod !== '__diger__')
+    .map((k) => ({ ad: k.ad, kod: k.kod, deger: Math.round(k.sayi * carpan) }))
 
-  /** Haritada bir bölgeye tıklanınca bir alt seviyeye in. */
+  /** Daha aşağı inilebilir mi — yaprak kademede tıklama kapanır. */
+  const inilebilir = !izgara?.yaprak
+
+  /** Bir bölgeye tıklanınca bir alt kırılıma in. */
   function haritayaTikla(b: { kod: string; ad: string; deger: number }) {
-    if (konum.seviye === 'dunya') setKonum({ seviye: 'ulke', kod: b.kod, ad: b.ad })
-    else if (konum.seviye === 'ulke')
-      setKonum({ seviye: 'il', ulkeKod: konum.kod, ulkeAd: konum.ad, ad: b.ad })
+    if (!inilebilir || b.kod === '__diger__') return
+    // Bu bölgenin çocukları dosyanın içinde mi taşınıyor?
+    const gomulu = !!izgara?.alt?.[b.kod]
+    setYol([...yol, { kod: b.kod, ad: b.ad, slug: slug(b.ad), gomulu }])
   }
 
   /** Listede bir satıra tıklanınca da aynısı. */
@@ -278,39 +327,46 @@ export function KonumBlogu() {
     haritayaTikla({ kod: b.kod ?? ad, ad, deger: b.sayi })
   }
 
+  /**
+   * MOBİLDE HARİTA
+   * Küçük ekranda alt kırılım haritaları okunmuyor — bir ilin 40 ilçesi
+   * avuç içi genişlikte ayırt edilemez. O yüzden telefonda sadece dünya
+   * haritası çizilir, alt kırılımlarda liste tek başına kalır ve gezinme
+   * listeden yapılır. Masaüstünde hepsi görünür.
+   */
+  const mobildeHaritaVar = yol.length === 0
+
   return (
-    <Card className="grid grid-cols-1 gap-0 py-0 lg:grid-cols-[1fr_330px]">
-      <div className="p-4 sm:p-5 lg:border-r">
-        {/* Seçim çubuğu: nerede olduğun + geri dönüş */}
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+    <Card className="gap-0 py-0">
+      {/* Gezinti + ölçüm — her zaman görünür, mobilde harita gizlense bile */}
+      <div className="border-b px-4 py-3 sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          {/* Gezinti yolu — kaç kırılım varsa o kadar uzar, sığmazsa kayar */}
+          <div
+            className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto text-[13px] whitespace-nowrap"
+            data-kaydirma-alani
+          >
             <button
-              onClick={() => setKonum({ seviye: 'dunya' })}
-              className={konum.seviye === 'dunya' ? 'text-muted-foreground' : 'text-brand hover:underline'}
+              onClick={() => setYol([])}
+              className={yol.length === 0 ? 'text-muted-foreground' : 'shrink-0 text-brand hover:underline'}
             >
               Dünya
             </button>
-            {konum.seviye !== 'dunya' && (
-              <>
+            {yol.map((a, i) => (
+              <span key={a.kod + i} className="flex shrink-0 items-center gap-2">
                 <span className="text-muted-foreground/40">›</span>
-                <button
-                  onClick={() =>
-                    konum.seviye === 'il'
-                      ? setKonum({ seviye: 'ulke', kod: konum.ulkeKod, ad: konum.ulkeAd })
-                      : undefined
-                  }
-                  className={konum.seviye === 'ulke' ? 'text-muted-foreground' : 'text-brand hover:underline'}
-                >
-                  {konum.seviye === 'ulke' ? konum.ad : konum.ulkeAd}
-                </button>
-              </>
-            )}
-            {konum.seviye === 'il' && (
-              <>
-                <span className="text-muted-foreground/40">›</span>
-                <span className="text-muted-foreground">{konum.ad}</span>
-              </>
-            )}
+                {i === yol.length - 1 ? (
+                  <span className="text-muted-foreground">{a.ad}</span>
+                ) : (
+                  <button
+                    onClick={() => setYol(yol.slice(0, i + 1))}
+                    className="text-brand hover:underline"
+                  >
+                    {a.ad}
+                  </button>
+                )}
+              </span>
+            ))}
           </div>
 
           {/* Ölçüm seçici — harita buna göre renklenir */}
@@ -328,51 +384,60 @@ export function KonumBlogu() {
             ))}
           </div>
         </div>
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px]">
+        <div className={cn('p-4 sm:p-5 lg:border-r', !mobildeHaritaVar && 'hidden sm:block')}>
         {hata ? (
           <div className="flex aspect-[2/1] flex-col items-center justify-center gap-2 rounded-lg border border-dashed px-6 text-center">
-            <span className="text-[13px] font-medium">Bu bölgenin haritası henüz üretilmedi</span>
+            <span className="text-[13px] font-medium">Bu bölgenin alt kırılımı yok</span>
             <span className="text-[11px] text-muted-foreground">
-              Dünyanın tamamı toplu üretiliyor; hazır olunca burada görünecek.
+              Bu kaynakta {yol[yol.length - 1]?.ad ?? 'burası'} en ince kırılım.
             </span>
+            <Button size="sm" variant="outline" className="mt-1 h-7 text-xs" onClick={() => setYol(yol.slice(0, -1))}>
+              Geri dön
+            </Button>
           </div>
         ) : (
           <IzgaraHarita
             izgara={izgara}
             degerler={degerler}
             yukleniyor={yukleniyor}
-            onBolgeTikla={haritayaTikla}
+            onBolgeTikla={inilebilir ? haritayaTikla : undefined}
           />
         )}
 
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Koyu = yoğun. Noktaya tıklayarak alt kırılıma inebilirsin. Harita verisi: geoBoundaries
-          (CC BY 4.0).
-        </p>
-      </div>
+          Koyu = yoğun.{' '}
+          {inilebilir ? 'Noktaya tıklayarak alt kırılıma inebilirsin. ' : 'En ince kırılım. '}
+          {maskeli && `${ESIK} kişiden az ziyaretçisi olan bölgeler gizlilik için "Diğer" içinde toplanır. `}
+            Harita verisi: geoBoundaries (CC BY 4.0).
+          </p>
+        </div>
 
-      <div className="p-4 sm:p-5">
-        <h4 className="text-[13px] font-semibold">{baslik}</h4>
-        <p className="mb-3 text-[11.5px] text-muted-foreground">
-          {konum.seviye === 'il' ? 'En ince kırılım' : 'Satıra tıkla, bir alt kırılıma in'}
-        </p>
-        <CubukListe
-          tiklanabilir={konum.seviye !== 'il'}
-          onTikla={listeyeTikla}
-          satirlar={liste.map((k) => ({
-            ad: k.ad,
-            // Dünya seviyesinde gerçek ülke bayrağı; alt seviyelerde ince konum
-            // ikonu (emoji pin amatör duruyordu)
-            sol:
-              konum.seviye === 'dunya' ? (
-                k.bayrak
-              ) : (
-                <MapPin size={13} strokeWidth={1.75} className="text-muted-foreground" />
-              ),
-            sayi: k.sayi,
-            yuzde: k.yuzde,
-          }))}
-        />
+        <div className="p-4 sm:p-5">
+          <h4 className="text-[13px] font-semibold">{baslik}</h4>
+          <p className="mb-3 text-[11.5px] text-muted-foreground">
+            {inilebilir ? 'Satıra tıkla, bir alt kırılıma in' : 'En ince kırılım'}
+          </p>
+          <CubukListe
+            tiklanabilir={inilebilir}
+            onTikla={listeyeTikla}
+            satirlar={liste.map((k) => ({
+              ad: k.ad,
+              // Dünya seviyesinde gerçek ülke bayrağı; alt kırılımlarda ince
+              // konum ikonu (emoji pin amatör duruyordu)
+              sol:
+                yol.length === 0 ? (
+                  k.bayrak
+                ) : (
+                  <MapPin size={13} strokeWidth={1.75} className="text-muted-foreground" />
+                ),
+              sayi: k.sayi,
+              yuzde: k.yuzde,
+            }))}
+          />
+        </div>
       </div>
     </Card>
   )

@@ -124,6 +124,22 @@ function kodlamaOnar(s) {
   }
 }
 
+/**
+ * İSİM TEMİZLİĞİ
+ * Kaynak veride isimler kirli geliyor: satır sonu karakteri ("Warduj\n"),
+ * çift boşluk ("Zanda  Jan"), veri seti eki ("Camden LEA-1"), dil eki
+ * ("Åseral nor"). Ekranda bunlar göze batıyor.
+ */
+function isimTemizle(s) {
+  return kodlamaOnar(s)
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+(nor|swe|dnk|fin)$/i, '')
+    .replace(/\s+LEA-\d+$/i, '')
+    .replace(/^["']|["']$/g, '')
+    .trim()
+}
+
 /** GeoJSON özelliğini {ad, kod, poligonlar, kutu} biçimine çevirir. */
 function bolgeleriHazirla(geojson, adAlanlari, kodAlanlari) {
   const bolgeler = []
@@ -139,13 +155,38 @@ function bolgeleriHazirla(geojson, adAlanlari, kodAlanlari) {
     const kod = kodAlanlari.map((a) => p[a]).find(Boolean) ?? ad
 
     bolgeler.push({
-      ad: kodlamaOnar(String(ad)),
+      ad: isimTemizle(String(ad)),
       kod: String(kod),
       poligonlar,
       kutu: sinirKutusu(poligonlar),
     })
   }
   return bolgeler
+}
+
+
+/**
+ * Bir bölgenin İÇİNDEN bir nokta bulur.
+ * Sınır kutusunun ortası denize/komşuya düşebilir (hilal biçimli bölgeler),
+ * o yüzden tutmazsa giderek sıklaşan bir taramayla iç nokta aranır.
+ */
+function icNokta(b) {
+  const [x1, y1, x2, y2] = b.kutu
+  const mx = (x1 + x2) / 2
+  const my = (y1 + y2) / 2
+  for (const p of b.poligonlar) if (poligonIcinde(mx, my, p)) return [mx, my]
+
+  for (const n of [3, 5, 9, 17]) {
+    const dx = (x2 - x1) / (n + 1)
+    const dy = (y2 - y1) / (n + 1)
+    for (let i = 1; i <= n; i++)
+      for (let j = 1; j <= n; j++) {
+        const x = x1 + i * dx
+        const y = y1 + j * dy
+        for (const p of b.poligonlar) if (poligonIcinde(x, y, p)) return [x, y]
+      }
+  }
+  return [mx, my] // son çare: kutu ortası
 }
 
 /* ---------------------------------------------------------------- IZGARA */
@@ -197,6 +238,31 @@ function izgaraCiz(bolgeler, hedefNokta, kutuElle, adimElle) {
         noktalar.push([sx, sy, kullanilan.get(b.kod).i])
         break // ilk eşleşen bölge yeter
       }
+    }
+  }
+
+  /**
+   * KÜÇÜK BÖLGE GARANTİSİ
+   * Izgara çözünürlüğünün altında kalan bölgeler hiç hücre almıyor ve
+   * haritadan tamamen kayboluyordu (Türkiye'de 999 ilçenin 26'sı böyle
+   * düşmüştü). Böyle bir bölge için içinden bir nokta bulunup o hücre
+   * zorla bu bölgeye yazılır — bir noktayla da olsa tıklanabilir kalır.
+   */
+  const hucreSahibi = new Map()
+  noktalar.forEach(([sx, sy], i) => hucreSahibi.set(sy * sutun + sx, i))
+
+  for (const b of bolgeler) {
+    if (kullanilan.has(b.kod)) continue
+    const [ix, iy] = icNokta(b)
+    const sx = Math.min(sutun - 1, Math.max(0, Math.floor((ix - x1) / adim)))
+    const sy = Math.min(satir - 1, Math.max(0, Math.floor((y2 - iy) / adim)))
+    kullanilan.set(b.kod, { i: kullanilan.size, ad: b.ad })
+    const anahtar = sy * sutun + sx
+    const eskiIndeks = hucreSahibi.get(anahtar)
+    if (eskiIndeks !== undefined) noktalar[eskiIndeks] = [sx, sy, kullanilan.get(b.kod).i]
+    else {
+      hucreSahibi.set(anahtar, noktalar.length)
+      noktalar.push([sx, sy, kullanilan.get(b.kod).i])
     }
   }
 
@@ -501,7 +567,18 @@ async function dunyaUret(hedef = 7500) {
   console.log(`  ${bolgeler.length} ülke bulundu, ızgara çiziliyor…`)
   // Antarktika haritayı ezmesin: -60 güney sınırı
   const sonuc = izgaraCiz(bolgeler, hedef, [-180, -60, 180, 84])
-  await yaz('dunya.json', { ad: 'Dünya', seviye: 'ulke', ...sonuc })
+  // Diğer haritalarla aynı biçim: tek parçalı da olsa `parcalar` dizisi
+  await yaz('dunya.json', {
+    ad: 'Dünya',
+    kademe: 0,
+    kademeAdi: 'Ülkeler',
+    maskeli: false,
+    yaprak: false,
+    parcalar: [
+      { ad: null, sutun: sonuc.sutun, satir: sonuc.satir, noktalar: sonuc.noktalar },
+    ],
+    bolgeler: sonuc.bolgeler,
+  })
 }
 
 async function ulkeUret(iso) {
@@ -917,8 +994,32 @@ async function kademeleriAl(iso, enFazla) {
 async function ulkeyiDerinUret(iso, ayar = {}) {
   const enFazla = ayar.enFazlaKademe ?? 4
   const kademeler = await kademeleriAl(iso, enFazla)
-  const derin = Math.max(...Object.keys(kademeler).map(Number).filter(Number.isFinite), 0)
+  let derin = Math.max(...Object.keys(kademeler).map(Number).filter(Number.isFinite), 0)
   if (!derin) return { dosya: 0, uyari: 'ADM1 yok' }
+
+  /**
+   * KOPYA KADEME AYIKLAMA
+   *
+   * Bazı ülkelerde bir kademe, bir üstünün birebir kopyası: İngiltere'de
+   * ADM3 = ADM2 (216 = 216, isimler aynı), Jamaika'da ADM3 ≈ ADM2 (829 ≈ 827),
+   * Cezayir'de ADM2 = ADM1. Bunu üretirsek kullanıcı aynı listeye iki kez iner.
+   *
+   * Sayı yakınlığı tek başına yetmez (yanlış eleyebilir) — İSİM ÖRTÜŞMESİNE
+   * bakılır. Alt kademenin adlarının %90'ından fazlası üst kademede de varsa
+   * o kademe kopyadır, oradan aşağısı üretilmez.
+   */
+  const sade = (s) => s.toLocaleLowerCase('tr').replace(/[^a-z0-9çğıöşü]/g, '')
+  let kopyaKademe = null
+  for (let n = 2; n <= derin; n++) {
+    const ustAdlar = new Set(kademeler[n - 1].map((b) => sade(b.ad)))
+    const ortak = kademeler[n].filter((b) => ustAdlar.has(sade(b.ad))).length
+    if (kademeler[n].length && ortak / kademeler[n].length > 0.9) {
+      kopyaKademe = n
+      derin = n - 1
+      for (let k = n; k <= 4; k++) delete kademeler[k]
+      break
+    }
+  }
 
   // Her kademenin bir üstteki bölgelere dağılımı
   const eslesme = {}
@@ -947,15 +1048,45 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
   await mkdir(klasor, { recursive: true })
   let yazilan = 0
 
+  /**
+   * Bir üst bölgenin çocuklarının haritası.
+   *
+   * ⚠️ ESKİDEN tek parça çiziliyordu ve bu ciddi hatalara yol açıyordu:
+   * Tokyo prefektürü 1.000 km güneydeki Ogasawara adalarını da içerdiği için
+   * sınır kutusu devleşiyor, ızgara kabalaşıyor ve şehirdeki 62 belediyenin
+   * hepsi tek hücrenin altında kalıp kayboluyordu. Fiji'de oran 352:1 çıkıyordu.
+   *
+   * Artık ülke haritasında zaten çalışan parçalı çizim burada da kullanılıyor:
+   * uzak topraklar ayrı kutuya alınıyor, 180. meridyen sarması düzeltiliyor,
+   * nokta sayısı hedefe oturtuluyor.
+   *
+   * Nokta hedefi bölge sayısına göre ölçekleniyor — 400 belediyeli bir ile
+   * 12 ilçeli bir il aynı nokta bütçesiyle çizilemez.
+   */
+  function altHaritasiCiz(cocuklar) {
+    const hedef = Math.max(HEDEF_ILCE, Math.min(12000, cocuklar.length * 45))
+    return parcaliIzgaraCiz(cocuklar, hedef)
+  }
+
   /** Gömülecek kademenin ızgaralarını hazırla: üst kodu → ızgara */
   function gomulu(ustler, kademeNo) {
     if (gomulenKademe !== kademeNo) return undefined
     const paket = {}
     for (const ust of ustler) {
       const cocuklar = eslesme[kademeNo].get(ust.kod) ?? []
-      if (cocuklar.length < 2) continue
-      const g = altIzgarasiCiz(ust, cocuklar, HEDEF_ILCE)
-      if (g) paket[ust.kod] = { parcalar: [{ ...g, ad: null, bolgeler: undefined }], bolgeler: g.bolgeler }
+      // Tek çocuklu bölge de üretilir. Eskiden atlanıyordu ve bu ciddi kayba
+      // yol açıyordu: İspanya'da 19 özerk bölgenin 9'u tek illi (Madrid,
+      // Murcia, Navarra…) — o illerin 939 belediyesi hiç çizilmiyordu.
+      if (!cocuklar.length) continue
+      const g = altHaritasiCiz(cocuklar)
+      if (g?.parcalar?.length)
+        paket[ust.kod] = {
+          parcalar: g.parcalar,
+          bolgeler: g.bolgeler,
+          kademeAdi: ayar.kademeAdlari?.[kademeNo] ?? 'Bölgeler',
+          maskeli: kademeNo > (ayar.ilceKademesi ?? 2),
+          yaprak: true, // gömülü kademe her zaman en alttır
+        }
     }
     return Object.keys(paket).length ? paket : undefined
   }
@@ -968,6 +1099,10 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
       ad: iso,
       kademe: 1,
       kademeAdi: ayar.kademeAdlari?.[1] ?? 'Bölgeler',
+      // Bu kademede gizlilik eşiği geçerli mi (ilçenin ALTI ise evet)
+      maskeli: 1 > (ayar.ilceKademesi ?? 2),
+      // Daha aşağı inilemez mi
+      yaprak: derin <= 1,
       ...ulkeHaritasi,
       alt: gomulu(kademeler[1], 2),
     }),
@@ -979,16 +1114,18 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
     if (n === gomulenKademe) break // bu kademe üstüne gömüldü, ayrı dosya yok
     for (const ust of kademeler[n - 1]) {
       const cocuklar = eslesme[n].get(ust.kod) ?? []
-      if (cocuklar.length < 2) continue // tek çocuklu bölge için harita anlamsız
-      const g = altIzgarasiCiz(ust, cocuklar, HEDEF_ILCE)
-      if (!g) continue
+      if (!cocuklar.length) continue
+      const g = altHaritasiCiz(cocuklar)
+      if (!g?.parcalar?.length) continue
       await writeFile(
         path.join(klasor, `${zincir.get(ust.kod)}.json`),
         JSON.stringify({
           ad: ust.ad,
           kademe: n,
           kademeAdi: ayar.kademeAdlari?.[n] ?? 'Bölgeler',
-          parcalar: [{ ...g, ad: null, bolgeler: undefined }],
+          maskeli: n > (ayar.ilceKademesi ?? 2),
+          yaprak: n >= derin,
+          parcalar: g.parcalar,
           bolgeler: g.bolgeler,
           alt: gomulu(cocuklar, n + 1),
         }),
@@ -997,7 +1134,91 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
     }
   }
 
-  return { dosya: yazilan, derin, gomulenKademe }
+  /**
+   * GERÇEK SAYILAR
+   * geoBoundaries'in meta verisindeki birim sayıları indirilen dosyayla
+   * uyuşmuyor (Türkiye meta'da 999 ilçe diyor, dosyada 973 var). Denetimin
+   * doğru referansı meta değil, İNDİRİLEN DOSYA olmalı — buradan yazıyoruz.
+   */
+  const kaynakSayilari = {}
+  for (let n = 1; n <= derin; n++) kaynakSayilari[n] = kademeler[n].length
+
+  return { dosya: yazilan, derin, gomulenKademe, kopyaKademe, kaynakSayilari }
+}
+
+
+/* ---------------------------------------------------------------- TOPLU DERİN ÜRETİM */
+
+/**
+ * Dünyanın tamamını, her ülkenin kendi kademe derinliğine kadar üretir.
+ *
+ * Kademe sayısı ve kademe adları `kademeler.json` sözlüğünden gelir; sözlükte
+ * olmayan ülkeler için envanterdeki derinlik kullanılır ve genel ad yazılır.
+ */
+async function derinHepsiUret() {
+  const dunya = JSON.parse(await readFile(path.join(CIKTI, 'dunya.json'), 'utf8'))
+  const envanter = JSON.parse(await readFile(path.join(CIKTI, 'envanter.json'), 'utf8'))
+  let sozluk = {}
+  try {
+    sozluk = JSON.parse(await readFile(path.join(CIKTI, 'kademeler.json'), 'utf8'))
+  } catch {
+    console.log('  (kademeler.json yok — genel adlar kullanılacak)')
+  }
+
+  const isoListesi = [...new Set(dunya.bolgeler.map((b) => b.kod))].filter((k) =>
+    /^[A-Z]{3}$/.test(k),
+  )
+  console.log(`TOPLU DERİN ÜRETİM — ${isoListesi.length} ülke\n`)
+
+  const basla = Date.now()
+  let toplamDosya = 0
+  const ozet = {}
+  const uyarilar = []
+  const kopyaElenen = []
+
+  for (let i = 0; i < isoListesi.length; i++) {
+    const iso = isoListesi[i]
+    const s = sozluk[iso]
+    const onEk = `[${String(i + 1).padStart(3)}/${isoListesi.length}] ${iso}`
+
+    // Kademe adları: sözlükteki çoğul adlar
+    const kademeAdlari = {}
+    for (const [n, v] of Object.entries(s?.adlar ?? {})) kademeAdlari[Number(n)] = v.cogul
+
+    try {
+      const r = await ulkeyiDerinUret(iso, {
+        enFazlaKademe: s?.enFazlaKademe ?? envanter[iso]?.enDerin ?? 4,
+        kademeAdlari,
+        ilceKademesi: s?.ilceKademesi ?? 2,
+        gomme: true,
+        gommeTavani: 15,
+      })
+      toplamDosya += r.dosya
+      ozet[iso] = { derin: r.derin, kaynak: r.kaynakSayilari, gomulen: r.gomulenKademe, kopya: r.kopyaKademe }
+      if (r.kopyaKademe) kopyaElenen.push(`${iso} k${r.kopyaKademe}`)
+      if (!r.dosya) uyarilar.push(`${iso}: ${r.uyari ?? 'dosya üretilmedi'}`)
+      const dk = ((Date.now() - basla) / 60000).toFixed(1)
+      console.log(
+        `${onEk}  ${String(r.dosya).padStart(4)} dosya · ${r.derin} kademe · gömülen: ${r.gomulenKademe ?? 'yok'}${r.kopyaKademe ? ` · kopya k${r.kopyaKademe} elendi` : ''}  (${dk} dk)`,
+      )
+    } catch (e) {
+      uyarilar.push(`${iso}: ${e.message}`)
+      console.log(`${onEk}  atlandı — ${e.message}`)
+    }
+  }
+
+  await writeFile(path.join(CIKTI, 'uretim-ozeti.json'), JSON.stringify(ozet))
+
+  const dk = ((Date.now() - basla) / 60000).toFixed(1)
+  console.log('\n' + '\u2501'.repeat(58))
+  console.log(`BİTTİ — ${toplamDosya.toLocaleString('tr-TR')} dosya · ${dk} dakika`)
+  console.log(`  Cloudflare limiti 20.000 → ${toplamDosya <= 20000 ? '\u2713 sığıyor' : '\u2717 AŞIYOR'}`)
+  if (kopyaElenen.length)
+    console.log(`\n  kopya kademe elenen ${kopyaElenen.length} ülke: ${kopyaElenen.join(', ')}`)
+  if (uyarilar.length) {
+    console.log(`\n\u26a0\ufe0f ${uyarilar.length} UYARI`)
+    for (const u of uyarilar) console.log('  ' + u)
+  }
 }
 
 /* ---------------------------------------------------------------- ÇALIŞTIR */
@@ -1010,6 +1231,7 @@ try {
   else if (komut === 'il') await ilUret(a1 ?? 'TUR', a2 ?? 'Manisa')
   else if (komut === 'hepsi') await hepsiniUret()
   else if (komut === 'ulkeler') await ulkeleriYenile()
+  else if (komut === 'derin-hepsi') await derinHepsiUret()
   else if (komut === 'derin') {
     const iso = a1 ?? 'ITA'
     const enFazla = a2 ? Number(a2) : 4
@@ -1025,7 +1247,8 @@ try {
     console.log('  node scripts/izgara-uret.mjs ulke TUR')
     console.log('  node scripts/izgara-uret.mjs il TUR Manisa')
     console.log('  node scripts/izgara-uret.mjs ulkeler   ← tüm ülke haritaları (ilçeler kalır)')
-    console.log('  node scripts/izgara-uret.mjs hepsi     ← dünyanın tamamı (saatler sürer)')
+    console.log('  node scripts/izgara-uret.mjs derin TUR  ← tek ülke, tam derinlik')
+    console.log('  node scripts/izgara-uret.mjs derin-hepsi ← dünyanın tamamı, tam derinlik')
     process.exit(1)
   }
 } catch (e) {
