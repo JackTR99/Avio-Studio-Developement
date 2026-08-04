@@ -426,7 +426,14 @@ const KUTU_NOKTA = 900 // her uzak toprak kutusu için hedef nokta
  * Bölge indeksleri TÜM parçalarda ortaktır — renklendirme ve tıklama
  * tek bir bölge listesi üzerinden çalışır.
  */
-function parcaliIzgaraCiz(hamBolgeler, hedefNokta) {
+/**
+ * @param hicAtlama Alt kademelerde true verilir: kutu sınırına takılan kümeler
+ *   atılmaz, ana haritaya katılır. Üst kademede (ülke haritası) bir adayı
+ *   atmak kabul edilebilir — o il ana haritada zaten görünür. Ama alt
+ *   kademede atılan küme = tamamen kaybolan bölge demektir (İran'da 22 il,
+ *   Fiji'de 7 ilçe böyle düşmüştü).
+ */
+function parcaliIzgaraCiz(hamBolgeler, hedefNokta, hicAtlama = false) {
   const bolgeler = meridyenDuzelt(hamBolgeler)
   let kumeler = kumele(bolgeler)
 
@@ -476,7 +483,17 @@ function parcaliIzgaraCiz(hamBolgeler, hedefNokta) {
   for (const k of [...adaylar].sort((a, b) => b.karaAlan - a.karaAlan)) {
     const yeni = k.bolgeler.filter((b) => !temsilEdilen.has(b.kod))
     if (!yeni.length || kutuAdaylari.length >= EN_FAZLA_KUTU) {
-      atlanan.push(...k.bolgeler.map((b) => b.ad))
+      if (hicAtlama && yeni.length) {
+        // Bölge kaybetmektense ana haritanın kutusunu büyütmeyi tercih ederiz
+        ana.bolgeler.push(...k.bolgeler)
+        ana.kutu = [
+          Math.min(ana.kutu[0], k.kutu[0]),
+          Math.min(ana.kutu[1], k.kutu[1]),
+          Math.max(ana.kutu[2], k.kutu[2]),
+          Math.max(ana.kutu[3], k.kutu[3]),
+        ]
+        for (const b of k.bolgeler) temsilEdilen.add(b.kod)
+      } else atlanan.push(...k.bolgeler.map((b) => b.ad))
       continue
     }
     for (const b of k.bolgeler) temsilEdilen.add(b.kod)
@@ -685,7 +702,25 @@ function altlariUstlereAta(ustler, tumAltlar) {
     const adaylar = ustler.filter(
       (u) => !(u.kutu[2] < x1 || u.kutu[0] > x2 || u.kutu[3] < y1 || u.kutu[1] > y2),
     )
-    if (!adaylar.length) continue
+    if (!adaylar.length) {
+      /**
+       * Hiçbir üst bölgenin sınır kutusuyla kesişmiyor.
+       * Bu gerçekten oluyor: Fiji'de Rotuma ana adalardan 650 km uzakta ve
+       * hiçbir division'a bağlı değil. Atmak yerine EN YAKIN üst bölgeye
+       * bağlarız — yoksa o bölge haritadan tamamen kaybolur.
+       */
+      let enYakin = null
+      let enAz = Infinity
+      for (const u of ustler) {
+        const d = kutuMesafesi(alt.kutu, u.kutu)
+        if (d < enAz) {
+          enAz = d
+          enYakin = u
+        }
+      }
+      if (enYakin) harita.get(enYakin.kod).push(alt)
+      continue
+    }
     if (adaylar.length === 1) {
       harita.get(adaylar[0].kod).push(alt)
       continue
@@ -1065,7 +1100,7 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
    */
   function altHaritasiCiz(cocuklar) {
     const hedef = Math.max(HEDEF_ILCE, Math.min(12000, cocuklar.length * 45))
-    return parcaliIzgaraCiz(cocuklar, hedef)
+    return parcaliIzgaraCiz(cocuklar, hedef, true)
   }
 
   /** Gömülecek kademenin ızgaralarını hazırla: üst kodu → ızgara */
@@ -1143,7 +1178,22 @@ async function ulkeyiDerinUret(iso, ayar = {}) {
   const kaynakSayilari = {}
   for (let n = 1; n <= derin; n++) kaynakSayilari[n] = kademeler[n].length
 
-  return { dosya: yazilan, derin, gomulenKademe, kopyaKademe, kaynakSayilari }
+  /**
+   * ÜRETİM ANINDA KAYIP TESPİTİ
+   * Bir bölge iki yerde düşebilir: (a) hiçbir üst bölgeye atanamazsa,
+   * (b) atansa da ızgarada tek hücre bile alamazsa. İkisini ayrı ayrı
+   * sayarız — sebebi bilmeden düzeltilemiyor.
+   */
+  const kayipDetay = {}
+  for (let n = 2; n <= derin; n++) {
+    const atanan = new Set()
+    for (const liste of eslesme[n].values()) for (const b of liste) atanan.add(b.kod)
+    const atanmayan = kademeler[n].filter((b) => !atanan.has(b.kod))
+    if (atanmayan.length)
+      kayipDetay[n] = { atanmayan: atanmayan.length, adlar: atanmayan.slice(0, 5).map((b) => b.ad) }
+  }
+
+  return { dosya: yazilan, derin, gomulenKademe, kopyaKademe, kaynakSayilari, kayipDetay }
 }
 
 
@@ -1240,6 +1290,8 @@ try {
     console.log(
       `  ${r.dosya} dosya · ${r.derin} kademe · gömülen kademe: ${r.gomulenKademe ?? 'yok'}`,
     )
+    for (const [n, d] of Object.entries(r.kayipDetay ?? {}))
+      console.log(`  ⚠️ kademe${n}: ${d.atanmayan} bölge hiçbir üste atanamadı → ${d.adlar.join(', ')}`)
   }
   else {
     console.log('Kullanım:')
